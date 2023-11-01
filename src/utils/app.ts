@@ -1,0 +1,9 @@
+export enum Roles {
+	ADMIN = 1,
+	OFFICES_LEADER = 2,
+	GATHERING_LEADER = 3,
+	OFFICER = 4,
+	GATHERS = 5,
+	CUSTOMER = 6,
+	SHIPPER = 7
+}

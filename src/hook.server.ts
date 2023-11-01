@@ -1,7 +1,8 @@
 import { redirect } from '@sveltejs/kit';
 import type { Handle } from '@sveltejs/kit';
 
-const unProtectedRoutes = ['/', '/login', '/tracking'];
+const unProtectedRoutes: string[] = [];
+// ['/', '/login', '/tracking']
 
 export const handle: Handle = async ({ event, resolve }) => {
 	const token = event.cookies.get('token');

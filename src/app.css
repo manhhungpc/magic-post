@@ -37,3 +37,7 @@ body {
 .typed-cursor {
 	@apply text-amber-600;
 }
+
+.app-rail-label {
+	text-align: start;
+}

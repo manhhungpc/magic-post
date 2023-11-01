@@ -9,17 +9,16 @@ Description of routes in `routes/` folder
 
 ### For admin, manager
 
-| Routes                     | Description                                                      | Auth?                      |
-| -------------------------- | ---------------------------------------------------------------- | -------------------------- |
-| /api                       | API endpoint - Fetch data from server                            |                            |
-| /login                     | Login for staff, admin                                           |                            |
-| /tracking                  | For customer to track their order                                |                            |
-| /profile                   | Display, edit user information                                   | logged                     |
-| /statistics                | Display statistic based on role                                  | all logged                 |
-| /admin                     | View and manage transaction offices, gathering point, staffs,... | admin                      |
-| /admin/transaction-offices | Manage transaction offices for admin                             | admin                      |
-| /admin/gathering-points    | Manage gathers for admin                                         | admin                      |
-| /manage-staffs             | Manage staffs (create account ...) for staff                     | lead-officer, lead-gathers |
+| Routes                     | Description                                                      | Auth?      |
+| -------------------------- | ---------------------------------------------------------------- | ---------- |
+| /api                       | API endpoint - Fetch data from server                            |            |
+| /login                     | Login for staff, admin                                           |            |
+| /tracking                  | For customer to track their order                                |            |
+| /profile                   | Display, edit user information                                   | logged     |
+| /statistics                | Display statistic based on role                                  | all logged |
+| /admin                     | View and manage transaction offices, gathering point, staffs,... | admin      |
+| /admin/transaction-offices | Manage transaction offices for admin                             | admin      |
+| /admin/gathering-points    | Manage gathers for admin                                         | admin      |
 
 ### For normal staffs
 
