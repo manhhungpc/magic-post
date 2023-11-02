@@ -33,7 +33,7 @@
 
 	onMount(() => {
 		new Typed('.type-writing', {
-			strings: ['fast.', 'economical.', 'reliable.', 'flexible.'],
+			strings: ['nhanh chóng.', 'chính xác.', 'tiết kiệm.', 'tin cậy.', 'linh hoạt.'],
 			startDelay: 1200,
 			typeSpeed: 50,
 			backSpeed: 50,
@@ -46,17 +46,17 @@
 	<div class="home">
 		<div class="slogan">
 			<h1 class="h1 mb-12">
-				Move ahead with <span class="text-primary-400">speed</span> and
-				<span class="text-primary-400">ease</span>.
+				Dịch vụ chuyển phát <span class="text-primary-400">nhanh chóng</span> và
+				<span class="text-primary-400">hiệu quả cao</span>.
 			</h1>
 			<h1 class="h1 mb-12">
-				Let our team of experts handle the details, so you can focus on what matters the most:
-				<span class="text-primary-400">your business and customers.</span>
+				Gửi gói hàng đi mọi nơi chỉ với <span class="text-primary-400">vài thao tác đơn giản</span>. Yên tâm gửi hàng
+				với Maigc Post!
 			</h1>
-			<h1 class="h1 mb-12">Our service is <span class="type-writing text-amber-600" /></h1>
+			<h1 class="h1 mb-12">Cam kết <span class="type-writing text-amber-600" /></h1>
 			<div class="w-full flex gap-5">
 				<button type="button" class="btn btn-xl variant-filled hover:variant-filled-primary">
-					Our services &nbsp;<i class="fa-solid fa-down-long" />
+					Xem thêm &nbsp;<i class="fa-solid fa-down-long" />
 				</button>
 			</div>
 		</div>
@@ -68,14 +68,14 @@
 
 	<div class="services">
 		<TabGroup justify="justify-center" flex="flex-1 lg:flex-none" class="h-max w-4/5 ">
-			<Tab bind:group={tabSet} name="tab1" value={0} class="w-1/2 text-2xl">Track you order</Tab>
-			<Tab bind:group={tabSet} name="tab2" value={1} class="w-1/2 text-2xl">Our services</Tab>
+			<Tab bind:group={tabSet} name="tab1" value={0} class="w-1/2 text-2xl">Theo dõi đơn hàng</Tab>
+			<Tab bind:group={tabSet} name="tab2" value={1} class="w-1/2 text-2xl">Dịch vụ</Tab>
 			<!-- Tab Panels --->
 			<svelte:fragment slot="panel">
 				{#if tabSet === 0}
 					<div class="w-full p-3 bg-surface-200 rounded-md flex gap-5">
-						<input type="text" placeholder="Your order id" class="dui-input dui-input-bordered dui-input-lg w-full" />
-						<button type="button" class="btn variant-filled-primary rounded-md w-1/5">Follow</button>
+						<input type="text" placeholder="Mã đơn" class="dui-input dui-input-bordered dui-input-lg w-full" />
+						<button type="button" class="btn variant-filled-primary rounded-md w-1/5">Theo dõi</button>
 					</div>
 				{:else if tabSet === 1}
 					<div class="logo-cloud grid-cols-3 gap-2 w-full h-[60vh] [&>.logo-item]:bg-secondary-400">

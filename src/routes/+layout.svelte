@@ -2,11 +2,10 @@
 	import '../app.css';
 	import { TabGroup, AppBar, TabAnchor } from '@skeletonlabs/skeleton';
 	import { Newspaper, Truck, User2, MapPin } from 'lucide-svelte';
-	import { page } from '$app/stores';
 </script>
 
-<header class:shadow-xl={$page.url.pathname.startsWith('/admin')}>
-	<AppBar class="w-full p-3 pl-6 h-16 justify-center ">
+<header>
+	<AppBar class="w-full p-3 pl-6 h-16 justify-center !bg-tertiary-300">
 		<svelte:fragment slot="lead" />
 		<TabAnchor href="/">
 			<span class="brand">
@@ -24,16 +23,16 @@
 				class="!bg-transparent w-full"
 			>
 				<TabAnchor href="/" class="ml-3">
-					<span class="link-nav flex"> Services &nbsp;<Truck /> </span>
+					<span class="link-nav flex"> Dịch vụ &nbsp;<Truck /> </span>
 				</TabAnchor>
 				<TabAnchor href="/" class="ml-3">
-					<span class="link-nav flex"> News &nbsp;<Newspaper size={20} /> </span>
+					<span class="link-nav flex"> Tin tức &nbsp;<Newspaper size={20} /> </span>
 				</TabAnchor>
 				<TabAnchor href="/tracking" class="ml-3">
-					<span class="link-nav flex"> Tracking &nbsp;<MapPin size={20} /></span>
+					<span class="link-nav flex"> Theo dõi &nbsp;<MapPin size={20} /></span>
 				</TabAnchor>
 				<TabAnchor href="/login" class="ml-3">
-					<span class="link-nav flex"> Login &nbsp;<User2 size={20} /></span>
+					<span class="link-nav flex"> Đăng nhập &nbsp;<User2 size={20} /></span>
 				</TabAnchor>
 			</TabGroup>
 		</svelte:fragment>

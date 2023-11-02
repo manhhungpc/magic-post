@@ -41,3 +41,11 @@ body {
 .app-rail-label {
 	text-align: start;
 }
+
+.tree-summary-symbol {
+	display: none;
+}
+
+.tree-item-summary[aria-expanded] .tree-summary-symbol {
+	display: inline-block;
+}

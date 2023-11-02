@@ -22,17 +22,18 @@ Description of routes in `routes/` folder
 
 ### For normal staffs
 
-| Route                  | Description                                                        | Auth?   | Equal function                                               |
-| ---------------------- | ------------------------------------------------------------------ | ------- | ------------------------------------------------------------ |
-| /customer-order        | Receive orders of customer                                         | officer | Ghi nhận hàng cần gửi của khách                              |
-| /gathering-order       | Create/view all order to send to gathering points                  | officer | Tạo đơn chuyển hàng gửi đến điểm tập kết                     |
-| /transaction-order/:id | Confirm/view specific order come from transactions offices         | gathers | Xác nhận (đơn) hàng đến từ điểm giao dịch                    |
-| /transport             | Create/view all transport orders to ship to other gathering points | gathers | Tạo đơn chuyển hàng đến điểm tập kết đích                    |
-| /transport/:id         | Confirm/view specific complete transport to gathering point        | gathers | Xác nhận đơn hàng nhận về từ điểm tập kết khác               |
-| /transaction-order     | Create order to send to transaction office                         | gathers | Tạo đơn chuyển hàng đến điểm giao dịch đích                  |
-| /gathering-order/:id   | Confirm/view specific order come from gathering points             | officer | Xác nhận (đơn) hàng về từ điểm tập kết                       |
-| /delivery              | Create order delivery                                              | officer | Tạo đơn hàng cần chuyển đến tay người nhận                   |
-| /delivery/:id          | Confirm the order is received/denied by customer                   | officer | Xác nhận hàng đã chuyển/không chuyển được đến tay người nhận |
+| Route                         | Description                                                        | Auth?                    | Equal function                                               |
+| ----------------------------- | ------------------------------------------------------------------ | ------------------------ | ------------------------------------------------------------ |
+| /manage/staffs                | Manage for office-leader and gathering-leader                      | office-lead, gather-lead | Cấp tài khoản cho giao dịch viên tại điểm giao dịch/tập kết  |
+| /manage/customer-order        | Receive orders of customer                                         | officer                  | Ghi nhận hàng cần gửi của khách                              |
+| /manage/gathering-order       | Create/view all order to send to gathering points                  | officer                  | Tạo đơn chuyển hàng gửi đến điểm tập kết                     |
+| /manage/transaction-order/:id | Confirm/view specific order come from transactions offices         | gathers                  | Xác nhận (đơn) hàng đến từ điểm giao dịch                    |
+| /manage/transport             | Create/view all transport orders to ship to other gathering points | gathers                  | Tạo đơn chuyển hàng đến điểm tập kết đích                    |
+| /manage/transport/:id         | Confirm/view specific complete transport to gathering point        | gathers                  | Xác nhận đơn hàng nhận về từ điểm tập kết khác               |
+| /manage/transaction-order     | Create order to send to transaction office                         | gathers                  | Tạo đơn chuyển hàng đến điểm giao dịch đích                  |
+| /manage/gathering-order/:id   | Confirm/view specific order come from gathering points             | officer                  | Xác nhận (đơn) hàng về từ điểm tập kết                       |
+| /manage/delivery              | Create order delivery                                              | officer                  | Tạo đơn hàng cần chuyển đến tay người nhận                   |
+| /manage/delivery/:id          | Confirm the order is received/denied by customer                   | officer                  | Xác nhận hàng đã chuyển/không chuyển được đến tay người nhận |
 
 ## Flows
 
