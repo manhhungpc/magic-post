@@ -5,11 +5,12 @@
 
 	let expand: boolean = true;
 	let isOpenTransport = ['/manage/delivery', '/manage/transport'].includes($page.url.pathname);
+	let isOpenCustomerOrder = ['/manage/customer-order', '/manage/customer-order/add'].includes($page.url.pathname);
 	let open: any;
 </script>
 
 <div class="wrapper">
-	<AppRail width="w-56" aspectRatio="aspect-[4/1]">
+	<AppRail width="w-56" aspectRatio="aspect-[4/1]" class="shadow-lg">
 		<AppRailTile bind:group={expand} name="tile-1" active="" value={0}>
 			<span class="flex justify-center text-base gap-3">
 				<AlignJustify /> Menu quản lý
@@ -22,7 +23,7 @@
 				<Users /> Nhân viên
 			</span>
 		</AppRailAnchor>
-		<AppRailAnchor href="/manage/customer-order" selected={$page.url.pathname === '/manage/customer-order'}>
+		<AppRailAnchor href="/manage/customer-order" selected={isOpenCustomerOrder}>
 			<span class="pl-5 text-base flex gap-3">
 				<Package />Đơn đặt hàng
 			</span>
@@ -67,7 +68,9 @@
 		</TreeView>
 	</AppRail>
 
-	<slot />
+	<div class="p-6 flex-1 overflow-auto">
+		<slot />
+	</div>
 </div>
 
 <style>

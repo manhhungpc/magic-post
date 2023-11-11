@@ -2,6 +2,11 @@
 	import '../app.css';
 	import { TabGroup, AppBar, TabAnchor } from '@skeletonlabs/skeleton';
 	import { Newspaper, Truck, User2, MapPin } from 'lucide-svelte';
+	import type { PageData } from './$types';
+
+	export let data: PageData;
+
+	async function getUserData(token: string) {}
 </script>
 
 <header>
@@ -31,6 +36,11 @@
 				<TabAnchor href="/tracking" class="ml-3">
 					<span class="link-nav flex"> Theo dõi &nbsp;<MapPin size={20} /></span>
 				</TabAnchor>
+				{#if data.accessToken}
+					<TabAnchor href="/manage" class="ml-3">
+						<span class="link-nav flex"> User <User2 size={20} /></span>
+					</TabAnchor>
+				{/if}
 				<TabAnchor href="/login" class="ml-3">
 					<span class="link-nav flex"> Đăng nhập &nbsp;<User2 size={20} /></span>
 				</TabAnchor>

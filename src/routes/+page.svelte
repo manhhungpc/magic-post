@@ -137,10 +137,7 @@
 		height: 100vh;
 		display: flex;
 		justify-content: center;
-		/* align-items: center; */
 		padding-top: 100px;
 		background-color: rgba(var(--color-surface-50) / 1) !important;
-		/* display: grid;
-		grid-template-columns: repeat(3, 1fr); */
 	}
 </style>
