@@ -18,3 +18,10 @@ export interface LocationSchema {
 	name: string;
 	code: number;
 }
+
+export interface StaffTableInteface {
+	id: string;
+	name: string;
+	role: string;
+	address: string;
+}

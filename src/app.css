@@ -42,7 +42,7 @@ body {
 }
 
 .typed-cursor {
-	@apply text-amber-600;
+	@apply text-[#d97706];
 }
 
 .app-rail-label {
@@ -67,7 +67,7 @@ body {
 }
 
 .dui-input {
-	@apply px-3 text-sm;
+	@apply px-3 text-sm h-10;
 }
 
 .dui-input::placeholder {
@@ -80,7 +80,18 @@ body {
 	border: 1px solid #2460e5;
 }
 
+.dui-modal-box {
+	@apply translate-x-60 -translate-y-60 scale-0 duration-300;
+}
+.dui-modal-open .dui-modal-box,
+.dui-modal-toggle:checked + .dui-modal .dui-modal-box,
+.dui-modal:target .dui-modal-box,
+.dui-modal[open] .dui-modal-box {
+	@apply translate-y-0 translate-x-0 scale-100;
+}
+
 .card {
+	@apply rounded-lg;
 	background-color: #f3f3f3;
 }
 

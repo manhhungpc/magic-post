@@ -13,6 +13,9 @@ export default {
 			boxShadow: {
 				'r-md': '0 35px 60px -15px rgba(0, 0, 0, 0.3)'
 			}
+		},
+		colors:{
+			"ocean": '#2460E5'
 		}
 	},
 	plugins: [
