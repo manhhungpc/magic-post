@@ -53,7 +53,7 @@
 				Gửi gói hàng đi mọi nơi chỉ với <span class="text-primary-400">vài thao tác đơn giản</span>. Yên tâm gửi hàng
 				với Maigc Post!
 			</h1>
-			<h1 class="h1 mb-12">Cam kết <span class="type-writing text-amber-600" /></h1>
+			<h1 class="h1 mb-12">Cam kết <span class="type-writing text-[#d97706]" /></h1>
 			<div class="w-full flex gap-5">
 				<button type="button" class="btn btn-xl variant-filled hover:variant-filled-primary">
 					Xem thêm &nbsp;<i class="fa-solid fa-down-long" />

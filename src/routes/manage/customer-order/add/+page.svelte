@@ -3,12 +3,14 @@
 	import CustomerInfo from 'src/components/CustomerInfo.svelte';
 	import OrderContent from 'src/components/OrderContent.svelte';
 
-	let packageType = '';
+	let packageType: 'document' | 'package';
 	let orderContents: any[] = [{ id: crypto.randomUUID(), content: '', quantity: undefined, value: undefined }];
 	function addOrderContent() {
 		const id = crypto.randomUUID();
 		orderContents = [...orderContents, { id, content: '', quantity: undefined, value: undefined }];
 	}
+
+	$: console.log(packageType);
 </script>
 
 <main>
@@ -53,9 +55,7 @@
 				name="type"
 				required
 				class="dui-select dui-select-sm dui-select-bordered w-full h-10"
-				on:change={(e) =>
-					//@ts-ignore
-					(packageType = e.target.value)}
+				bind:value={packageType}
 			>
 				<option value="" disabled selected hidden>---Chọn loại hàng gửi---</option>
 				<option value="document">Tài liệu</option>
@@ -69,18 +69,20 @@
 			<input type="text" name="name" placeholder="Nhập khối lượng" class="dui-input h-10 dui-input-bordered w-full" />
 		</div>
 
-		<label class="dui-label pb-1" for="name">
-			<span class="dui-label-text">Nội dung giá trị bưu gửi</span>
-		</label>
-		{#each orderContents as content, i (content.id)}
-			<OrderContent bind:content={content.content} bind:quantity={content.quantity} bind:value={content.value} />
-		{/each}
+		{#if packageType == 'package'}
+			<label class="dui-label pb-1" for="name">
+				<span class="dui-label-text">Nội dung giá trị bưu gửi</span>
+			</label>
+			{#each orderContents as content, i (content.id)}
+				<OrderContent bind:content={content.content} bind:quantity={content.quantity} bind:value={content.value} />
+			{/each}
 
-		<div class="dui-tooltip dui-tooltip-bottom" data-tip="Thêm nội dung">
-			<button type="button" class="btn-icon w-max" on:click={addOrderContent}>
-				<PlusCircle class="text-primary-500" size="28" />
-			</button>
-		</div>
+			<div class="dui-tooltip dui-tooltip-bottom" data-tip="Thêm nội dung">
+				<button type="button" class="btn-icon w-max" on:click={addOrderContent}>
+					<PlusCircle class="text-primary-500" size="28" />
+				</button>
+			</div>
+		{/if}
 	</div>
 </main>
 

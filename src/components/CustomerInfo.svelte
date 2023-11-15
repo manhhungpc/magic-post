@@ -12,6 +12,7 @@
 		provinceCode = -1,
 		districtCode = -1;
 	let district: HTMLSelectElement, ward: HTMLSelectElement;
+
 	async function getLocationData(depth: number, provinceCode?: number, districtCode?: number) {
 		const response = await fetch(`/api/location-vn?depth=${depth}&province=${provinceCode}&district=${districtCode}`, {
 			method: 'GET'
@@ -60,12 +61,8 @@
 				provinceCode = e.target.value;
 				getLocationData(LocationDepth.DISTRICT, provinceCode).then((data) => {
 					location.districts = data;
-					districtCode = data[0].code;
 					district.selectedIndex = 0;
 					ward.selectedIndex = 0;
-					getLocationData(LocationDepth.WARDS, provinceCode, districtCode).then((data) => {
-						location.wards = data;
-					});
 				});
 			}}
 		>
@@ -80,6 +77,7 @@
 			required
 			class="dui-select dui-select-sm dui-select-bordered w-full h-10"
 			bind:this={district}
+			disabled={location.districts.length == 0}
 			on:change={(e) => {
 				//@ts-ignore
 				districtCode = e.target.value;
@@ -95,7 +93,13 @@
 			{/each}
 		</select>
 
-		<select name="type" required class="dui-select dui-select-sm dui-select-bordered w-full h-10" bind:this={ward}>
+		<select
+			name="type"
+			required
+			class="dui-select dui-select-sm dui-select-bordered w-full h-10"
+			disabled={location.wards.length == 0}
+			bind:this={ward}
+		>
 			<option value="" disabled selected hidden>---Phường/Xã---</option>
 			{#each location.wards as ward}
 				<option value={ward.code}>{ward.name}</option>
