@@ -34,3 +34,9 @@ export interface OfficeTableInterface {
 	manager: string;
 	gatheringPoint?: string;
 }
+
+export interface TableTransactionOrderInteface {
+	orderId: string;
+	address: string;
+	transactionId: string;
+}
