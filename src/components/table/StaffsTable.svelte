@@ -5,7 +5,7 @@
 	export let tableData: StaffTableInteface[] = [];
 </script>
 
-<div class="table-container !rounded-none h-full">
+<div class="table-container !rounded-b-none !rounded-md h-full">
 	<table class="table table-hover overflow-auto !bg-transparent !rounded-none">
 		<thead class="!bg-white">
 			<tr>

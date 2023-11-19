@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AppRail, AppRailTile, AppRailAnchor } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
-	import { AlignJustify, Users, Building, Warehouse, LineChart } from 'lucide-svelte';
+	import { AlignJustify, Users, Warehouse, LineChart } from 'lucide-svelte';
 	let expand: boolean = true;
 </script>
 
@@ -23,14 +23,9 @@
 				<Users /> Nhân viên
 			</span>
 		</AppRailAnchor>
-		<AppRailAnchor href="/admin/transaction-offices" selected={$page.url.pathname === '/admin/transaction-offices'}>
+		<AppRailAnchor href="/admin/offices" selected={$page.url.pathname === '/admin/offices'}>
 			<span class="pl-5 text-base flex gap-3">
-				<Building />Điểm giao dịch
-			</span>
-		</AppRailAnchor>
-		<AppRailAnchor href="/admin/gathering-points" selected={$page.url.pathname === '/admin/gathering-points'}>
-			<span class="pl-5 text-base flex gap-3">
-				<Warehouse />Điêm tập kết
+				<Warehouse />Điểm chuyển phát
 			</span>
 		</AppRailAnchor>
 	</AppRail>

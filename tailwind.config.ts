@@ -14,8 +14,9 @@ export default {
 				'r-md': '0 35px 60px -15px rgba(0, 0, 0, 0.3)'
 			}
 		},
-		colors:{
-			"ocean": '#2460E5'
+		colors: {
+			ocean: '#2460E5',
+			fail: 'rgb(255, 49, 65)'
 		}
 	},
 	plugins: [

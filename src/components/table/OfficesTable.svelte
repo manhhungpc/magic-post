@@ -4,14 +4,20 @@
 
 	export let tableData: OfficeTableInterface[] = [];
 	export let officeType: 'giao dịch' | 'tập kết';
+
+	$: if (officeType == 'giao dịch') {
+		tableData = tableData.map((td) => {
+			return { ...td, gatheringPoint: 'Test' };
+		});
+	}
 </script>
 
-<div class="table-container !rounded-none h-full">
+<div class="table-container !rounded-b-none !rounded-md h-full">
 	<table class="table table-hover overflow-auto !bg-transparent !rounded-none">
-		<thead class="!bg-white">
+		<thead class="!bg-[#fff]">
 			<tr>
 				<th>Mã điểm</th>
-				<th>Tên điểm {officeType}</th>
+				<th>Tên điểm {officeType ? officeType : ''}</th>
 				<th>SĐT liên lạc</th>
 				<th>Trưởng điểm</th>
 				<th>Địa chỉ</th>
@@ -29,6 +35,9 @@
 					<td>{row.phone}</td>
 					<td>{row.manager}</td>
 					<td>{row.address}</td>
+					{#if officeType == 'giao dịch'}
+						<th>{row.gatheringPoint}</th>
+					{/if}
 					<td class="flex items-center gap-3">
 						<button type="button" class="btn-icon variant-filled h-8 w-8"><PencilLine size="16" /></button>
 						<button type="button" class="btn-icon variant-filled h-8 w-8"><Trash2 size="16" /></button>

@@ -32,9 +32,13 @@
 		</button>
 		<StaffsModel id="admin_new_staff" />
 	</div>
-	<div class="card py-3 px-4 mb-3">
+	<div class="card p-4 mb-3 !bg-[#fff]">
 		<span class="mr-2">Tìm kiếm</span>
-		<input type="text" placeholder="Nhập tên, mã nhân viên..." class="dui-input dui-input-bordered w-full max-w-xs" />
+		<input
+			type="text"
+			placeholder="Nhập tên, mã nhân viên..."
+			class="dui-input dui-input-bordered w-full max-w-xs !h-8"
+		/>
 	</div>
 	<div class="card !rounded-b-none h-[calc(100%-7.5rem)]">
 		<StaffsTable tableData={staffs} />
