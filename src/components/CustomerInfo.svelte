@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { LocationDepth, type LocationSchema } from 'src/utils/app';
+	import { LocationDepth, type LocationSchema } from 'src/utils/interface';
 	import { onMount } from 'svelte';
 
 	export let target: 'gửi' | 'nhận';

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { PlusCircle } from 'lucide-svelte';
-	import StaffsTable from 'src/components/StaffsTable.svelte';
+	import StaffsTable from 'src/components/table/StaffsTable.svelte';
 	import StaffsModel from 'src/components/modal/StaffsModel.svelte';
-	import type { StaffTableInteface } from 'src/utils/app';
+	import type { StaffTableInteface } from 'src/utils/interface';
 
 	let staffs: StaffTableInteface[] = [
 		{
