@@ -1,9 +1,9 @@
 export enum Roles {
 	ADMIN = 1,
-	OFFICES_LEADER = 2,
-	GATHERING_LEADER = 3,
-	OFFICER = 4,
-	GATHERS = 5,
+	TRANSACTION_LEADER = 2,
+	TRANSACTION_STAFF = 3,
+	GATHERING_LEADER = 4,
+	GATHERS_STAFF = 5,
 	CUSTOMER = 6,
 	SHIPPER = 7
 }
@@ -21,9 +21,12 @@ export interface LocationSchema {
 
 export interface StaffTableInteface {
 	id: string;
-	name: string;
-	role: string;
-	address: string;
+	fullName: string;
+	role: {
+		id: string;
+		name: string;
+	};
+	workAt: string;
 }
 
 export interface OfficeTableInterface {

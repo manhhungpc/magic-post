@@ -3,11 +3,39 @@
 	import { TabGroup, AppBar, TabAnchor } from '@skeletonlabs/skeleton';
 	import { Newspaper, Truck, User2, MapPin, FileText } from 'lucide-svelte';
 	import type { PageData } from './$types';
+	import { invalidateAll } from '$app/navigation';
+	import { token } from 'src/utils/stores';
+	import { Roles } from 'src/utils/interface';
+	import { onMount } from 'svelte';
 
 	export let data: PageData;
-	console.log('🚀 ~ file: +layout.svelte:8 ~ data:', data);
+	let displayName = '';
+	let manageRoute = data.userData.role == Roles.ADMIN ? '/admin' : '/manage';
 
-	async function getUserData(token: string) {}
+	$: if (data.userData) {
+		switch (data.userData.role) {
+			case Roles.ADMIN:
+				displayName = 'Lãnh đạo';
+				break;
+			case Roles.GATHERING_LEADER:
+				displayName = 'Trưởng điểm tập kết';
+				break;
+			case Roles.GATHERS_STAFF:
+				displayName = 'Nhân viên tập kết';
+				break;
+			case Roles.TRANSACTION_LEADER:
+				displayName = 'Trưởng điểm giao dịch';
+				break;
+			case Roles.TRANSACTION_STAFF:
+				displayName = 'Nhân viên giao dịch';
+				break;
+			default:
+				break;
+		}
+	}
+
+	// $: console.log($userData);
+	// invalidateAll();
 </script>
 
 <svelte:head>
@@ -36,11 +64,11 @@
 				</TabAnchor>
 
 				{#if data.accessToken}
-					<TabAnchor href="/manage" class="ml-3">
+					<TabAnchor href={manageRoute} class="ml-3">
 						<span class="link-nav flex"> Quản lý &nbsp;<FileText size={20} /></span>
 					</TabAnchor>
 					<TabAnchor href="/profile" class="ml-3">
-						<span class="link-nav flex"> User &nbsp;<User2 size={20} /></span>
+						<span class="link-nav flex"> {displayName} &nbsp;<User2 size={20} /></span>
 					</TabAnchor>
 				{:else}
 					<TabAnchor href="/tracking" class="ml-3">

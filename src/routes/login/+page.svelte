@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { redirect } from '@sveltejs/kit';
+	import { goto, invalidateAll } from '$app/navigation';
+	import { token } from 'src/utils/stores';
+	import { onMount } from 'svelte';
 
 	let username: string, password: string;
 	let loading = false,
@@ -8,10 +9,9 @@
 
 	async function onLogin() {
 		const body = {
-			userId: Number(username),
+			userId: username,
 			password: password
 		};
-		console.log('🚀 ~ file: +page.svelte:13 ~ body:', body);
 		loading = true;
 		const response = await fetch('/api/login', {
 			method: 'POST',
@@ -19,13 +19,22 @@
 		});
 
 		const data = await response.json();
+		console.log('🚀 ~ file: +page.svelte:23 ~ data:', data);
+		token.set(data.data.accessToken);
+
 		loading = false;
 		if (data.status != 200) {
 			error = data.error;
 		}
 
 		goto('/profile');
+		invalidateAll();
 	}
+
+	onMount(() => {
+		// console.log('🚀 ~ file: +page.svelte:34 ~ $token:', $token);s
+		// if ($token) goto('/');
+	});
 </script>
 
 <main>

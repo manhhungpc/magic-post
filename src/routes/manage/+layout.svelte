@@ -2,11 +2,17 @@
 	import { AppRail, AppRailTile, AppRailAnchor, TreeView, TreeViewItem } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
 	import { AlignJustify, Users, Package, Boxes, Dot, ScrollText, Navigation } from 'lucide-svelte';
+	import { token } from 'src/utils/stores.js';
 
+	export let data;
+	console.log('🚀 ~ file: +layout.svelte:7 ~ data:', data);
+	$: if (!data.accessToken) token.set('');
 	let expand: boolean = true;
-	let isOpenTransport = ['/manage/delivery', '/manage/transport'].includes($page.url.pathname);
-	let isOpenCustomerOrder = ['/manage/customer-order', '/manage/customer-order/add'].includes($page.url.pathname);
-	let open: any;
+
+	let isOpenCustomerOrder: boolean;
+	let open = ['/manage/delivery', '/manage/transport'].includes($page.url.pathname);
+
+	$: isOpenCustomerOrder = ['/manage/customer-order', '/manage/customer-order/add'].includes($page.url.pathname);
 </script>
 
 <div class="wrapper">
@@ -38,13 +44,7 @@
 				<Boxes />Đơn tập kết
 			</span>
 		</AppRailAnchor>
-		<TreeView
-			rounded="rounded-none"
-			open={isOpenTransport}
-			indent=""
-			regionSummary="flex-row-reverse gap-4"
-			hover="hover:bg-primary-500/10"
-		>
+		<TreeView rounded="rounded-none" indent="" regionSummary="flex-row-reverse gap-4" hover="hover:bg-primary-500/10">
 			<TreeViewItem bind:open spacing="">
 				<span class="text-base font-bold flex gap-4">
 					<Navigation />

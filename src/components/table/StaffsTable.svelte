@@ -20,9 +20,9 @@
 			{#each tableData as row, i}
 				<tr>
 					<td>{row.id}</td>
-					<td>{row.name}</td>
-					<td>{row.role}</td>
-					<td>{row.address}</td>
+					<td>{row.fullName}</td>
+					<td>{row.role.name}</td>
+					<td>{row.workAt ? row.workAt : 'Chưa có'}</td>
 					<td class="flex items-center gap-3">
 						<button type="button" class="btn-icon variant-filled h-8 w-8"><PencilLine size="16" /></button>
 						<button type="button" class="btn-icon variant-filled h-8 w-8"><Trash2 size="16" /></button>

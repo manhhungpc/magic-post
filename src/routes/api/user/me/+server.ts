@@ -2,13 +2,15 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { API_URL } from '$env/static/private';
 
-export const POST: RequestHandler = async ({ cookies, request }) => {
+export const GET: RequestHandler = async ({ cookies }) => {
 	try {
-		const response = await fetch(`${API_URL}/api/v1/login`, {
-			method: 'POST',
-			body: JSON.stringify(await request.json()),
+		const token = cookies.get('token') as string;
+
+		const response = await fetch(`${API_URL}/api/v1/profile`, {
+			method: 'GET',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`
 			}
 		});
 		const data = await response.json();
@@ -18,13 +20,6 @@ export const POST: RequestHandler = async ({ cookies, request }) => {
 				error: data.message
 			});
 		}
-
-		const token = data.data.accessToken;
-		cookies.set('token', token, {
-			path: '/',
-			httpOnly: true,
-			maxAge: 60 * 60 * 24 * 7 // 1 week
-		});
 
 		return json(data);
 	} catch (err) {
