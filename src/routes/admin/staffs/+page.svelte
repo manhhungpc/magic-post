@@ -5,7 +5,6 @@
 	import type { PageData } from './$types';
 
 	export let data: PageData;
-	console.log('🚀 ~ file: +page.svelte:7 ~ data:', data);
 	function showStaffModal() {
 		(document.getElementById('admin_new_staff') as any).showModal();
 	}

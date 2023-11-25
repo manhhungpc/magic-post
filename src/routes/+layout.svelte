@@ -4,13 +4,15 @@
 	import { Newspaper, Truck, User2, MapPin, FileText } from 'lucide-svelte';
 	import type { PageData } from './$types';
 	import { invalidateAll } from '$app/navigation';
-	import { token } from 'src/utils/stores';
+	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import { Roles } from 'src/utils/interface';
-	import { onMount } from 'svelte';
+	import { storePopup } from '@skeletonlabs/skeleton';
+
+	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	export let data: PageData;
 	let displayName = '';
-	let manageRoute = data.userData.role == Roles.ADMIN ? '/admin' : '/manage';
+	let manageRoute = data.userData?.role == Roles.ADMIN ? '/admin' : '/manage';
 
 	$: if (data.userData) {
 		switch (data.userData.role) {
@@ -33,8 +35,6 @@
 				break;
 		}
 	}
-
-	// $: console.log($userData);
 	// invalidateAll();
 </script>
 

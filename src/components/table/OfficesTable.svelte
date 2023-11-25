@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { PencilLine, Trash2 } from 'lucide-svelte';
-	import type { OfficeTableInterface } from 'src/utils/interface';
+	import type { OfficesInterface } from 'src/utils/interface';
 
-	export let tableData: OfficeTableInterface[] = [];
+	export let tableData: OfficesInterface[] = [];
 	export let officeType: 'giao dịch' | 'tập kết';
 
 	$: if (officeType == 'giao dịch') {
@@ -32,8 +32,8 @@
 				<tr>
 					<td>{row.id}</td>
 					<td>{row.name}</td>
-					<td>{row.phone}</td>
-					<td>{row.manager}</td>
+					<td>{row.phoneNo}</td>
+					<td>{row.admin ? row.admin.fullName : 'Không có'}</td>
 					<td>{row.address}</td>
 					{#if officeType == 'giao dịch'}
 						<th>{row.gatheringPoint}</th>
