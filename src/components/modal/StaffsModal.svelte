@@ -10,7 +10,7 @@
 		phoneNo: string,
 		dateOfBirth: string,
 		role = Roles.TRANSACTION_LEADER;
-	let loading = false,
+	let loading = true,
 		error: string;
 	async function createNewStaff() {
 		const body = {
@@ -21,7 +21,6 @@
 			email,
 			role
 		};
-		console.log('🚀 ~ file: StaffsModal.svelte:24 ~ body:', body);
 
 		Object.values(body).some(async (value) => {
 			if (!value) {
@@ -151,12 +150,17 @@
 					Hủy bỏ
 				</button>
 			</form>
-			<button class="btn variant-filled bg-primary-600" disabled={loading} on:click={createNewStaff}>
-				{#if loading}
+			<button
+				class="btn variant-filled bg-primary-600"
+				class:animate-spin={loading}
+				disabled={loading}
+				on:click={createNewStaff}
+			>
+				<!-- {#if loading}
 					<span class="dui-loading dui-loading-spinner dui-loading-sm" />
 				{:else}
-					Thêm mới
-				{/if}
+				{/if} -->
+				Thêm mới
 			</button>
 		</div>
 	</div>

@@ -2,11 +2,11 @@
 	import { PlusCircle } from 'lucide-svelte';
 	import OfficesTable from 'src/components/table/OfficesTable.svelte';
 	import OfficeModal from 'src/components/modal/OfficeModal.svelte';
+	import Loading from 'src/components/Loading.svelte';
 	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
 
-	export let data: PageData;
-	console.log('🚀 ~ file: +page.svelte:9 ~ data:', data);
+	export let data: PageData | any;
 	let officeType: 'giao dịch' | 'tập kết' = 'tập kết';
 
 	function showOfficeModal() {
@@ -26,10 +26,12 @@
 <main class="h-full">
 	<div class="flex justify-between items-center mb-3">
 		<h1 class="h3 uppercase">Danh sách điểm tập kết - điểm giao dịch</h1>
-		<button class="btn variant-filled bg-ocean" on:click={showOfficeModal}>
-			<PlusCircle class="mr-1" size="20" /> Thêm mới
-		</button>
-		<OfficeModal id="new_office_modal" leaderData={data.staffs.data} />
+		{#await data.staffs.promise then staffs}
+			<button class="btn variant-filled bg-ocean" on:click={showOfficeModal}>
+				<PlusCircle class="mr-1" size="20" /> Thêm mới
+			</button>
+			<OfficeModal id="new_office_modal" leaderData={staffs.data.content} />
+		{/await}
 	</div>
 	<div class="card p-4 mb-3 grid grid-cols-3 gap-10 !bg-[#fff]">
 		<div class="flex items-center">
@@ -53,13 +55,15 @@
 			</select>
 		</div>
 	</div>
-	{#await data.offices}
-		loading...
-	{:then offices}
-		<div class="card !rounded-b-none h-[calc(100%-7.5rem)]">
-			<OfficesTable tableData={offices.data} {officeType} />
-		</div>
-	{/await}
+	<div class="card !rounded-b-none h-[calc(100%-7.5rem)]">
+		{#await data.offices.promise}
+			<Loading message="Đang lấy dữ liệu mới nhất" />
+		{:then offices}
+			<OfficesTable tableData={offices.data.content} {officeType} />
+		{:catch err}
+			<p>Error</p>
+		{/await}
+	</div>
 </main>
 
 <style>

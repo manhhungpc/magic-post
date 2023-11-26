@@ -173,12 +173,16 @@
 								<X size={15} />
 							</button>
 						</div>
-						<Autocomplete
-							options={leaderAutoComplete}
-							bind:input={leader}
-							on:selection={onLeaderSelect}
-							transitionOutParams={{ delay: 0, duration: 0 }}
-						/>
+						{#if leaderAutoComplete.length == 0}
+							<div>Không có nhân viên nào!</div>
+						{:else}
+							<Autocomplete
+								options={leaderAutoComplete}
+								bind:input={leader}
+								on:selection={onLeaderSelect}
+								transitionOutParams={{ delay: 0, duration: 0 }}
+							/>
+						{/if}
 					</div>
 				</div>
 			</div>

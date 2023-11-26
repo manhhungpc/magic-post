@@ -3,8 +3,9 @@
 	import StaffsTable from 'src/components/table/StaffsTable.svelte';
 	import StaffsModel from 'src/components/modal/StaffsModal.svelte';
 	import type { PageData } from './$types';
+	import Loading from 'src/components/Loading.svelte';
 
-	export let data: PageData;
+	export let data: PageData | any;
 	function showStaffModal() {
 		(document.getElementById('admin_new_staff') as any).showModal();
 	}
@@ -27,6 +28,12 @@
 		/>
 	</div>
 	<div class="card !rounded-b-none h-[calc(100%-7.5rem)]">
-		<StaffsTable tableData={data.staffs.data} />
+		{#await data.staffs.promise}
+			<Loading message="Đang lấy dữ liệu mới nhất" />
+		{:then staffs}
+			<StaffsTable tableData={staffs.data.content} />
+		{:catch err}
+			<p>Error :(</p>
+		{/await}
 	</div>
 </main>

@@ -1,19 +1,39 @@
+import { lazyLoad } from '$lib/lazyLoad';
 import type { PageLoad } from './$types';
+
+interface Staffs {
+	staffs: {
+		data: any[];
+		status: number;
+	};
+}
+
+interface Offices {
+	offices: {
+		data: any[];
+		status: number;
+	};
+}
 
 export const load: PageLoad = async ({ parent, fetch, url }) => {
 	await parent();
-	const staffsResponse = await fetch(`/api/admin/staffs`, {
-		method: 'GET'
-	});
 
 	const typeOffices = url.searchParams.get('type') || 'GP';
-	const officesResponse = await fetch(`/api/admin/offices?type=${typeOffices}`, {
-		method: 'GET'
-	});
 
-	const staffs = await staffsResponse.json();
-	const offices = await officesResponse.json();
-	console.log('🚀 ~ file: +page.ts:16 ~ offices:', offices);
+	const staffs = await lazyLoad<Staffs>(
+		fetch(`/api/admin/staffs`, {
+			method: 'GET'
+		}).then((res) => res.json())
+	);
 
-	return { staffs, offices };
+	const offices = await lazyLoad<Offices>(
+		fetch(`/api/admin/offices?type=${typeOffices}`, {
+			method: 'GET'
+		}).then((res) => res.json())
+	);
+
+	return {
+		staffs,
+		offices
+	};
 };

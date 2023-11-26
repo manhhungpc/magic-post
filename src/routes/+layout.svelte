@@ -7,6 +7,9 @@
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import { Roles } from 'src/utils/interface';
 	import { storePopup } from '@skeletonlabs/skeleton';
+	import { initLazy } from '$lib/lazyLoad';
+
+	initLazy();
 
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 

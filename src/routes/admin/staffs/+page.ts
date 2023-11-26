@@ -1,13 +1,25 @@
+import { lazyLoad } from '$lib/lazyLoad';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ parent, fetch }) => {
-	await parent();
-	const response = await fetch(`/api/admin/staffs`, {
-		method: 'GET'
-	});
+interface Staffs {
+	staffs: {
+		data: any[];
+		status: number;
+	};
+}
 
-	const staffs = await response.json();
-	console.log('🚀 ~ file: +page.ts:10 ~ staffs:', staffs);
+export const load: PageLoad = async ({ parent, fetch, url }) => {
+	await parent();
+
+	const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
+	const query = new URLSearchParams({
+		pageSize: pageSize
+	});
+	const staffs = await lazyLoad<Staffs>(
+		fetch(`/api/admin/staffs?${query}`, {
+			method: 'GET'
+		}).then((res) => res.json())
+	);
 
 	return { staffs };
 };

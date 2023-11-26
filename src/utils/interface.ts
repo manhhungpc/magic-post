@@ -34,11 +34,16 @@ export interface StaffsInteface {
 		id: Roles;
 		name: string;
 	};
-	workAt: string;
+	workAt: {
+		id: string;
+		pointId: string;
+		name: string;
+	};
 }
 
 export interface OfficesInterface {
 	id: string;
+	pointId: string;
 	name: string;
 	phoneNo: string;
 	address: string;
