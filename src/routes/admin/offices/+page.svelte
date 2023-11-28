@@ -7,7 +7,7 @@
 	import { goto } from '$app/navigation';
 
 	export let data: PageData | any;
-	let officeType: 'giao dịch' | 'tập kết' = 'tập kết';
+	let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ' = 'toàn bộ';
 
 	function showOfficeModal() {
 		(document.getElementById('new_office_modal') as any).showModal();
@@ -20,17 +20,22 @@
 		if (officeType == 'giao dịch') {
 			goto('?type=TP');
 		}
+		if (officeType == 'toàn bộ') {
+			goto('/admin/offices');
+		}
 	}
 </script>
 
 <main class="h-full">
 	<div class="flex justify-between items-center mb-3">
 		<h1 class="h3 uppercase">Danh sách điểm tập kết - điểm giao dịch</h1>
+		<button class="btn variant-filled bg-ocean" on:click={showOfficeModal}>
+			<PlusCircle class="mr-1" size="20" /> Thêm mới
+		</button>
 		{#await data.staffs.promise then staffs}
-			<button class="btn variant-filled bg-ocean" on:click={showOfficeModal}>
-				<PlusCircle class="mr-1" size="20" /> Thêm mới
-			</button>
-			<OfficeModal id="new_office_modal" leaderData={staffs.data.content} />
+			{#await data.offices.promise then offices}
+				<OfficeModal id="new_office_modal" leaderData={staffs.data.content} gatherPointData={offices.data.content} />
+			{/await}
 		{/await}
 	</div>
 	<div class="card p-4 mb-3 grid grid-cols-3 gap-10 !bg-[#fff]">
@@ -50,6 +55,7 @@
 				class="dui-select dui-select-sm dui-select-bordered w-full !h-8"
 				bind:value={officeType}
 			>
+				<option value="toàn bộ">Tất cả</option>
 				<option value="giao dịch">Điểm giao dịch</option>
 				<option value="tập kết">Điểm tập kết</option>
 			</select>

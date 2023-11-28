@@ -2,8 +2,7 @@
 	import { invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	export let data;
-	console.log('🚀 ~ file: +page.svelte:3 ~ userData:', data);
+	// export let data;
 	let user = {
 		id: null,
 		userId: null,

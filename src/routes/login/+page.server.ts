@@ -6,8 +6,8 @@ export const load: PageServerLoad = async ({ cookies, parent }) => {
 	await parent();
 	const accessToken = cookies.get('token')?.toString();
 	if (!accessToken) {
-		// token.set('');
+		return {};
 	}
 
-	return {};
+	throw redirect(301, '/profile');
 };

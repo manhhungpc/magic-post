@@ -3,30 +3,35 @@
 	import { Autocomplete, popup } from '@skeletonlabs/skeleton';
 	import type { AutocompleteOption, PopupSettings } from '@skeletonlabs/skeleton';
 	import { X } from 'lucide-svelte';
-	import { OfficeType, Roles, type StaffsInteface } from 'src/utils/interface';
+	import { OfficeType, Roles, type OfficesInterface, type StaffsInteface } from 'src/utils/interface';
+
 	import { slide } from 'svelte/transition';
 
-	export let id: string, leaderData: StaffsInteface[];
-
-	// let leaderList: StaffsInteface[] = leaderData;
-
+	export let id: string, leaderData: StaffsInteface[], gatherPointData: OfficesInterface[];
 	let name: string,
 		address: string,
 		phoneNo: string,
 		dateOfBirth: string,
 		type = OfficeType.GATHERING,
 		leader = '',
-		leaderInfo = '';
+		leaderLabel = '',
+		linkGatherPoint = '',
+		gatherPointLabel = '';
 	let loading = false,
 		error: string;
 
 	function onLeaderSelect(event: CustomEvent<AutocompleteOption<string>>): void {
-		leaderInfo = event.detail.label;
+		leaderLabel = event.detail.label;
 		leader = event.detail.value;
 	}
 
+	function onGatherPointSelect(event: CustomEvent<AutocompleteOption<string>>): void {
+		gatherPointLabel = event.detail.label;
+		linkGatherPoint = event.detail.value;
+	}
+
 	async function createNewOffice() {
-		const body = {
+		const requiredBody = {
 			name,
 			dateOfBirth,
 			phoneNo,
@@ -35,7 +40,9 @@
 			type
 		};
 
-		Object.values(body).some(async (value) => {
+		const body = { ...requiredBody, gatheringPointId: linkGatherPoint };
+
+		Object.values(requiredBody).some(async (value) => {
 			if (!value) {
 				error = 'Có dữ liệu bắt buộc bị để trống!';
 				return;
@@ -51,8 +58,7 @@
 
 			if (officesData.status == 201) {
 				(document.getElementById(id) as any).close();
-				invalidate('/api/admin/offices?type=GP');
-				invalidate('/api/admin/offices?type=TP');
+				invalidate((url) => url.pathname.includes('/api/admin/offices'));
 			}
 			loading = false;
 			return;
@@ -65,10 +71,18 @@
 		placement: 'top'
 	};
 	let leaderAutoComplete: AutocompleteOption<string>[] = [];
+	let gatherPopupSettings: PopupSettings = {
+		event: 'focus-click',
+		target: 'gatherPoint-autofill',
+		placement: 'top'
+	};
+	let gatherAutoComplete: AutocompleteOption<string>[] = [];
 
 	$: {
-		leaderAutoComplete = [];
+		console.log(type);
+		(leader = ''), (leaderLabel = ''), (linkGatherPoint = ''), (gatherPointLabel = '');
 
+		leaderAutoComplete = [];
 		leaderData
 			.filter((leader) => {
 				return leader.role.id == (type == OfficeType.TRANSACTION ? Roles.TRANSACTION_LEADER : Roles.GATHERING_LEADER);
@@ -84,6 +98,19 @@
 					}
 				];
 			});
+
+		gatherAutoComplete = [];
+		gatherPointData.map((point) => {
+			gatherAutoComplete = [
+				...gatherAutoComplete,
+				{
+					label: `${point.pointId} - ${point.name}`,
+					value: `${point.id}`,
+					keywords: `${point.name}, ${point.pointId}, ${point.address}`,
+					meta: { healthy: false }
+				}
+			];
+		});
 	}
 </script>
 
@@ -165,11 +192,11 @@
 						placeholder="Chọn trưởng điểm"
 						class="dui-input h-10 dui-input-bordered w-full"
 						use:popup={leaderPopupSettings}
-						bind:value={leaderInfo}
+						bind:value={leaderLabel}
 					/>
 					<div data-popup="leader-autofill" class="card w-full max-w-sm max-h-60 p-4 overflow-y-auto">
 						<div class="w-full flex justify-end sticky top-0">
-							<button id="close_select_leader" class="dui-btn dui-btn-square dui-btn-xs">
+							<button class="dui-btn dui-btn-square dui-btn-xs">
 								<X size={15} />
 							</button>
 						</div>
@@ -197,7 +224,26 @@
 						name="name"
 						placeholder="Chọn điểm tập kết"
 						class="dui-input h-10 dui-input-bordered w-full"
+						use:popup={gatherPopupSettings}
+						bind:value={gatherPointLabel}
 					/>
+					<div data-popup="gatherPoint-autofill" class="card w-full max-w-sm max-h-60 p-4 overflow-y-auto">
+						<div class="w-full flex justify-end sticky top-0">
+							<button class="dui-btn dui-btn-square dui-btn-xs">
+								<X size={15} />
+							</button>
+						</div>
+						{#if gatherAutoComplete.length == 0}
+							<div>Không còn điểm tập kết trống!</div>
+						{:else}
+							<Autocomplete
+								options={gatherAutoComplete}
+								bind:input={linkGatherPoint}
+								on:selection={onGatherPointSelect}
+								transitionOutParams={{ delay: 0, duration: 0 }}
+							/>
+						{/if}
+					</div>
 				</div>
 			{/if}
 		</main>

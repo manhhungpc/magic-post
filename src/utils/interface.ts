@@ -30,6 +30,8 @@ export interface StaffsInteface {
 	address: string;
 	email: string;
 	fullName: string;
+	phoneNo: string;
+	dateOfBirth: string;
 	role: {
 		id: Roles;
 		name: string;

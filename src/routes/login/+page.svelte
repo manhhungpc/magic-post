@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { token } from 'src/utils/stores';
-	import { onMount } from 'svelte';
 
 	let username: string, password: string;
 	let loading = false,
@@ -19,22 +18,18 @@
 		});
 
 		const data = await response.json();
-		console.log('🚀 ~ file: +page.svelte:23 ~ data:', data);
+		console.log('🚀 ~ file: +page.svelte:25 ~ data:', data);
 		token.set(data.data.accessToken);
 
 		loading = false;
 		if (data.status != 200) {
 			error = data.error;
+			return;
 		}
 
 		goto('/profile');
-		invalidateAll();
+		// invalidateAll();
 	}
-
-	onMount(() => {
-		// console.log('🚀 ~ file: +page.svelte:34 ~ $token:', $token);s
-		// if ($token) goto('/');
-	});
 </script>
 
 <main>
@@ -49,7 +44,7 @@
 				<span class="label-text">Mã nhân viên / Email</span>
 			</label>
 			<input
-				type="text"
+				type="search"
 				name="username"
 				placeholder="Mã nhân viên"
 				class="dui-input dui-input-bordered h-10 rounded-md w-full"
@@ -59,7 +54,7 @@
 				<span class="label-text">Mật khẩu</span>
 			</label>
 			<input
-				type="text"
+				type="password"
 				placeholder="Mật khẩu"
 				class="dui-input h-10 dui-input-bordered rounded-md w-full"
 				bind:value={password}

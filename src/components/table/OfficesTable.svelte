@@ -4,7 +4,7 @@
 	import EmptyData from '../EmptyData.svelte';
 
 	export let tableData: OfficesInterface[] = [];
-	export let officeType: 'giao dịch' | 'tập kết';
+	export let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ';
 
 	$: if (officeType == 'giao dịch') {
 		tableData = tableData.map((td) => {
@@ -18,7 +18,6 @@
 		<thead class="!bg-[#fff]">
 			<tr>
 				<th>STT</th>
-
 				<th>Mã điểm</th>
 				<th>Tên điểm {officeType ? officeType : ''}</th>
 				<th>SĐT liên lạc</th>
@@ -70,5 +69,9 @@
 	.table tbody td {
 		padding-left: 1rem;
 		vertical-align: middle;
+	}
+
+	.btn-icon {
+		background-color: #4784af;
 	}
 </style>

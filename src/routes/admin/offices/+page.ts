@@ -18,7 +18,7 @@ interface Offices {
 export const load: PageLoad = async ({ parent, fetch, url }) => {
 	await parent();
 
-	const typeOffices = url.searchParams.get('type') || 'GP';
+	const typeOffices = url.searchParams.get('type');
 
 	const staffs = await lazyLoad<Staffs>(
 		fetch(`/api/admin/staffs`, {

@@ -5,11 +5,17 @@ import { API_URL } from '$env/static/private';
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	try {
 		const token = cookies.get('token') as string;
-		const typeOffices = url.searchParams.get('type')?.toString() ?? '';
+		const typeOffices = url.searchParams.get('type')?.toString();
 		const query = new URLSearchParams({
-			type: typeOffices
+			type: typeOffices as any
 		});
-		const response = await fetch(`${API_URL}/api/v1/admin/delivery-points?${query}`, {
+
+		const filterQuery = new URLSearchParams();
+		for (let [key, value] of query.entries()) {
+			if (value != 'null') filterQuery.append(key, value);
+		}
+
+		const response = await fetch(`${API_URL}/api/v1/admin/delivery-points?${filterQuery}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
