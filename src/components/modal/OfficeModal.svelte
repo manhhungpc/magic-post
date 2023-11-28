@@ -4,14 +4,17 @@
 	import type { AutocompleteOption, PopupSettings } from '@skeletonlabs/skeleton';
 	import { X } from 'lucide-svelte';
 	import { OfficeType, Roles, type OfficesInterface, type StaffsInteface } from 'src/utils/interface';
+	import { onMount } from 'svelte';
 
 	import { slide } from 'svelte/transition';
 
-	export let id: string, leaderData: StaffsInteface[], gatherPointData: OfficesInterface[];
+	export let id: string;
+	export let leaderData: StaffsInteface[] = [],
+		gatherPointData: OfficesInterface[] = [];
+	export let officeData: OfficesInterface | null = null;
 	let name: string,
 		address: string,
 		phoneNo: string,
-		dateOfBirth: string,
 		type = OfficeType.GATHERING,
 		leader = '',
 		leaderLabel = '',
@@ -33,7 +36,6 @@
 	async function createNewOffice() {
 		const requiredBody = {
 			name,
-			dateOfBirth,
 			phoneNo,
 			address,
 			adminId: leader,
@@ -65,6 +67,15 @@
 		});
 	}
 
+	async function getLeaderData() {
+		const response = await fetch('/api/admin/staffs', {
+			method: 'GET'
+		});
+
+		const data = await response.json();
+		return data.data.content;
+	}
+
 	let leaderPopupSettings: PopupSettings = {
 		event: 'focus-click',
 		target: 'leader-autofill',
@@ -79,9 +90,7 @@
 	let gatherAutoComplete: AutocompleteOption<string>[] = [];
 
 	$: {
-		console.log(type);
-		(leader = ''), (leaderLabel = ''), (linkGatherPoint = ''), (gatherPointLabel = '');
-
+		// (leader = ''), (leaderLabel = ''), (linkGatherPoint = ''), (gatherPointLabel = '');
 		leaderAutoComplete = [];
 		leaderData
 			.filter((leader) => {
@@ -93,7 +102,7 @@
 					{
 						label: `${leader.userId} - ${leader.fullName}`,
 						value: `${leader.id}`,
-						keywords: `${leader.fullName}, ${leader.userId}, ${leader.email}`,
+						keywords: `${leader.email}`,
 						meta: { healthy: false }
 					}
 				];
@@ -112,6 +121,17 @@
 			];
 		});
 	}
+
+	onMount(async () => {
+		if (officeData) {
+			name = officeData.name;
+			address = officeData.address;
+			phoneNo = officeData.phoneNo;
+			leaderLabel = officeData.admin?.fullName;
+			leaderData = await getLeaderData();
+			// console.log('🚀 ~ file: OfficeModal.svelte:133 ~ leaderData:', leaderData);
+		}
+	});
 </script>
 
 <dialog {id} class="dui-modal">
@@ -119,7 +139,9 @@
 		<form method="dialog">
 			<button class="dui-btn dui-btn-sm dui-btn-square dui-btn-ghost absolute right-2 top-3">✕</button>
 		</form>
-		<h3 class="text-xl text-center mb-2">Thêm mới điểm giao dịch/tập kết</h3>
+		<h3 class="text-xl text-center mb-2">
+			{officeData ? `Chỉnh sửa` : 'Thêm mới'} điểm giao dịch/tập kết
+		</h3>
 		<div class="dui-divider m-0 -mx-6" />
 		<main class="mb-3">
 			<label class="dui-label pb-1" for="name">
@@ -147,27 +169,37 @@
 			<label class="dui-label pb-1" for="address">
 				<span class="dui-label-text required-label">Loại văn phòng</span>
 			</label>
-			<div class="grid grid-cols-2 gap-3">
-				<label class="dui-label cursor-pointer justify-start">
-					<input
-						type="radio"
-						on:change={() => (type = OfficeType.GATHERING)}
-						name="role-radio"
-						class="dui-radio dui-radio-sm checked:bg-primary-500"
-						checked
-					/>
-					<span class="dui-label-text ml-2">Điểm tập kết</span>
-				</label>
-				<label class="dui-label cursor-pointer justify-start">
-					<input
-						type="radio"
-						on:change={() => (type = OfficeType.TRANSACTION)}
-						name="role-radio"
-						class="dui-radio dui-radio-sm checked:bg-primary-500"
-					/>
-					<span class="dui-label-text ml-2">Điểm giao dịch</span>
-				</label>
-			</div>
+			{#if officeData}
+				<input
+					type="text"
+					value={officeData.type ?? ''}
+					name="type"
+					disabled
+					class="dui-input h-10 dui-input-bordered w-full"
+				/>
+			{:else}
+				<div class="grid grid-cols-2 gap-3">
+					<label class="dui-label cursor-pointer justify-start">
+						<input
+							type="radio"
+							on:change={() => (type = OfficeType.GATHERING)}
+							name="role-radio"
+							class="dui-radio dui-radio-sm checked:bg-primary-500"
+							checked
+						/>
+						<span class="dui-label-text ml-2">Điểm tập kết</span>
+					</label>
+					<label class="dui-label cursor-pointer justify-start">
+						<input
+							type="radio"
+							on:change={() => (type = OfficeType.TRANSACTION)}
+							name="role-radio"
+							class="dui-radio dui-radio-sm checked:bg-primary-500"
+						/>
+						<span class="dui-label-text ml-2">Điểm giao dịch</span>
+					</label>
+				</div>
+			{/if}
 
 			<div class="flex justify-between gap-3">
 				<div class="w-full">
@@ -205,9 +237,10 @@
 						{:else}
 							<Autocomplete
 								options={leaderAutoComplete}
-								bind:input={leader}
+								bind:input={leaderLabel}
 								on:selection={onLeaderSelect}
 								transitionOutParams={{ delay: 0, duration: 0 }}
+								emptyState="Không có kết quả nào"
 							/>
 						{/if}
 					</div>

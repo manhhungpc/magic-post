@@ -53,7 +53,12 @@ export interface OfficesInterface {
 		fullName: string;
 		userId: string;
 	};
-	gatheringPoint?: string;
+	gatheringPoint?: {
+		id: string;
+		pointId: string;
+		name: string;
+	};
+	type: string;
 }
 
 export interface TransactionOrderInteface {

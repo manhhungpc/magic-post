@@ -5,7 +5,6 @@
 	import { token } from 'src/utils/stores.js';
 
 	export let data;
-	console.log('🚀 ~ file: +layout.svelte:7 ~ data:', data);
 	$: if (!data.accessToken) token.set('');
 	let expand: boolean = true;
 
@@ -16,57 +15,58 @@
 </script>
 
 <div class="wrapper">
-	<AppRail width="w-56" aspectRatio="aspect-[4/1]" class="shadow-lg">
-		<AppRailTile bind:group={expand} name="tile-1" active="" value={0}>
-			<span class="flex justify-center text-base gap-3">
-				<AlignJustify /> Menu quản lý
-			</span>
-		</AppRailTile>
-
-		<!-- --- -->
-		<AppRailAnchor href="/manage/staffs" selected={$page.url.pathname === '/manage/staffs'}>
-			<span class="pl-5 text-base flex gap-3">
-				<Users /> Nhân viên
-			</span>
-		</AppRailAnchor>
-		<AppRailAnchor href="/manage/customer-order" selected={isOpenCustomerOrder}>
-			<span class="pl-5 text-base flex gap-3">
-				<Package />Đơn đặt hàng
-			</span>
-		</AppRailAnchor>
-		<AppRailAnchor href="/manage/transaction-order" selected={$page.url.pathname === '/manage/transaction-order'}>
-			<span class="pl-5 text-base flex gap-3">
-				<ScrollText />Đơn giao dịch
-			</span>
-		</AppRailAnchor>
-		<AppRailAnchor href="/manage/gathering-order" selected={$page.url.pathname === '/manage/gathering-order'}>
-			<span class="pl-5 text-base flex gap-3">
-				<Boxes />Đơn tập kết
-			</span>
-		</AppRailAnchor>
-		<TreeView rounded="rounded-none" indent="" regionSummary="flex-row-reverse gap-4" hover="hover:bg-primary-500/10">
-			<TreeViewItem bind:open spacing="">
-				<span class="text-base font-bold flex gap-4">
-					<Navigation />
-					Đơn vận chuyển
+	<div style="box-shadow: rgba(0, 0, 0, 0.3) 0px 10px 10px;">
+		<AppRail width={expand ? 'w-56' : 'w-20'} aspectRatio="aspect-[4/1]">
+			<AppRailTile on:click={() => (expand = !expand)} bind:group={expand} name="tile-1" hover="" value={0}>
+				<span class="flex pl-7 text-base gap-3" class:py-4={!expand} class:py-8={expand}>
+					<AlignJustify /> <span class:hidden={!expand}>Menu quản lý</span>
 				</span>
-				<svelte:fragment slot="children">
-					<AppRailAnchor href="/manage/delivery" selected={$page.url.pathname === '/manage/delivery'}>
-						<TreeViewItem hover="" class="text-base" regionSummary="">
-							<svelte:fragment slot="lead"><Dot /></svelte:fragment>
-							<p class="-m-3">Tới khách hàng</p>
-						</TreeViewItem>
-					</AppRailAnchor>
-					<AppRailAnchor href="/manage/transport" selected={$page.url.pathname === '/manage/transport'}>
-						<TreeViewItem hover="" class="text-base" regionSummary="">
-							<svelte:fragment slot="lead"><Dot /></svelte:fragment>
-							<p class="-m-3">Tới điểm tập kết</p>
-						</TreeViewItem>
-					</AppRailAnchor>
-				</svelte:fragment>
-			</TreeViewItem>
-		</TreeView>
-	</AppRail>
+			</AppRailTile>
+
+			<AppRailAnchor href="/manage/staffs" selected={$page.url.pathname === '/manage/staffs'}>
+				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+					<Users /> <span class:hidden={!expand}>Nhân viên</span>
+				</span>
+			</AppRailAnchor>
+			<AppRailAnchor href="/manage/customer-order" selected={isOpenCustomerOrder}>
+				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+					<Package /> <span class:hidden={!expand}>Đơn đặt hàng</span>
+				</span>
+			</AppRailAnchor>
+			<AppRailAnchor href="/manage/transaction-order" selected={$page.url.pathname === '/manage/transaction-order'}>
+				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+					<ScrollText /> <span class:hidden={!expand}>Đơn giao dịch</span>
+				</span>
+			</AppRailAnchor>
+			<AppRailAnchor href="/manage/gathering-order" selected={$page.url.pathname === '/manage/gathering-order'}>
+				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+					<Boxes /> <span class:hidden={!expand}>Đơn tập kết</span>
+				</span>
+			</AppRailAnchor>
+			<TreeView rounded="rounded-none" indent="" regionSummary="flex-row-reverse gap-4" hover="hover:bg-primary-500/10">
+				<TreeViewItem bind:open spacing="">
+					<span class="text-base font-bold flex gap-4" class:py-4={!expand}>
+						<Navigation />
+						<span class:hidden={!expand}>Đơn vận chuyển</span>
+					</span>
+					<svelte:fragment slot="children">
+						<AppRailAnchor href="/manage/delivery" selected={$page.url.pathname === '/manage/delivery'}>
+							<TreeViewItem hover="" class="text-base" regionSummary="">
+								<svelte:fragment slot="lead"><Dot /></svelte:fragment>
+								<p class="-m-3">Tới khách hàng</p>
+							</TreeViewItem>
+						</AppRailAnchor>
+						<AppRailAnchor href="/manage/transport" selected={$page.url.pathname === '/manage/transport'}>
+							<TreeViewItem hover="" class="text-base" regionSummary="">
+								<svelte:fragment slot="lead"><Dot /></svelte:fragment>
+								<p class="-m-3">Tới điểm tập kết</p>
+							</TreeViewItem>
+						</AppRailAnchor>
+					</svelte:fragment>
+				</TreeViewItem>
+			</TreeView>
+		</AppRail>
+	</div>
 
 	<div class="p-6 flex-1 overflow-auto">
 		<slot />

@@ -2,14 +2,29 @@
 	import { PencilLine, Trash2 } from 'lucide-svelte';
 	import type { OfficesInterface } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
+	import OfficeModal from '../modal/OfficeModal.svelte';
+	import DeleteConfirmModal from '../modal/DeleteConfirmModal.svelte';
+	import { invalidate } from '$app/navigation';
 
 	export let tableData: OfficesInterface[] = [];
 	export let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ';
 
-	$: if (officeType == 'giao dịch') {
-		tableData = tableData.map((td) => {
-			return { ...td, gatheringPoint: 'Test' };
+	async function showEditOfficeModal(modalId: string, officeId: string) {
+		(document.getElementById(modalId) as any).showModal();
+	}
+
+	function showDeleteOfficeModal(modalId: string) {
+		(document.getElementById(modalId) as any).showModal();
+	}
+
+	async function deleteOffice(deleteId: string) {
+		const response = await fetch(`/api/admin/offices/${deleteId}`, {
+			method: 'DELETE'
 		});
+
+		if (response.status == 200) {
+			invalidate((url) => url.pathname.includes('/api/admin/offices'));
+		}
 	}
 </script>
 
@@ -19,7 +34,7 @@
 			<tr>
 				<th>STT</th>
 				<th>Mã điểm</th>
-				<th>Tên điểm {officeType ? officeType : ''}</th>
+				<th>Tên điểm {officeType != 'toàn bộ' ? officeType : ''}</th>
 				<th>SĐT liên lạc</th>
 				<th>Trưởng điểm</th>
 				<th>Địa chỉ</th>
@@ -44,11 +59,29 @@
 						<td>{row.admin ? row.admin.fullName : 'Không có'}</td>
 						<td>{row.address}</td>
 						{#if officeType == 'giao dịch'}
-							<th>{row.gatheringPoint}</th>
+							<td>{row.gatheringPoint?.name}</td>
 						{/if}
 						<td class="flex items-center gap-3">
-							<button type="button" class="btn-icon variant-filled h-8 w-8"><PencilLine size="16" /></button>
-							<button type="button" class="btn-icon variant-filled h-8 w-8"><Trash2 size="16" /></button>
+							<button
+								type="button"
+								class="btn-icon variant-filled h-8 w-8"
+								on:click={() => showEditOfficeModal('edit-office' + row.pointId, row.id)}
+							>
+								<PencilLine size="16" />
+							</button>
+							<OfficeModal id={'edit-office' + row.pointId} officeData={row} />
+							<button
+								type="button"
+								class="btn-icon variant-filled h-8 w-8"
+								on:click={() => showDeleteOfficeModal('delete-office' + row.pointId)}
+							>
+								<Trash2 size="16" />
+							</button>
+							<DeleteConfirmModal
+								id={'delete-office' + row.pointId}
+								message={`Xác nhận xóa <b>${row.name}</b>?`}
+								confirmAction={() => deleteOffice(row.id)}
+							/>
 						</td>
 					</tr>
 				{/each}
