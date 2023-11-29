@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { PlusCircle } from 'lucide-svelte';
 	import TableTransactionOrder from 'src/components/table/TableTransactionOrder.svelte';
-	import type { TableTransactionOrderInteface } from 'src/utils/interface';
+	import type { TransactionOrderInteface } from 'src/utils/interface';
 
-    const tableData: TableTransactionOrderInteface[] = [
+    const tableData: TransactionOrderInteface[] = [
 		{ orderId: '1', address: '23 Ngõ 58 Phố Trần Bình, Mai Dịch, Cầu Giấy, Hà Nội', transactionId: '1' },
 		{ orderId: '2', address: '23 Ngõ 58 Phố Trần Bình, Mai Dịch, Cầu Giấy, Hà Nội', transactionId: '2' },
 		{ orderId: '3', address: '23 Ngõ 58 Phố Trần Bình, Mai Dịch, Cầu Giấy, Hà Nội', transactionId: '3' },
