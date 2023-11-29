@@ -10,14 +10,20 @@ export const load: LayoutServerLoad = async ({ cookies, fetch }) => {
 	}
 	token.set(accessToken);
 
+	const tokenData = JSON.parse(atob(accessToken.split('.')[1]));
+
 	const responseUser = await fetch('/api/user/me', {
 		method: 'GET'
 	});
 
 	const user = await responseUser.json();
+	if (responseUser.status != 200) {
+		return {};
+	}
 
 	return {
 		accessToken,
+		tokenData,
 		userData: user.data
 	};
 };

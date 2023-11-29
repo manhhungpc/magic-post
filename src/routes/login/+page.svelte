@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { token } from 'src/utils/stores';
 
 	let username: string, password: string;
@@ -18,7 +18,6 @@
 		});
 
 		const data = await response.json();
-		console.log('🚀 ~ file: +page.svelte:25 ~ data:', data);
 		token.set(data.data.accessToken);
 
 		loading = false;
@@ -27,8 +26,8 @@
 			return;
 		}
 
-		goto('/profile');
 		// invalidateAll();
+		goto('/profile');
 	}
 </script>
 

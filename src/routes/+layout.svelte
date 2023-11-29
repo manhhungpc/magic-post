@@ -1,9 +1,8 @@
 <script lang="ts">
 	import '../app.css';
 	import { TabGroup, AppBar, TabAnchor } from '@skeletonlabs/skeleton';
-	import { Newspaper, Truck, User2, MapPin, FileText } from 'lucide-svelte';
+	import { Newspaper, Truck, User2, MapPin, FileText, LogOut, UserCircle } from 'lucide-svelte';
 	import type { PageData } from './$types';
-	import { invalidateAll } from '$app/navigation';
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import { Roles } from 'src/utils/interface';
 	import { storePopup } from '@skeletonlabs/skeleton';
@@ -14,9 +13,10 @@
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	export let data: PageData;
-	let manageRoute = data.userData?.role.id == Roles.ADMIN ? '/admin' : '/manage';
+	$: console.log('🚀 ~ file: +layout.svelte:16 ~ data:', data);
 
-	// invalidateAll();
+	let manageRoute: string;
+	$: manageRoute = data.userData?.role.id == Roles.ADMIN ? '/admin' : '/manage';
 </script>
 
 <svelte:head>
@@ -38,7 +38,7 @@
 				flex="flex-1 lg:flex-none"
 				rounded="rounded-md"
 				border=""
-				class="!bg-transparent w-full"
+				class="!bg-transparent w-full !overflow-visible"
 			>
 				<TabAnchor href="/" class="ml-3">
 					<span class="link-nav flex"> Tin tức &nbsp;<Newspaper size={20} /> </span>
@@ -48,8 +48,16 @@
 					<TabAnchor href={manageRoute} class="ml-3">
 						<span class="link-nav flex"> Quản lý &nbsp;<FileText size={20} /></span>
 					</TabAnchor>
-					<TabAnchor href="/profile" class="ml-3">
-						<span class="link-nav flex"> {data.userData.fullName} &nbsp;<User2 size={20} /></span>
+					<TabAnchor href="/profile" class="ml-3 !p-0">
+						<div class="dui-dropdown dui-dropdown-hover dui-dropdown-bottom dui-dropdown-end">
+							<div tabindex="0" role="button">
+								<span class="link-nav flex py-2 px-4"> {data.userData.fullName} &nbsp;<User2 size={20} /></span>
+							</div>
+							<ul class="dui-dropdown-content z-[5] dui-menu p-3 shadow bg-base-100 rounded-lg w-52 text-[#000]">
+								<li><a href="/profile"> <UserCircle size={20} /> Hồ sơ cá nhân</a></li>
+								<li><a href="/logout" data-sveltekit-reload> <LogOut size={20} /> Đăng xuất</a></li>
+							</ul>
+						</div>
 					</TabAnchor>
 				{:else}
 					<TabAnchor href="/tracking" class="ml-3">
@@ -77,5 +85,9 @@
 	}
 	.link-nav {
 		font-size: 16px;
+	}
+
+	:global(.tab-list) {
+		overflow: visible;
 	}
 </style>
