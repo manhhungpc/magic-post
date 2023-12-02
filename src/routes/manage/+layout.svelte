@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { AppRail, AppRailTile, AppRailAnchor, TreeView, TreeViewItem } from '@skeletonlabs/skeleton';
+	import { AppRail, AppRailTile, AppRailAnchor } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
-	import { AlignJustify, Users, Package, Boxes, Dot, ScrollText, Navigation } from 'lucide-svelte';
+	import { AlignJustify, Users, Package, Boxes, ScrollText, Truck } from 'lucide-svelte';
 	import { token } from 'src/utils/stores.js';
 
 	export let data;
@@ -43,28 +43,11 @@
 					<Boxes /> <span class:hidden={!expand}>Đơn tập kết</span>
 				</span>
 			</AppRailAnchor>
-			<TreeView rounded="rounded-none" indent="" regionSummary="flex-row-reverse gap-4" hover="hover:bg-primary-500/10">
-				<TreeViewItem bind:open spacing="">
-					<span class="text-base font-bold flex gap-4" class:py-4={!expand}>
-						<Navigation />
-						<span class:hidden={!expand}>Đơn vận chuyển</span>
-					</span>
-					<svelte:fragment slot="children">
-						<AppRailAnchor href="/manage/delivery" selected={$page.url.pathname === '/manage/delivery'}>
-							<TreeViewItem hover="" class="text-base" regionSummary="">
-								<svelte:fragment slot="lead"><Dot /></svelte:fragment>
-								<p class="-m-3">Tới khách hàng</p>
-							</TreeViewItem>
-						</AppRailAnchor>
-						<AppRailAnchor href="/manage/transport" selected={$page.url.pathname === '/manage/transport'}>
-							<TreeViewItem hover="" class="text-base" regionSummary="">
-								<svelte:fragment slot="lead"><Dot /></svelte:fragment>
-								<p class="-m-3">Tới điểm tập kết</p>
-							</TreeViewItem>
-						</AppRailAnchor>
-					</svelte:fragment>
-				</TreeViewItem>
-			</TreeView>
+			<AppRailAnchor href="/manage/delivery" selected={$page.url.pathname === '/manage/delivery'}>
+				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+					<Truck /> <span class:hidden={!expand}>Đơn giao hàng</span>
+				</span>
+			</AppRailAnchor>
 		</AppRail>
 	</div>
 

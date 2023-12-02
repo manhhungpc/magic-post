@@ -8,6 +8,13 @@ export enum Roles {
 	SHIPPER = 7
 }
 
+export interface Paginate {
+	totalPages: number;
+	totalItems: number;
+	perPage: number;
+	currentPage: number;
+}
+
 export enum OfficeType {
 	GATHERING = 'GP',
 	TRANSACTION = 'TP'
@@ -59,6 +66,11 @@ export interface OfficesInterface {
 		name: string;
 	};
 	type: string;
+}
+
+export interface GatherOrderInteface {
+	orderId: string;
+	address: string;
 }
 
 export interface TransactionOrderInteface {

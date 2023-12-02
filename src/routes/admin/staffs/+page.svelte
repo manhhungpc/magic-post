@@ -27,11 +27,11 @@
 			class="dui-input dui-input-bordered w-full max-w-xs !h-8"
 		/>
 	</div>
-	<div class="card !rounded-b-none h-[calc(100%-7.5rem)]">
+	<div class="card h-[calc(100%-7.5rem)]">
 		{#await data.staffs.promise}
 			<Loading message="Đang lấy dữ liệu mới nhất" />
 		{:then staffs}
-			<StaffsTable tableData={staffs.data.content} />
+			<StaffsTable tableData={staffs.data.content} paginate={staffs.data.paginate} />
 		{:catch err}
 			<p>Error :(</p>
 		{/await}

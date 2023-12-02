@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { invalidate } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 	import { Roles, type StaffsInteface } from 'src/utils/interface';
 	import { onMount } from 'svelte';
 
@@ -43,6 +43,7 @@
 			if (staffData.status == 201) {
 				(document.getElementById(id) as any).close();
 				invalidate((url) => url.pathname.includes('/api/admin/staffs'));
+				goto('/admin/staffs');
 			}
 			loading = false;
 			return;

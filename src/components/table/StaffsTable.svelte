@@ -1,12 +1,20 @@
 <script lang="ts">
+	import { Paginator, type PaginationSettings } from '@skeletonlabs/skeleton';
 	import { PencilLine, Trash2 } from 'lucide-svelte';
-	import type { StaffsInteface } from 'src/utils/interface';
+	import type { Paginate, StaffsInteface } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import StaffsModal from '../modal/StaffsModal.svelte';
 	import DeleteConfirmModal from '../modal/DeleteConfirmModal.svelte';
-	import { invalidate } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
 
-	export let tableData: StaffsInteface[] = [];
+	export let tableData: StaffsInteface[] = [],
+		paginate: Paginate;
+	let paginationSettings = {
+		page: paginate?.currentPage - 1,
+		limit: 5,
+		size: paginate?.totalItems,
+		amounts: [5, 10]
+	} satisfies PaginationSettings;
 
 	function openEditStaffModal(id: string) {
 		(document.getElementById(id) as any).showModal();
@@ -15,6 +23,14 @@
 	function openDeleteStaffModal(id: string) {
 		(document.getElementById(id) as any).showModal();
 	}
+
+	function onPageChange(e: CustomEvent): void {
+		const pageSize = paginationSettings.limit;
+		const pageNumber = e.detail + 1;
+		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+	}
+
+	function onAmountChange(e: CustomEvent) {}
 
 	async function deleteStaff(deleteId: string) {
 		const response = await fetch(`/api/admin/staffs/${deleteId}`, {
@@ -27,8 +43,8 @@
 	}
 </script>
 
-<div class="table-container !rounded-b-none !rounded-md h-full">
-	<table class="table table-hover overflow-auto !bg-transparent !rounded-none" class:h-full={tableData.length == 0}>
+<div class="table-container !rounded-md h-full relative">
+	<table class="table table-hover overflow-auto !bg-transparent" class:h-full={tableData.length == 0}>
 		<thead class="!bg-white">
 			<tr>
 				<th>STT</th>
@@ -85,6 +101,20 @@
 
 		<tfoot />
 	</table>
+	<div class="px-3 flex items-center gap-3 bg-[#fff] h-14 w-full absolute bottom-0">
+		<span class=" whitespace-nowrap">Số hàng trên trang : </span>
+		<Paginator
+			bind:settings={paginationSettings}
+			on:page={onPageChange}
+			on:amount={onAmountChange}
+			showFirstLastButtons={true}
+			showPreviousNextButtons={true}
+			class="w-full bg-[#fff]"
+			amountText=""
+			separatorText="trên tổng"
+			buttonClasses="!px-3 !py-1.5 fill-current hover:fill-primary-500"
+		/>
+	</div>
 </div>
 
 <style>
@@ -102,5 +132,11 @@
 
 	.btn-icon {
 		background-color: #4784af;
+	}
+
+	:global(.paginator-select) {
+		border-radius: 6px;
+		padding: 2px 6px;
+		min-width: 50px;
 	}
 </style>

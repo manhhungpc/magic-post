@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { PencilLine, Trash2 } from 'lucide-svelte';
-	import type { TableTransactionOrderInteface } from 'src/utils/interface';
+	import type { TransactionOrderInteface } from 'src/utils/interface';
 
-	export let tableData: TableTransactionOrderInteface[] = [];
+	export let tableData: TransactionOrderInteface[] = [];
 </script>
 
 <div class="table-container !rounded-none h-full">
