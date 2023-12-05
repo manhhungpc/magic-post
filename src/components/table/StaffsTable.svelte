@@ -9,9 +9,10 @@
 
 	export let tableData: StaffsInteface[] = [],
 		paginate: Paginate;
+	console.log('🚀 ~ file: StaffsTable.svelte:12 ~ paginate:', paginate);
 	let paginationSettings = {
 		page: paginate?.currentPage - 1,
-		limit: 5,
+		limit: 10,
 		size: paginate?.totalItems,
 		amounts: [5, 10]
 	} satisfies PaginationSettings;
@@ -43,7 +44,7 @@
 	}
 </script>
 
-<div class="table-container !rounded-md h-full relative">
+<div class="table-container !rounded-md !rounded-b-none h-[calc(100%-3.5rem)] relative">
 	<table class="table table-hover overflow-auto !bg-transparent" class:h-full={tableData.length == 0}>
 		<thead class="!bg-white">
 			<tr>
@@ -69,16 +70,14 @@
 						<td>{row.role.name}</td>
 						<td>{row.workAt ? row.workAt.name : 'Chưa có'}</td>
 						<td class="flex items-center gap-3">
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Chỉnh sửa">
-								<button
-									type="button"
-									class="btn-icon variant-filled h-8 w-8"
-									on:click={() => openEditStaffModal('edit-staff-' + row.userId)}
-								>
-									<PencilLine size="16" />
-								</button>
-								<StaffsModal id={'edit-staff-' + row.userId} staff={row} />
-							</div>
+							<button
+								type="button"
+								class="btn-icon variant-filled h-8 w-8"
+								on:click={() => openEditStaffModal('edit-staff-' + row.userId)}
+							>
+								<PencilLine size="16" />
+							</button>
+							<StaffsModal id={'edit-staff-' + row.userId} staff={row} />
 							<button
 								type="button"
 								class="btn-icon variant-filled h-8 w-8"
@@ -101,20 +100,20 @@
 
 		<tfoot />
 	</table>
-	<div class="px-3 flex items-center gap-3 bg-[#fff] h-14 w-full absolute bottom-0">
-		<span class=" whitespace-nowrap">Số hàng trên trang : </span>
-		<Paginator
-			bind:settings={paginationSettings}
-			on:page={onPageChange}
-			on:amount={onAmountChange}
-			showFirstLastButtons={true}
-			showPreviousNextButtons={true}
-			class="w-full bg-[#fff]"
-			amountText=""
-			separatorText="trên tổng"
-			buttonClasses="!px-3 !py-1.5 fill-current hover:fill-primary-500"
-		/>
-	</div>
+</div>
+<div class="px-3 flex items-center gap-3 bg-[#fff] h-14 w-full rounded-b-md">
+	<span class=" whitespace-nowrap">Số hàng trên trang : </span>
+	<Paginator
+		bind:settings={paginationSettings}
+		on:page={onPageChange}
+		on:amount={onAmountChange}
+		showPreviousNextButtons={true}
+		class="w-full bg-[#fff]"
+		amountText=""
+		showNumerals
+		maxNumerals={1}
+		buttonClasses="!px-3 !py-1.5 fill-current hover:fill-primary-500"
+	/>
 </div>
 
 <style>

@@ -6,6 +6,7 @@
 	import Loading from 'src/components/Loading.svelte';
 
 	export let data: PageData | any;
+	console.log('🚀 ~ file: +page.svelte:9 ~ data:', data.staffs.promise);
 	function showStaffModal() {
 		(document.getElementById('admin_new_staff') as any).showModal();
 	}

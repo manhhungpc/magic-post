@@ -16,6 +16,9 @@ h2,
 h3 {
 	font-family: 'Inter', sans-serif !important;
 }
+html {
+	scrollbar-gutter: stable;
+}
 
 body {
 	background-image: radial-gradient(at 0% 0%, rgba(var(--color-primary-400) / 0.33) 0px, transparent 50%),
@@ -25,6 +28,13 @@ body {
 	background-repeat: no-repeat;
 	background-size: cover;
 	font-family: 'Open Sans', sans-serif;
+}
+
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background-color: #fff !important;
 }
 
 @layer base {
