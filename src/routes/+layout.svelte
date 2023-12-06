@@ -13,7 +13,6 @@
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	export let data: PageData;
-	$: console.log('🚀 ~ file: +layout.svelte:16 ~ data:', data);
 
 	let manageRoute: string;
 	$: manageRoute = data.userData?.role.id == Roles.ADMIN ? '/admin' : '/manage';

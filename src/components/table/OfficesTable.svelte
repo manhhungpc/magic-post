@@ -1,13 +1,22 @@
 <script lang="ts">
 	import { PencilLine, Trash2 } from 'lucide-svelte';
-	import type { OfficesInterface } from 'src/utils/interface';
+	import type { OfficesInterface, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import OfficeModal from '../modal/OfficeModal.svelte';
 	import DeleteConfirmModal from '../modal/DeleteConfirmModal.svelte';
-	import { invalidate } from '$app/navigation';
+	import { goto, invalidate } from '$app/navigation';
+	import { Paginator, type PaginationSettings } from '@skeletonlabs/skeleton';
 
-	export let tableData: OfficesInterface[] = [];
+	export let tableData: OfficesInterface[] = [],
+		paginate: Paginate;
 	export let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ';
+
+	let paginationSettings = {
+		page: paginate?.currentPage - 1,
+		limit: paginate.perPage,
+		size: paginate?.totalItems,
+		amounts: [5, 10]
+	} satisfies PaginationSettings;
 
 	async function showEditOfficeModal(modalId: string, officeId: string) {
 		(document.getElementById(modalId) as any).showModal();
@@ -26,14 +35,32 @@
 			invalidate((url) => url.pathname.includes('/api/admin/offices'));
 		}
 	}
+
+	function onPageChange(e: CustomEvent): void {
+		const pageSize = paginate.perPage;
+		const pageNumber = e.detail + 1;
+		// paginationSettings.page = e.detail + 1;
+
+		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+	}
+
+	function onAmountChange(e: CustomEvent) {
+		const pageSize = e.detail;
+		const pageNumber = paginate.currentPage;
+		paginationSettings.limit = pageSize;
+		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+	}
 </script>
 
-<div class="table-container !rounded-b-none !rounded-md h-full">
+<div class="table-container !rounded-b-none !rounded-md h-[calc(100%-3.5rem)]">
 	<table class="table table-hover overflow-auto !bg-transparent !rounded-none" class:h-full={tableData.length == 0}>
 		<thead class="!bg-[#fff]">
 			<tr>
 				<th>STT</th>
 				<th>Mã điểm</th>
+				{#if officeType == 'toàn bộ'}
+					<th>Loại điểm</th>
+				{/if}
 				<th>Tên điểm {officeType != 'toàn bộ' ? officeType : ''}</th>
 				<th>SĐT liên lạc</th>
 				<th>Trưởng điểm</th>
@@ -54,6 +81,9 @@
 					<tr>
 						<td>{i + 1}</td>
 						<td>{row.pointId}</td>
+						{#if officeType == 'toàn bộ'}
+							<td>{row.typePoint == 'GP' ? 'Tập kết' : 'Giao dịch'}</td>
+						{/if}
 						<td>{row.name}</td>
 						<td>{row.phoneNo}</td>
 						<td>{row.admin ? row.admin.fullName : 'Không có'}</td>
@@ -90,6 +120,20 @@
 		<tfoot />
 	</table>
 </div>
+<div class="px-3 flex items-center gap-3 bg-[#fff] h-14 w-full rounded-b-md">
+	<span class=" whitespace-nowrap">Số hàng trên trang : </span>
+	<Paginator
+		bind:settings={paginationSettings}
+		on:page={onPageChange}
+		on:amount={onAmountChange}
+		showPreviousNextButtons={true}
+		class="w-full bg-[#fff]"
+		amountText=""
+		showNumerals
+		maxNumerals={1}
+		buttonClasses="!px-3 !py-1.5 fill-current hover:fill-primary-500"
+	/>
+</div>
 
 <style>
 	thead th {
@@ -106,5 +150,11 @@
 
 	.btn-icon {
 		background-color: #4784af;
+	}
+
+	:global(.paginator-select) {
+		border-radius: 6px;
+		padding: 2px 6px;
+		min-width: 50px;
 	}
 </style>

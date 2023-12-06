@@ -7,6 +7,7 @@
 	import { goto } from '$app/navigation';
 
 	export let data: PageData | any;
+	console.log('🚀 ~ file: +page.svelte:10 ~ data:', data);
 	let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ' = 'toàn bộ';
 
 	function showOfficeModal() {
@@ -32,8 +33,8 @@
 		<button class="btn variant-filled bg-ocean" on:click={showOfficeModal}>
 			<PlusCircle class="mr-1" size="20" /> Thêm mới
 		</button>
-		{#await data.staffs.promise then staffs}
-			{#await data.offices.promise then offices}
+		{#await data.streamed.staffs then staffs}
+			{#await data.streamed.offices then offices}
 				<OfficeModal id="new_office_modal" leaderData={staffs.data.content} gatherPointData={offices.data.content} />
 			{/await}
 		{/await}
@@ -62,10 +63,10 @@
 		</div>
 	</div>
 	<div class="card !rounded-b-none h-[calc(100%-7.5rem)]">
-		{#await data.offices.promise}
+		{#await data.streamed.offices}
 			<Loading message="Đang lấy dữ liệu mới nhất" />
 		{:then offices}
-			<OfficesTable tableData={offices.data.content} {officeType} />
+			<OfficesTable tableData={offices.data.content} paginate={offices.data.paginate} {officeType} />
 		{:catch err}
 			<p>Error</p>
 		{/await}

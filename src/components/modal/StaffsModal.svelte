@@ -58,8 +58,9 @@
 			phoneNo,
 			address,
 			email,
-			role: staff?.role.id
+			role
 		};
+		console.log('🚀 ~ file: StaffsModal.svelte:63 ~ body:', body);
 
 		Object.values(body).some(async (value) => {
 			if (!value) {
@@ -86,6 +87,7 @@
 
 	onMount(() => {
 		if (staff) {
+			role = staff.role.id;
 			fullName = staff.fullName;
 			email = staff.email;
 			address = staff.address;
@@ -168,7 +170,7 @@
 			<label class="dui-label pb-1" for="role-radio">
 				<span class="dui-label-text required-label">Chức vụ</span>
 			</label>
-			{#if staff && staff?.role.id}
+			{#if staff && staff.workAt}
 				<input
 					type="text"
 					value={staff.role.name}
@@ -182,9 +184,9 @@
 						<input
 							type="radio"
 							on:change={() => (role = Roles.TRANSACTION_LEADER)}
-							name="role-radio"
+							name={staff ? `role-radio-${staff.id}` : 'role-radio'}
 							class="dui-radio dui-radio-sm checked:bg-primary-500"
-							checked
+							checked={role == Roles.TRANSACTION_LEADER}
 						/>
 						<span class="dui-label-text ml-2">Trưởng điểm giao dịch</span>
 					</label>
@@ -192,8 +194,9 @@
 						<input
 							type="radio"
 							on:change={() => (role = Roles.GATHERING_LEADER)}
-							name="role-radio"
+							name={staff ? `role-radio-${staff.id}` : 'role-radio'}
 							class="dui-radio dui-radio-sm checked:bg-primary-500"
+							checked={role == Roles.GATHERING_LEADER}
 						/>
 						<span class="dui-label-text ml-2">Trưởng điểm tập kết</span>
 					</label>

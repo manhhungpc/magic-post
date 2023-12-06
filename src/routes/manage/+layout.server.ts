@@ -10,7 +10,7 @@ export const load: LayoutServerLoad = async ({ parent, cookies }) => {
 		throw redirect(301, '/login');
 	}
 	try {
-		const userData = atob(accessToken.split('.')[1]);
+		const userData = JSON.parse(atob(accessToken.split('.')[1]));
 		return { userData };
 	} catch (err) {
 		console.error(err);

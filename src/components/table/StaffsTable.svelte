@@ -9,10 +9,10 @@
 
 	export let tableData: StaffsInteface[] = [],
 		paginate: Paginate;
-	console.log('🚀 ~ file: StaffsTable.svelte:12 ~ paginate:', paginate);
+
 	let paginationSettings = {
 		page: paginate?.currentPage - 1,
-		limit: 10,
+		limit: paginate.perPage,
 		size: paginate?.totalItems,
 		amounts: [5, 10]
 	} satisfies PaginationSettings;
@@ -26,12 +26,19 @@
 	}
 
 	function onPageChange(e: CustomEvent): void {
-		const pageSize = paginationSettings.limit;
+		const pageSize = paginate.perPage;
 		const pageNumber = e.detail + 1;
+		// paginationSettings.page = e.detail + 1;
+
 		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
 	}
 
-	function onAmountChange(e: CustomEvent) {}
+	function onAmountChange(e: CustomEvent) {
+		const pageSize = e.detail;
+		const pageNumber = paginate.currentPage;
+		paginationSettings.limit = pageSize;
+		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+	}
 
 	async function deleteStaff(deleteId: string) {
 		const response = await fetch(`/api/admin/staffs/${deleteId}`, {

@@ -1,46 +1,46 @@
 <script lang="ts">
-	import { PlusCircle } from "lucide-svelte";
-	import StaffsTable from "src/components/table/StaffsTable.svelte";
-	import { Roles, type StaffsInteface } from "src/utils/interface";
+	import { PlusCircle } from 'lucide-svelte';
+	import StaffsTable from 'src/components/table/StaffsTable.svelte';
+	import { Roles, type StaffsInteface } from 'src/utils/interface';
 
-    const tableData: StaffsInteface[] = [
-        {
-            id: "",
-            userId: "20231001",
-            address: "",
-            email: "",
-            fullName: "Nguyen Van A",
-            phoneNo: "",
-            dateOfBirth: "",
-            role: {
-                id: Roles.GATHERS_STAFF,
-                name: "Nhân viên điểm tập kết",
-            },
-            workAt: {
-                id: "",
-                pointId: "",
-                name: "Điểm tập kết 1",
-            },
-        },
-        {
-            id: "",
-            userId: "20232001",
-            address: "",
-            email: "",
-            fullName: "Nguyen Van B",
-            phoneNo: "",
-            dateOfBirth: "",
-            role: {
-                id: Roles.TRANSACTION_STAFF,
-                name: "Nhân viên điểm giao dịch",
-            },
-            workAt: {
-                id: "",
-                pointId: "",
-                name: "Điểm giao dịch 1",
-            },
-        },
-    ]
+	const tableData: StaffsInteface[] = [
+		{
+			id: '',
+			userId: '20231001',
+			address: '',
+			email: '',
+			fullName: 'Nguyen Van A',
+			phoneNo: '',
+			dateOfBirth: '',
+			role: {
+				id: Roles.GATHERS_STAFF,
+				name: 'Nhân viên điểm tập kết'
+			},
+			workAt: {
+				id: '',
+				pointId: '',
+				name: 'Điểm tập kết 1'
+			}
+		},
+		{
+			id: '',
+			userId: '20232001',
+			address: '',
+			email: '',
+			fullName: 'Nguyen Van B',
+			phoneNo: '',
+			dateOfBirth: '',
+			role: {
+				id: Roles.TRANSACTION_STAFF,
+				name: 'Nhân viên điểm giao dịch'
+			},
+			workAt: {
+				id: '',
+				pointId: '',
+				name: 'Điểm giao dịch 1'
+			}
+		}
+	];
 </script>
 
 <main class="h-full">
@@ -67,6 +67,6 @@
 		{:catch err}
 			<p>Error :(</p>
 		{/await} -->
-        <StaffsTable tableData={tableData} />
+		<!-- <StaffsTable tableData={tableData} /> -->
 	</div>
 </main>

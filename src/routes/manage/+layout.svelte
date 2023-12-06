@@ -3,13 +3,14 @@
 	import { page } from '$app/stores';
 	import { AlignJustify, Users, Package, Boxes, ScrollText, Truck } from 'lucide-svelte';
 	import { token } from 'src/utils/stores.js';
+	import { Roles } from 'src/utils/interface.js';
 
 	export let data;
+	console.log('🚀 ~ file: +layout.svelte:8 ~ data:', data);
 	$: if (!data.accessToken) token.set('');
 	let expand: boolean = true;
 
 	let isOpenCustomerOrder: boolean;
-	let open = ['/manage/delivery', '/manage/transport'].includes($page.url.pathname);
 
 	$: isOpenCustomerOrder = ['/manage/customer-order', '/manage/customer-order/add'].includes($page.url.pathname);
 </script>
@@ -23,11 +24,13 @@
 				</span>
 			</AppRailTile>
 
-			<AppRailAnchor href="/manage/staffs" selected={$page.url.pathname === '/manage/staffs'}>
-				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
-					<Users /> <span class:hidden={!expand}>Nhân viên</span>
-				</span>
-			</AppRailAnchor>
+			{#if data.userData.role != Roles.GATHERS_STAFF || data.userData.role != Roles.TRANSACTION_STAFF}
+				<AppRailAnchor href="/manage/staffs" selected={$page.url.pathname === '/manage/staffs'}>
+					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+						<Users /> <span class:hidden={!expand}>Nhân viên</span>
+					</span>
+				</AppRailAnchor>
+			{/if}
 			<AppRailAnchor href="/manage/customer-order" selected={isOpenCustomerOrder}>
 				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
 					<Package /> <span class:hidden={!expand}>Đơn đặt hàng</span>

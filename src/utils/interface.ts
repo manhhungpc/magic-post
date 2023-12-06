@@ -65,6 +65,7 @@ export interface OfficesInterface {
 		pointId: string;
 		name: string;
 	};
+	typePoint: 'GP' | 'TP';
 	type: string;
 }
 

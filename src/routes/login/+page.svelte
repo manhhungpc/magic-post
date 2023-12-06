@@ -11,6 +11,10 @@
 			userId: username,
 			password: password
 		};
+		if (!username || !password) {
+			error = 'Thông tin đăng nhập bị để trông';
+			return;
+		}
 		loading = true;
 		const response = await fetch('/api/login', {
 			method: 'POST',
@@ -18,7 +22,6 @@
 		});
 
 		const data = await response.json();
-		token.set(data.data.accessToken);
 
 		loading = false;
 		if (data.status != 200) {
@@ -26,6 +29,7 @@
 			return;
 		}
 
+		token.set(data.data.accessToken);
 		// invalidateAll();
 		goto('/profile');
 	}
