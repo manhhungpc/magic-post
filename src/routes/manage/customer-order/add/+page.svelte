@@ -2,15 +2,52 @@
 	import { ArrowLeft, Eye, FilePlus2, PlusCircle } from 'lucide-svelte';
 	import CustomerInfo from 'src/components/CustomerInfo.svelte';
 	import OrderContent from 'src/components/OrderContent.svelte';
+	import { Catergority } from 'src/utils/enum';
+	import type { ContextOrders } from 'src/utils/interface';
 
-	let packageType: 'document' | 'package';
-	let orderContents: any[] = [{ id: crypto.randomUUID(), content: '', quantity: undefined, value: undefined }];
+	let orderContexts: ContextOrders[] = [{ context: undefined, quantity: 0, value: 0, documentNo: 0 }];
+
 	function addOrderContent() {
-		const id = crypto.randomUUID();
-		orderContents = [...orderContents, { id, content: '', quantity: undefined, value: undefined }];
+		orderContexts = [...orderContexts, { context: '', quantity: 0, value: 0, documentNo: 0 }];
 	}
 
-	$: console.log(packageType);
+	function removeOrderContent(i: number) {
+		orderContexts.splice(i, 1);
+		orderContexts = orderContexts;
+	}
+
+	let body = {
+		categority: undefined,
+		weight: 0,
+		senderCustomer: {
+			name: '',
+			phoneNo: '',
+			address: '',
+			type: ''
+		},
+		receiverCustomer: {
+			name: '',
+			phoneNo: '',
+			address: '',
+			type: '',
+			transactionId: ''
+		},
+		contextOrders: []
+	};
+
+	async function createCustomerOrder() {
+		if (orderContexts.length >= 1 && orderContexts[0].context != undefined) {
+			//@ts-ignore
+			body.contextOrders = orderContexts;
+		}
+
+		const newOrder = await fetch('/api/orders/customer', {
+			method: 'POST',
+			body: JSON.stringify(body)
+		}).then((res) => res.json());
+		console.log('🚀 ~ file: +page.svelte:47 ~ newOrder:', newOrder);
+		console.log('🚀 ~ file: +page.svelte:38 ~ body:', body);
+	}
 </script>
 
 <main>
@@ -25,7 +62,7 @@
 			<button type="button" class="btn variant-filled" disabled>
 				<Eye size="20" class="mr-2" />Xem trước đơn hàng
 			</button>
-			<button type="button" class="btn variant-filled bg-[#2460E5]">
+			<button type="button" class="btn variant-filled bg-[#2460E5]" on:click={createCustomerOrder}>
 				<FilePlus2 size="20" class="mr-2" />Lưu và in đơn hàng
 			</button>
 		</div>
@@ -34,12 +71,12 @@
 		<div class="card rounded-lg p-4">
 			<p class="text-xl font-bold">Thông tin người gửi</p>
 			<hr class="my-2" />
-			<CustomerInfo target="gửi" />
+			<CustomerInfo target="gửi" bind:customer={body.senderCustomer} />
 		</div>
 		<div class="card rounded-lg p-4">
 			<p class="text-xl font-bold">Thông tin người nhận</p>
 			<hr class="my-2" />
-			<CustomerInfo target="nhận" />
+			<CustomerInfo target="nhận" bind:customer={body.receiverCustomer} />
 		</div>
 	</div>
 
@@ -55,31 +92,38 @@
 				name="type"
 				required
 				class="dui-select dui-select-sm dui-select-bordered w-full h-10"
-				bind:value={packageType}
+				bind:value={body.categority}
 			>
 				<option value="" disabled selected hidden>---Chọn loại hàng gửi---</option>
-				<option value="document">Tài liệu</option>
-				<option value="package">Hàng hóa</option>
+				<option value={Catergority.DOCUMENT}>Tài liệu</option>
+				<option value={Catergority.PACKAGE}>Hàng hóa</option>
 			</select>
 		</div>
 		<div class="mb-2">
 			<label class="dui-label pb-1" for="name">
 				<span class="dui-label-text">Khối lượng thực tế (kg)</span>
 			</label>
-			<input type="text" name="name" placeholder="Nhập khối lượng" class="dui-input h-10 dui-input-bordered w-full" />
+			<input
+				type="number"
+				step="any"
+				name="name"
+				placeholder="Nhập khối lượng"
+				class="dui-input h-10 dui-input-bordered w-full"
+				bind:value={body.weight}
+			/>
 		</div>
 
-		{#if packageType == 'package'}
+		{#if body.categority == Catergority.PACKAGE}
 			<label class="dui-label pb-1" for="name">
 				<span class="dui-label-text">Nội dung giá trị bưu gửi</span>
 			</label>
-			{#each orderContents as content, i (content.id)}
-				<OrderContent bind:content={content.content} bind:quantity={content.quantity} bind:value={content.value} />
+			{#each orderContexts as content, i}
+				<OrderContent index={i} bind:content remove={() => removeOrderContent(i)} />
 			{/each}
 
-			<div class="dui-tooltip dui-tooltip-bottom" data-tip="Thêm nội dung">
+			<div class="dui-tooltip dui-tooltip-right" data-tip="Thêm nội dung">
 				<button type="button" class="btn-icon w-max" on:click={addOrderContent}>
-					<PlusCircle class="text-primary-500" size="28" />
+					<PlusCircle class="text-ocean" size="28" />
 				</button>
 			</div>
 		{/if}

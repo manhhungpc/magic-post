@@ -141,8 +141,8 @@
 	}
 
 	:global(.paginator-select) {
-		border-radius: 6px;
-		padding: 2px 6px;
-		min-width: 50px;
+		border-radius: 6px !important;
+		padding: 2px 6px !important;
+		min-width: 50px !important;
 	}
 </style>

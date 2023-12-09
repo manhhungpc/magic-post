@@ -3,16 +3,24 @@
 	import { page } from '$app/stores';
 	import { AlignJustify, Users, Package, Boxes, ScrollText, Truck } from 'lucide-svelte';
 	import { token } from 'src/utils/stores.js';
-	import { Roles } from 'src/utils/interface.js';
+	import { onMount } from 'svelte';
+	import { setUserStorage } from 'src/lib/userLocalStorage.js';
+	import { Roles } from 'src/utils/enum.js';
 
 	export let data;
-	console.log('🚀 ~ file: +layout.svelte:8 ~ data:', data);
 	$: if (!data.accessToken) token.set('');
 	let expand: boolean = true;
 
 	let isOpenCustomerOrder: boolean;
 
 	$: isOpenCustomerOrder = ['/manage/customer-order', '/manage/customer-order/add'].includes($page.url.pathname);
+
+	onMount(async () => {
+		const user = await fetch('/api/user/me', {
+			method: 'GET'
+		}).then((res) => res.json());
+		if (user.status == 200) setUserStorage(user.data);
+	});
 </script>
 
 <div class="wrapper">
@@ -54,7 +62,7 @@
 		</AppRail>
 	</div>
 
-	<div class="p-6 flex-1 overflow-auto">
+	<div class="p-4 pt-6 flex-1 overflow-auto">
 		<slot />
 	</div>
 </div>

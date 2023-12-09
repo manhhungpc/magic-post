@@ -1,23 +1,10 @@
-export enum Roles {
-	ADMIN = 1,
-	TRANSACTION_LEADER = 2,
-	TRANSACTION_STAFF = 3,
-	GATHERING_LEADER = 4,
-	GATHERS_STAFF = 5,
-	CUSTOMER = 6,
-	SHIPPER = 7
-}
+import type { Catergority, Roles } from './enum';
 
 export interface Paginate {
 	totalPages: number;
 	totalItems: number;
 	perPage: number;
 	currentPage: number;
-}
-
-export enum OfficeType {
-	GATHERING = 'GP',
-	TRANSACTION = 'TP'
 }
 
 export enum LocationDepth {
@@ -78,4 +65,27 @@ export interface TransactionOrderInteface {
 	orderId: string;
 	address: string;
 	transactionId: string;
+}
+
+export interface CustomerOrder {
+	categority: Catergority;
+	weight: number;
+	senderCustomer: {
+		name: string;
+		phoneNo: string;
+		address: string;
+	};
+	receiverCustomer: {
+		name: string;
+		phoneNo: string;
+		address: string;
+	};
+	contextOrders?: Array<ContextOrders>;
+}
+
+export interface ContextOrders {
+	context: string | undefined;
+	quantity: number;
+	value: number;
+	documentNo: number;
 }

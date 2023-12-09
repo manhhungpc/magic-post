@@ -3,6 +3,12 @@
 	import { onMount } from 'svelte';
 
 	export let target: 'gửi' | 'nhận';
+	export let customer: {
+		name: string;
+		phoneNo: string;
+		address: string;
+		type: string;
+	};
 
 	let location = {
 			provinces: [] as LocationSchema[],
@@ -12,6 +18,9 @@
 		provinceCode = -1,
 		districtCode = -1;
 	let district: HTMLSelectElement, ward: HTMLSelectElement;
+	let detailAddress: string,
+		fullAddress = '';
+	$: customer.address = detailAddress + ' - ' + fullAddress.split(' - ').reverse().join(' - ');
 
 	async function getLocationData(depth: number, provinceCode?: number, districtCode?: number) {
 		const response = await fetch(`/api/location-vn?depth=${depth}&province=${provinceCode}&district=${districtCode}`, {
@@ -31,7 +40,13 @@
 	<label class="dui-label pb-1" for="name">
 		<span class="dui-label-text required-label">Họ và tên người {target}</span>
 	</label>
-	<input type="text" name="name" placeholder="Họ tên người {target}" class="dui-input h-10 dui-input-bordered w-full" />
+	<input
+		type="text"
+		name="name"
+		placeholder="Họ tên người {target}"
+		class="dui-input h-10 dui-input-bordered w-full"
+		bind:value={customer.name}
+	/>
 </div>
 
 <div class="mb-3">
@@ -43,6 +58,7 @@
 		name="phone"
 		placeholder="Số điện thoại người {target}"
 		class="dui-input h-10 dui-input-bordered w-full"
+		bind:value={customer.phoneNo}
 	/>
 </div>
 
@@ -58,7 +74,9 @@
 			on:change={(e) => {
 				location.wards = [];
 				//@ts-ignore
-				provinceCode = e.target.value;
+				provinceCode = e.target.value.split('|')[0];
+				//@ts-ignore
+				fullAddress = e.target.value.split('|')[1];
 				getLocationData(LocationDepth.DISTRICT, provinceCode).then((data) => {
 					location.districts = data;
 					district.selectedIndex = 0;
@@ -68,7 +86,7 @@
 		>
 			<option value="" disabled selected hidden>---Tỉnh/Thành phố---</option>
 			{#each location.provinces as province}
-				<option value={province.code}>{province.name}</option>
+				<option value={province.code + '|' + province.name} label={province.name}>{province.name}</option>
 			{/each}
 		</select>
 
@@ -80,7 +98,9 @@
 			disabled={location.districts.length == 0}
 			on:change={(e) => {
 				//@ts-ignore
-				districtCode = e.target.value;
+				districtCode = e.target.value.split('|')[0];
+				//@ts-ignore
+				fullAddress += ' - ' + e.target.value.split('|')[1];
 				ward.selectedIndex = 0;
 				getLocationData(LocationDepth.WARDS, provinceCode, districtCode).then((data) => {
 					location.wards = data;
@@ -89,7 +109,7 @@
 		>
 			<option value="" disabled selected hidden>---Quận/Huyện---</option>
 			{#each location.districts as district}
-				<option value={district.code}>{district.name}</option>
+				<option value={district.code + '|' + district.name}>{district.name}</option>
 			{/each}
 		</select>
 
@@ -99,14 +119,23 @@
 			class="dui-select dui-select-sm dui-select-bordered w-full h-10"
 			disabled={location.wards.length == 0}
 			bind:this={ward}
+			on:change={(e) => {
+				//@ts-ignore
+				fullAddress += ' - ' + e.target.value.split('|')[1];
+			}}
 		>
 			<option value="" disabled selected hidden>---Phường/Xã---</option>
 			{#each location.wards as ward}
-				<option value={ward.code}>{ward.name}</option>
+				<option value={ward.code + '|' + ward.name}>{ward.name}</option>
 			{/each}
 		</select>
 	</div>
-	<input type="text" placeholder="Địa chỉ cụ thể" class="dui-input h-10 dui-input-bordered w-full" />
+	<input
+		type="text"
+		placeholder="Địa chỉ cụ thể"
+		class="dui-input h-10 dui-input-bordered w-full"
+		bind:value={detailAddress}
+	/>
 </div>
 
 <style>

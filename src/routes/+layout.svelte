@@ -4,9 +4,9 @@
 	import { Newspaper, Truck, User2, MapPin, FileText, LogOut, UserCircle } from 'lucide-svelte';
 	import type { PageData } from './$types';
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
-	import { Roles } from 'src/utils/interface';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	import { initLazy } from '$lib/lazyLoad';
+	import { Roles } from 'src/utils/enum';
 
 	initLazy();
 
@@ -15,7 +15,7 @@
 	export let data: PageData;
 
 	let manageRoute: string;
-	$: manageRoute = data.userData?.role.id == Roles.ADMIN ? '/admin' : '/manage';
+	$: manageRoute = data.userData?.role.id == Roles.ADMIN ? '/admin' : '/manage/customer-order';
 </script>
 
 <svelte:head>

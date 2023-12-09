@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { goto, invalidate } from '$app/navigation';
-	import { Roles, type StaffsInteface } from 'src/utils/interface';
+	import { Roles } from 'src/utils/enum';
+	import type { StaffsInteface } from 'src/utils/interface';
 	import { onMount } from 'svelte';
 
 	export let id: string,
-		staff: StaffsInteface | null = null;
+		staff: StaffsInteface | null = null,
+		title: string = 'nhân viên trưởng điểm';
 
 	let fullName: string,
 		email: string,
@@ -60,7 +62,6 @@
 			email,
 			role
 		};
-		console.log('🚀 ~ file: StaffsModal.svelte:63 ~ body:', body);
 
 		Object.values(body).some(async (value) => {
 			if (!value) {
@@ -103,7 +104,8 @@
 			<button class="dui-btn dui-btn-sm dui-btn-square dui-btn-ghost absolute right-2 top-3">✕</button>
 		</form>
 		<h3 class="text-xl text-center mb-2">
-			{staff ? 'Chỉnh sửa' : 'Thêm mới'} nhân viên trưởng điểm
+			{staff ? 'Chỉnh sửa' : 'Thêm mới'}
+			{title}
 		</h3>
 		<div class="dui-divider m-0 -mx-6" />
 		<main>

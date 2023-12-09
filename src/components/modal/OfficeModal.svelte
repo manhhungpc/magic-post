@@ -3,7 +3,8 @@
 	import { Autocomplete, popup } from '@skeletonlabs/skeleton';
 	import type { AutocompleteOption, PopupSettings } from '@skeletonlabs/skeleton';
 	import { X } from 'lucide-svelte';
-	import { OfficeType, Roles, type OfficesInterface, type StaffsInteface } from 'src/utils/interface';
+	import { OfficeType, Roles } from 'src/utils/enum';
+	import type { StaffsInteface, OfficesInterface } from 'src/utils/interface';
 	import { onMount } from 'svelte';
 
 	import { slide } from 'svelte/transition';

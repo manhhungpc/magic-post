@@ -4,15 +4,8 @@
 	import StaffsModel from 'src/components/modal/StaffsModal.svelte';
 	import type { PageData } from './$types';
 	import Loading from 'src/components/Loading.svelte';
-	import type { PaginationSettings } from '@skeletonlabs/skeleton';
 
 	export let data: PageData | any;
-	// let paginationSettings = {
-	// 	page: 0,
-	// 	limit: 10,
-	// 	size: paginate?.totalItems,
-	// 	amounts: [5, 10]
-	// } satisfies PaginationSettings;
 	console.log('🚀 ~ file: +page.svelte:9 ~ data:', data.staffs.promise);
 	function showStaffModal() {
 		(document.getElementById('admin_new_staff') as any).showModal();

@@ -17,7 +17,7 @@ h3 {
 	font-family: 'Inter', sans-serif !important;
 }
 html {
-	scrollbar-gutter: stable;
+	/* scrollbar-gutter: stable; */
 }
 
 body {
@@ -27,7 +27,7 @@ body {
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-	font-family: 'Open Sans', sans-serif;
+	font-family: 'Be Vietnam Pro', sans-serif;
 }
 
 ::-webkit-scrollbar {
@@ -40,6 +40,12 @@ body {
 @layer base {
 	.font-vn {
 		font-family: 'Be Vietnam Pro', sans-serif;
+	}
+
+	.title-font {
+		font-size: 22px;
+		font-weight: 800;
+		line-height: 28px;
 	}
 }
 
