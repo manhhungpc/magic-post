@@ -16,18 +16,30 @@ export default {
 		},
 		colors: {
 			ocean: '#2460E5',
-			fail: 'rgb(255, 49, 65)'
+			fail: 'rgb(255, 49, 65)',
+			greenNew: '#0FBA81',
+			'greenNew-600': '#0CA874',
+			process: '#EBB309',
+			'process-600': '#D3A108'
 		}
 	},
 	plugins: [
 		skeleton({
 			themes: { preset: ['crimson'] }
 		}),
+
 		require('daisyui')
 	],
 	daisyui: {
 		base: false,
 		prefix: 'dui-',
-		themes: ['garden']
+		themes: [
+			{
+				garden: {
+					...require('daisyui/src/theming/themes')['[data-theme=garden]'],
+					primary: '#D4163C'
+				}
+			}
+		]
 	}
 } satisfies Config;

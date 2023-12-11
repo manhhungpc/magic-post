@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
+	import { setUserStorage } from 'src/lib/userLocalStorage';
 	import { token } from 'src/utils/stores';
 
 	let username: string, password: string;
@@ -23,8 +24,13 @@
 
 		const data = await response.json();
 
+		const user = await fetch('/api/user/me', {
+			method: 'GET'
+		}).then((res) => res.json());
+		if (user.status == 200) setUserStorage(user.data);
+
 		loading = false;
-		if (data.status != 200) {
+		if (data.status != 200 || user.status != 200) {
 			error = data.error;
 			return;
 		}

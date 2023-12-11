@@ -1,13 +1,16 @@
 <script lang="ts">
 	import '../app.css';
-	import { TabGroup, AppBar, TabAnchor } from '@skeletonlabs/skeleton';
+	import { TabGroup, AppBar, TabAnchor, Drawer } from '@skeletonlabs/skeleton';
 	import { Newspaper, Truck, User2, MapPin, FileText, LogOut, UserCircle } from 'lucide-svelte';
 	import type { PageData } from './$types';
 	import { computePosition, autoUpdate, offset, shift, flip, arrow } from '@floating-ui/dom';
 	import { storePopup } from '@skeletonlabs/skeleton';
 	import { initLazy } from '$lib/lazyLoad';
 	import { Roles } from 'src/utils/enum';
+	import { initializeStores } from '@skeletonlabs/skeleton';
+	import FilterOrderDrawer from 'src/components/drawer/FilterOrderDrawer.svelte';
 
+	initializeStores();
 	initLazy();
 
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
@@ -21,6 +24,9 @@
 <svelte:head>
 	<title>MagicPost | Hệ thống quản lý chuyển phát</title>
 </svelte:head>
+<Drawer>
+	<FilterOrderDrawer />
+</Drawer>
 <header>
 	<AppBar class="w-full p-3 pl-6 h-16 justify-center !bg-tertiary-300">
 		<svelte:fragment slot="lead" />

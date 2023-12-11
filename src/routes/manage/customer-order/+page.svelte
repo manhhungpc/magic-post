@@ -1,13 +1,26 @@
 <script lang="ts">
-	import { Tab, TabGroup } from '@skeletonlabs/skeleton';
-	import { PlusCircle } from 'lucide-svelte';
+	import { Tab, TabGroup, type DrawerSettings } from '@skeletonlabs/skeleton';
+	import { Filter, PlusCircle } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
 	import { getUserStorage } from 'src/lib/userLocalStorage';
 	import { AlertTriangle } from 'lucide-svelte';
 	import { onMount } from 'svelte';
 	import { Roles } from 'src/utils/enum';
 	import type { StaffsInteface } from 'src/utils/interface';
+	import ListOrder from 'src/components/lists/ListOrder.svelte';
+	import type { PageData } from './$types';
+	import Loading from 'src/components/Loading.svelte';
+	import { getDrawerStore } from '@skeletonlabs/skeleton';
 
+	const drawerStore = getDrawerStore();
+	const filterSettings: DrawerSettings = {
+		id: 'filter-customer-orders',
+		bgDrawer: 'bg-[#efefef]',
+		width: 'md:w-[50vw] w-[100vw]',
+		padding: 'p-4',
+		rounded: 'rounded-lg'
+	};
+	export let data: PageData;
 	const user: StaffsInteface = getUserStorage();
 	let tabSet: 'all' | 'processing' | 'complete' = 'all';
 
@@ -38,6 +51,9 @@
 			>
 				<PlusCircle class="mr-1" size="20" /> Thêm mới
 			</button>
+			<button on:click={() => drawerStore.open(filterSettings)} class="btn variant-filled bg-greenNew-600 py-2">
+				<Filter class="mr-1" size="20" /> Lọc
+			</button>
 		</div>
 	</div>
 	<TabGroup rounded="rounded-tl-md rounded-tr-md" class="h-[calc(100%-6rem)]">
@@ -52,9 +68,15 @@
 		</Tab>
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
-			<div class="card !rounded-b-none h-full">
+			<div class="card !rounded-none h-full overflow-auto !bg-transparent">
 				{#if tabSet == 'all'}
-					(tab panel 1 contents)
+					{#await data.streamed?.orders}
+						<Loading message="Đang lấy dữ liệu mới nhất" />
+					{:then orders}
+						{#each orders.data.content as orderData}
+							<ListOrder {orderData} />
+						{/each}
+					{/await}
 				{:else if tabSet == 'processing'}
 					(tab panel 2 contents)
 				{:else if tabSet == 'complete'}
@@ -64,3 +86,9 @@
 		</svelte:fragment>
 	</TabGroup>
 </main>
+
+<style>
+	:global(.tab-panel) {
+		height: 100%;
+	}
+</style>

@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { LocationDepth, type LocationSchema } from 'src/utils/interface';
+	import { LocationDepth } from 'src/utils/enum';
+	import type { LocationSchema } from 'src/utils/interface';
+
 	import { onMount } from 'svelte';
 
 	export let target: 'gửi' | 'nhận';
@@ -137,13 +139,3 @@
 		bind:value={detailAddress}
 	/>
 </div>
-
-<style>
-	select:invalid {
-		color: #9ca3af;
-	}
-
-	select:focus {
-		color: #000;
-	}
-</style>

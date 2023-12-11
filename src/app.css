@@ -30,6 +30,14 @@ body {
 	font-family: 'Be Vietnam Pro', sans-serif;
 }
 
+select:invalid {
+	color: #9ca3af;
+}
+
+select:focus {
+	color: #000;
+}
+
 ::-webkit-scrollbar {
 	width: 6px;
 }

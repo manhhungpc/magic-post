@@ -1,7 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
-import { LocationDepth } from 'src/utils/interface';
 import location from 'src/data/location-vn.json';
+import { LocationDepth } from 'src/utils/enum';
 
 export const GET: RequestHandler = async ({ url }) => {
 	try {

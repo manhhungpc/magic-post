@@ -1,36 +1,47 @@
-<script lang="ts"></script>
+<script lang="ts">
+	import { formatDate } from 'src/utils/helper';
+	import type { Order } from 'src/utils/interface';
 
-<div class="mt-5 mb-5 flex flex-col items-center" style="background-color: white; width: 1100px">
-	<div class="mt-2 mb-2 w-full flex justify-around items-center">
+	export let invoiceData: Order;
+</script>
+
+<main class="flex flex-col items-center bg-[#fff]">
+	<div class="my-1 w-full flex justify-around items-center">
 		<span class="">
-			<img src="/img/logo-new.png" alt="logo" class="h-16 overflow-hidden" />
+			<img src="/img/logo-new.png" alt="logo" class="h-20 overflow-hidden" />
 		</span>
 		<span>
-			<img src="https://placehold.co/100" alt="QR code" />
+			<img src="https://placehold.co/80" alt="QR code" />
 		</span>
 	</div>
 	<div class="invoice-table w-[90%] flex flex-col">
 		<div class="flex">
 			<div class="invoice-cell w-[50%]">
 				<p><strong>1. Họ tên địa chỉ người gửi:</strong></p>
-				<p>Nguyễn Văn A</p>
-				<p>23 Ngõ 58 Phố Trần Bình, Mai Dịch, Cầu Giấy, Hà Nội</p>
+				<p>{invoiceData.senderCustomer.name}</p>
+				<p>{invoiceData.senderCustomer.address}</p>
 				<div class="h-[1rem]" />
-				<p><strong>Điện thoại:</strong> 0123456789</p>
+				<p><strong>Điện thoại:</strong> {invoiceData.senderCustomer.phoneNo}</p>
 				<div class="flex">
-					<div class="w-[50%]"><strong>Mã khách hàng:</strong></div>
-					<div class="w-[50%]"><strong>Mã bưu chính:</strong> 10179</div>
+					<div class="w-[50%]"><strong>Mã khách hàng:</strong> {invoiceData.senderCustomer.customerId}</div>
+					<div class="w-[50%]">
+						<strong>Mã bưu chính:</strong>
+						{invoiceData.senderCustomer.transactionPoint.pointId}
+					</div>
 				</div>
 			</div>
 			<div class="invoice-cell w-[50%]">
 				<p><strong>2. Họ tên địa chỉ người nhận:</strong></p>
-				<p>Nguyễn Văn B</p>
-				<p>144 đường Xuân Thủy, quận Cầu Giấy, Hà Nội</p>
+				<p>{invoiceData.receiverCustomer.name}</p>
+				<p>{invoiceData.receiverCustomer.address}</p>
 				<div class="h-[1rem]" />
-				<p><strong>Mã ĐH:</strong></p>
+				<p><strong>Mã ĐH:</strong> {invoiceData.orderId}</p>
 				<div class="flex">
-					<div class="w-[50%]"><strong>Điện thoại:</strong> 0987654321</div>
-					<div class="w-[50%]"><strong>Mã bưu chính:</strong> 01089</div>
+					<div class="w-[50%]"><strong>Điện thoại:</strong> {invoiceData.receiverCustomer.phoneNo}</div>
+					<div class="w-[50%]">
+						<strong>Mã bưu chính:</strong>
+						{invoiceData.receiverCustomer.transactionPoint.pointId}
+					</div>
 				</div>
 			</div>
 		</div>
@@ -110,7 +121,7 @@
 					<div class="flex grow justify-between mt-1">
 						<div class="w-[50%] flex flex-col justify-between">
 							<p><strong>8. Ngày giờ gửi:</strong></p>
-							<p class="mb-2">07h52/18/10/2023</p>
+							<p class="mb-2">{formatDate(invoiceData.createAt)}</p>
 						</div>
 						<div class="w-[50%]">
 							<p><strong>Chữ ký người gửi</strong></p>
@@ -125,7 +136,7 @@
 							<p><strong>9. Cước:</strong></p>
 							<div class="flex justify-between">
 								<span>a. Cước chính:</span>
-								<span class="mr-[4px]">9.500</span>
+								<span class="mr-[4px]">{invoiceData.mainCharge.toLocaleString()}</span>
 							</div>
 							<div class="flex justify-between">
 								<span>b. Phụ phí:</span>
@@ -201,7 +212,7 @@
 	<div class="mt-1 mb-5">
 		<p><strong>Hotline: 1900 5454 33 - Website: www.ems.com.vn - Email: cskh@ems.com.vn</strong></p>
 	</div>
-</div>
+</main>
 
 <style>
 	.invoice-cell {

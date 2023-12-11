@@ -8,19 +8,13 @@
 	import { Roles } from 'src/utils/enum.js';
 
 	export let data;
+	console.log('🚀 ~ file: +layout.svelte:11 ~ data:', data);
 	$: if (!data.accessToken) token.set('');
 	let expand: boolean = true;
 
 	let isOpenCustomerOrder: boolean;
 
 	$: isOpenCustomerOrder = ['/manage/customer-order', '/manage/customer-order/add'].includes($page.url.pathname);
-
-	onMount(async () => {
-		const user = await fetch('/api/user/me', {
-			method: 'GET'
-		}).then((res) => res.json());
-		if (user.status == 200) setUserStorage(user.data);
-	});
 </script>
 
 <div class="wrapper">
@@ -32,7 +26,7 @@
 				</span>
 			</AppRailTile>
 
-			{#if data.userData.role != Roles.GATHERS_STAFF || data.userData.role != Roles.TRANSACTION_STAFF}
+			{#if data.userData.role == Roles.GATHERING_LEADER || data.userData.role == Roles.TRANSACTION_LEADER}
 				<AppRailAnchor href="/manage/staffs" selected={$page.url.pathname === '/manage/staffs'}>
 					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
 						<Users /> <span class:hidden={!expand}>Nhân viên</span>
