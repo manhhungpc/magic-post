@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { ArrowsUpFromLine, PencilLine, Trash2 } from 'lucide-svelte';
 	import type { GatherOrderInteface } from 'src/utils/interface';
+	import EmptyData from '../EmptyData.svelte';
 
 	export let tableData: GatherOrderInteface[] = [];
 
@@ -17,7 +18,7 @@
 </script>
 
 <div class="table-container !rounded-none h-full">
-	<table class="table table-hover overflow-auto !bg-transparent !rounded-none">
+	<table class="table table-hover overflow-auto !bg-transparent !rounded-none" class:h-full={tableData.length == 0}>
 		<thead class="!bg-white relative z-10">
 			<tr>
 				<th>
@@ -35,36 +36,42 @@
 				<th>Thao tác</th>
 			</tr>
 		</thead>
-		<tbody>
-			{#each tableData as row, i}
-				<tr class:row-selected={checkedOrder[i] == true}>
-					<td>
-						<input
-							class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
-							type="checkbox"
-							bind:checked={checkedOrder[i]}
-							on:change={() => {
-								if (checkedOrder[i] == false && checkAll == true) checkAll = false;
-							}}
-						/>
-					</td>
-					<td>{i + 1}</td>
-					<td>{row.orderId}</td>
-					<td>{row.address}</td>
-					<td>
-						<div class=" p-1 bg-greenNew-600 w-min rounded text-[#fff]">Mới</div>
-					</td>
-					<td class="flex items-center gap-3">
-						<button type="button" class="btn-icon variant-filled h-8 w-8"><PencilLine size="16" /></button>
-						<div class="dui-tooltip dui-tooltip-bottom" data-tip="Đơn giao dịch mới">
-							<button type="button" class="btn-icon variant-filled bg-ocean h-8 w-8">
-								<ArrowsUpFromLine size="16" />
-							</button>
-						</div>
-					</td>
-				</tr>
-			{/each}
-		</tbody>
+		{#if tableData.length == 0}
+			<tbody class="h-full relative">
+				<EmptyData css="absolute top-1/4" message="Không có dữ liệu!" />
+			</tbody>
+		{:else}
+			<tbody>
+				{#each tableData as row, i}
+					<tr class:row-selected={checkedOrder[i] == true}>
+						<td>
+							<input
+								class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
+								type="checkbox"
+								bind:checked={checkedOrder[i]}
+								on:change={() => {
+									if (checkedOrder[i] == false && checkAll == true) checkAll = false;
+								}}
+							/>
+						</td>
+						<td>{i + 1}</td>
+						<td>{row.orderId}</td>
+						<td>{row.address}</td>
+						<td>
+							<div class=" p-1 bg-greenNew-600 w-min rounded text-[#fff]">Mới</div>
+						</td>
+						<td class="flex items-center gap-3">
+							<button type="button" class="btn-icon variant-filled h-8 w-8"><PencilLine size="16" /></button>
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Đơn giao dịch mới">
+								<button type="button" class="btn-icon variant-filled bg-ocean h-8 w-8">
+									<ArrowsUpFromLine size="16" />
+								</button>
+							</div>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		{/if}
 		<tfoot />
 	</table>
 </div>

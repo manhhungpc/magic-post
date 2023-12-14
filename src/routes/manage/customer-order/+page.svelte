@@ -12,6 +12,7 @@
 	import FilterOrderModal from 'src/components/modal/FilterOrderModal.svelte';
 	import { scale } from 'svelte/transition';
 	import Paginator from 'src/components/Paginator.svelte';
+	import EmptyData from 'src/components/EmptyData.svelte';
 
 	export let data: PageData;
 	const user: StaffsInteface = getUserStorage();
@@ -71,12 +72,16 @@
 	{#await data.streamed?.orders}
 		<Loading message="Đang lấy dữ liệu mới nhất" />
 	{:then orders}
-		<div class="h-[calc(100%-7rem)] card !rounded-none overflow-auto !bg-transparent">
-			{#each orders.data.content as orderData}
-				<ListOrder {orderData} on:change={(e) => showGatherOrderBtn(e, orderData.id)} />
-			{/each}
-		</div>
-		<Paginator paginate={orders.data.paginate} />
+		{#if orders.data.content.length == 0}
+			<EmptyData message="Không có dữ liệu" />
+		{:else}
+			<div class="h-[calc(100%-7rem)] card !rounded-none overflow-auto !bg-transparent">
+				{#each orders.data.content as orderData}
+					<ListOrder {orderData} on:change={(e) => showGatherOrderBtn(e, orderData.id)} />
+				{/each}
+			</div>
+			<Paginator paginate={orders.data.paginate} />
+		{/if}
 	{/await}
 </main>
 

@@ -1,6 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { API_URL } from '$env/static/private';
+import { removeNullQueries } from 'src/utils/helper';
 
 enum OrderType {
 	CUSTOMER = 'SC',
@@ -11,19 +12,17 @@ enum OrderType {
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	try {
 		const token = cookies.get('token') as string;
-		const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
-		const pageNumber = (url.searchParams.get('pageNumber') as string) ?? 1;
+		const requestQuery = new URLSearchParams(url.search);
+
 		const query = new URLSearchParams({
-			typeOrderFrom: url.searchParams.get('orderType') as OrderType,
-			typeOrderDelivery: url.searchParams.get('deliverStatus') as string,
-			pageSize,
-			pageNumber
+			typeOrderFrom: 'SC'
 		});
 
-		const filterQuery = new URLSearchParams();
-		for (let [key, value] of query.entries()) {
-			if (value != 'null') filterQuery.append(key, value);
+		for (let [key, value] of requestQuery.entries()) {
+			query.append(key, value);
 		}
+
+		const filterQuery = removeNullQueries(query);
 		const response = await fetch(`${API_URL}/api/v1/delivery-points/orders?${filterQuery}`, {
 			method: 'GET',
 			headers: {

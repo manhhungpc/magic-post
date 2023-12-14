@@ -9,15 +9,9 @@ enum OrderType {
 export const load: PageServerLoad = async ({ parent, fetch, url }) => {
 	await parent();
 	try {
-		const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
-		const pageNumber = (url.searchParams.get('pageNumber') as string) ?? 1;
+		const requestQuery = new URLSearchParams(url.search);
 
-		const query = new URLSearchParams({
-			orderType: 'SC',
-			pageSize,
-			pageNumber
-		});
-		const orders = fetch(`/api/orders/customer?${query}`, {
+		const orders = fetch(`/api/orders/customer?${requestQuery}`, {
 			method: 'GET'
 		}).then((res) => res.json());
 

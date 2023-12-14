@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { Paginator, type PaginationSettings } from '@skeletonlabs/skeleton';
+	import { mergeQueries } from 'src/utils/helper';
 	import type { Paginate } from 'src/utils/interface';
 
 	export let paginate: Paginate;
@@ -12,18 +14,24 @@
 	} satisfies PaginationSettings;
 
 	function onPageChange(e: CustomEvent): void {
-		const pageSize = paginate.perPage;
+		const pageSize = String(paginate.perPage);
 		const pageNumber = e.detail + 1;
-		// paginationSettings.page = e.detail + 1;
 
-		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+		const currentQuery = new URLSearchParams($page.url.searchParams.toString());
+		const newQuery = mergeQueries(currentQuery, new URLSearchParams({ pageSize, pageNumber }));
+
+		goto(`?${newQuery}`);
 	}
 
 	function onAmountChange(e: CustomEvent) {
 		const pageSize = e.detail;
-		const pageNumber = paginate.currentPage;
+		const pageNumber = '1';
 		paginationSettings.limit = pageSize;
-		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
+
+		const currentQuery = new URLSearchParams($page.url.searchParams.toString());
+		const newQuery = mergeQueries(currentQuery, new URLSearchParams({ pageSize, pageNumber }));
+
+		goto(`?${newQuery}`);
 	}
 </script>
 

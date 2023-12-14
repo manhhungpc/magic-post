@@ -1,28 +1,37 @@
 <script lang="ts">
 	import type { AutocompleteOption, PopupSettings } from '@skeletonlabs/skeleton';
-	import { Catergority, LocationDepth, OrderMsgStatus, OrderStatus } from 'src/utils/enum';
+	import { Catergority, LocationDepth } from 'src/utils/enum';
 	import { onMount } from 'svelte';
 	import { Autocomplete, popup } from '@skeletonlabs/skeleton';
 	import type { LocationSchema } from 'src/utils/interface';
 	import { X } from 'lucide-svelte';
-	import { removeAccents } from 'src/utils/helper';
+	import { mergeQueries, removeAccents } from 'src/utils/helper';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 
 	export let id: string;
 	let locations: LocationSchema[];
 	let request = {
-		type: '',
+		categority: '',
 		status: '',
 		sender: '',
 		receiver: '',
-		address: '',
+		senderAddress: '',
+		receiverAddress: '',
 		fromDate: '',
 		toDate: ''
 	};
 
 	let locationAutocomplete: AutocompleteOption<string>[] = [];
-	const locationSettings: PopupSettings = {
+	const senderSettings: PopupSettings = {
 		event: 'focus-click',
-		target: 'location',
+		target: 'sender',
+		placement: 'top'
+	};
+
+	const receiverSettings: PopupSettings = {
+		event: 'focus-click',
+		target: 'receiver',
 		placement: 'top'
 	};
 
@@ -35,21 +44,51 @@
 		return data.data;
 	}
 
-	function onLocationSelection(event: CustomEvent<AutocompleteOption<string>>): void {
-		request.address = event.detail.label;
+	function selectSenderAddress(event: CustomEvent<AutocompleteOption<string>>): void {
+		request.senderAddress = event.detail.label;
+	}
+
+	function selectReceiverAddress(event: CustomEvent<AutocompleteOption<string>>): void {
+		request.receiverAddress = event.detail.label;
 	}
 
 	function resetFilter() {
 		request = {
-			type: '',
+			categority: '',
 			status: '',
 			sender: '',
 			receiver: '',
-			address: '',
+			senderAddress: '',
+			receiverAddress: '',
 			fromDate: '',
 			toDate: ''
 		};
 	}
+
+	function onFilter() {
+		const query = new URLSearchParams({
+			categorityOrder: request.categority,
+			status: request.status,
+			senderName: request.sender,
+			receiverName: request.receiver,
+			senderAddress: request.senderAddress,
+			receiverAddress: request.receiverAddress,
+			createAtFrom: request.fromDate,
+			createAtTo: request.toDate
+		});
+
+		const currentQuery = new URLSearchParams($page.url.searchParams.toString());
+		if (currentQuery.get('pageNumber')) {
+			currentQuery.set('pageNumber', '1');
+		}
+
+		const newQuery = mergeQueries(currentQuery, query);
+
+		goto(`?${newQuery}`);
+
+		(document.getElementById(id) as any).close();
+	}
+
 	onMount(async () => {
 		locations = await getLocationData(LocationDepth.PROVINCE);
 		locations.map((loc) => {
@@ -77,19 +116,18 @@
 
 		<div class="grid grid-cols-2 gap-3 w-full pb-2">
 			<div>
-				<label class="dui-label pb-1" for="status">
-					<span class="dui-label-text">Trạng thái</span>
+				<label class="dui-label pb-1" for="type">
+					<span class="dui-label-text">Loại hàng</span>
 				</label>
 				<select
 					name="type"
 					required
 					class="dui-select dui-select-sm dui-select-bordered w-full h-10"
-					bind:value={request.status}
+					bind:value={request.categority}
 				>
-					<option value="" disabled selected hidden>Chọn trạng thái</option>
-					{#each Object.values(OrderMsgStatus) as msg, i}
-						<option value={i}>{msg}</option>
-					{/each}
+					<option value="" disabled selected hidden>Chọn loại hàng gửi</option>
+					<option value={Catergority.DOCUMENT}>Tài liệu</option>
+					<option value={Catergority.PACKAGE}>Hàng gửi</option>
 				</select>
 			</div>
 			<div>
@@ -132,28 +170,54 @@
 					bind:value={request.receiver}
 				/>
 			</div>
+
 			<div>
 				<label class="dui-label pb-1" for="address">
-					<span class="dui-label-text">Địa chỉ (người gửi, người nhận)</span>
+					<span class="dui-label-text">Địa chỉ người gửi</span>
 				</label>
 				<input
 					type="search"
 					name="sender"
 					placeholder="Nhập địa chỉ"
 					class="autocomplete dui-input h-10 dui-input-bordered w-full"
-					bind:value={request.address}
-					use:popup={locationSettings}
+					bind:value={request.senderAddress}
+					use:popup={senderSettings}
 				/>
-				<div data-popup="location" class="card !bg-[#fff] w-full max-w-sm max-h-60 p-4 overflow-y-auto">
+				<div data-popup="sender" class="card !bg-[#fff] w-full max-w-sm max-h-60 p-4 overflow-y-auto">
 					<div class="w-full flex justify-end sticky top-0">
 						<button class="dui-btn dui-btn-square dui-btn-xs">
 							<X size={15} />
 						</button>
 					</div>
 					<Autocomplete
-						bind:input={request.address}
+						bind:input={request.senderAddress}
 						options={locationAutocomplete}
-						on:selection={onLocationSelection}
+						on:selection={selectSenderAddress}
+					/>
+				</div>
+			</div>
+			<div>
+				<label class="dui-label pb-1" for="address">
+					<span class="dui-label-text">Địa chỉ người nhận</span>
+				</label>
+				<input
+					type="search"
+					name="sender"
+					placeholder="Nhập địa chỉ"
+					class="autocomplete dui-input h-10 dui-input-bordered w-full"
+					bind:value={request.receiverAddress}
+					use:popup={receiverSettings}
+				/>
+				<div data-popup="receiver" class="card !bg-[#fff] w-full max-w-sm max-h-60 p-4 overflow-y-auto">
+					<div class="w-full flex justify-end sticky top-0">
+						<button class="dui-btn dui-btn-square dui-btn-xs">
+							<X size={15} />
+						</button>
+					</div>
+					<Autocomplete
+						bind:input={request.receiverAddress}
+						options={locationAutocomplete}
+						on:selection={selectReceiverAddress}
 					/>
 				</div>
 			</div>
@@ -167,7 +231,7 @@
 				<form method="dialog">
 					<button class="btn variant-outline-tertiary hover:text-primary-500 hover:variant-outline-error"> Hủy </button>
 				</form>
-				<button class="btn variant-filled bg-primary-600"> Lọc </button>
+				<button class="btn variant-filled bg-primary-600" on:click={onFilter}> Lọc </button>
 			</div>
 		</div>
 	</div>

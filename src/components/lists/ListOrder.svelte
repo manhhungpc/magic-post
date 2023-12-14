@@ -52,12 +52,12 @@
 
 		<div style="border-right: 1px solid #a3a3a3;">
 			<b>Người gửi:</b>
-			<p>{orderData.senderCustomer.name} - {orderData.senderCustomer.phoneNo}</p>
+			<p>{orderData.senderCustomer.name} &nbsp; (<b>SĐT: &nbsp;</b>{orderData.senderCustomer.phoneNo})</p>
 			<p>{orderData.senderCustomer.address}</p>
 		</div>
 		<div>
 			<b>Người nhận:</b>
-			<p>{orderData.receiverCustomer.name} - {orderData.receiverCustomer.phoneNo}</p>
+			<p>{orderData.receiverCustomer.name} &nbsp; (<b>SĐT: &nbsp;</b>{orderData.receiverCustomer.phoneNo})</p>
 			<p>{orderData.receiverCustomer.address}</p>
 		</div>
 	</div>
