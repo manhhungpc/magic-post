@@ -4,6 +4,7 @@
 	import StaffsModal from 'src/components/modal/StaffsModal.svelte';
 	import StaffsTable from 'src/components/table/StaffsTable.svelte';
 	import type { PageData } from './$types';
+	import { getUserStorage } from 'src/lib/userLocalStorage';
 
 	export let data: PageData;
 	function showStaffModal() {
@@ -17,7 +18,7 @@
 		<button class="btn variant-filled bg-ocean" on:click={showStaffModal}>
 			<PlusCircle class="mr-1" size="20" /> Thêm mới
 		</button>
-		<StaffsModal id="manager_new_staff" title="nhân viên" />
+		<StaffsModal id="manager_new_staff" title="nhân viên" showSelectRole={false} />
 	</div>
 	<div class="card p-4 mb-3 !bg-[#fff]">
 		<span class="mr-2">Tìm kiếm</span>

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Tab, TabGroup, type DrawerSettings } from '@skeletonlabs/skeleton';
-	import { Filter, PlusCircle } from 'lucide-svelte';
+	import { Boxes, Filter, PlusCircle } from 'lucide-svelte';
 	import { goto } from '$app/navigation';
 	import { getUserStorage } from 'src/lib/userLocalStorage';
 	import { AlertTriangle } from 'lucide-svelte';
@@ -10,25 +9,30 @@
 	import ListOrder from 'src/components/lists/ListOrder.svelte';
 	import type { PageData } from './$types';
 	import Loading from 'src/components/Loading.svelte';
-	import { getDrawerStore } from '@skeletonlabs/skeleton';
+	import FilterOrderModal from 'src/components/modal/FilterOrderModal.svelte';
+	import { scale } from 'svelte/transition';
+	import Paginator from 'src/components/Paginator.svelte';
 
-	const drawerStore = getDrawerStore();
-	const filterSettings: DrawerSettings = {
-		id: 'filter-customer-orders',
-		bgDrawer: 'bg-[#efefef]',
-		width: 'md:w-[50vw] w-[100vw]',
-		padding: 'p-4',
-		rounded: 'rounded-lg'
-	};
 	export let data: PageData;
 	const user: StaffsInteface = getUserStorage();
-	let tabSet: 'all' | 'processing' | 'complete' = 'all';
+	let checkedOrders = new Set();
 
 	onMount(() => {
 		if (![Roles.TRANSACTION_LEADER, Roles.TRANSACTION_STAFF].includes(user.role?.id)) {
 			goto('/manage/transaction-order');
 		}
 	});
+
+	function showFilterModal() {
+		(document.getElementById('filter_customer_order') as any).showModal();
+	}
+
+	function showGatherOrderBtn(e: any, id: string) {
+		const cb = e.target;
+		if (cb.checked) checkedOrders.add(id);
+		else checkedOrders.delete(id);
+		checkedOrders = checkedOrders;
+	}
 </script>
 
 <main class="h-full">
@@ -44,6 +48,15 @@
 					<AlertTriangle color="#FFBE00" strokeWidth={3} />
 				</div>
 			{/if}
+			{#if checkedOrders.size > 0}
+				<button class="btn variant-filled bg-greenNew-600 py-2" transition:scale>
+					<Boxes class="mr-1" size="20" /> Giao đến điểm tập kết
+				</button>
+			{/if}
+			<input type="text" name="sender" placeholder="Tìm mã đơn hàng" class="dui-input h-10 dui-input-bordered w-full" />
+			<button on:click={showFilterModal} class="btn variant-filled bg-primary-500 py-2">
+				<Filter class="mr-1" size="20" /> Lọc
+			</button>
 			<button
 				on:click={() => goto('/manage/customer-order/add')}
 				disabled={!user?.workAt}
@@ -51,40 +64,20 @@
 			>
 				<PlusCircle class="mr-1" size="20" /> Thêm mới
 			</button>
-			<button on:click={() => drawerStore.open(filterSettings)} class="btn variant-filled bg-greenNew-600 py-2">
-				<Filter class="mr-1" size="20" /> Lọc
-			</button>
+			<FilterOrderModal id="filter_customer_order" />
 		</div>
 	</div>
-	<TabGroup rounded="rounded-tl-md rounded-tr-md" class="h-[calc(100%-6rem)]">
-		<Tab bind:group={tabSet} name="tab1" value="all" class="w-1/3">
-			<span class:text-surface-400={tabSet != 'all'}>Toàn bộ đơn</span>
-		</Tab>
-		<Tab bind:group={tabSet} name="tab2" value="processing" class="w-1/3">
-			<span class:text-surface-400={tabSet != 'processing'}>Đang xử lý</span>
-		</Tab>
-		<Tab bind:group={tabSet} name="tab3" value="complete" class="w-1/3">
-			<span class:text-surface-400={tabSet != 'complete'}>Đã hoàn thành</span>
-		</Tab>
-		<!-- Tab Panels --->
-		<svelte:fragment slot="panel">
-			<div class="card !rounded-none h-full overflow-auto !bg-transparent">
-				{#if tabSet == 'all'}
-					{#await data.streamed?.orders}
-						<Loading message="Đang lấy dữ liệu mới nhất" />
-					{:then orders}
-						{#each orders.data.content as orderData}
-							<ListOrder {orderData} />
-						{/each}
-					{/await}
-				{:else if tabSet == 'processing'}
-					(tab panel 2 contents)
-				{:else if tabSet == 'complete'}
-					(tab panel 3 contents)
-				{/if}
-			</div>
-		</svelte:fragment>
-	</TabGroup>
+	<div class="dui-divider m-0" />
+	{#await data.streamed?.orders}
+		<Loading message="Đang lấy dữ liệu mới nhất" />
+	{:then orders}
+		<div class="h-[calc(100%-7rem)] card !rounded-none overflow-auto !bg-transparent">
+			{#each orders.data.content as orderData}
+				<ListOrder {orderData} on:change={(e) => showGatherOrderBtn(e, orderData.id)} />
+			{/each}
+		</div>
+		<Paginator paginate={orders.data.paginate} />
+	{/await}
 </main>
 
 <style>

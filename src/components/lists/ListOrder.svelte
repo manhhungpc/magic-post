@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { CheckCircle, Clock8, Eye, PencilLine } from 'lucide-svelte';
-	import { Catergority, OrderStatus } from 'src/utils/enum';
+	import { Eye, PackagePlus, PencilLine } from 'lucide-svelte';
+	import { Catergority } from 'src/utils/enum';
 	import type { Order } from 'src/utils/interface';
 
 	export let orderData: Order;
@@ -15,6 +15,7 @@
 				class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
 				type="checkbox"
 				bind:checked
+				on:change
 			/>
 			<b>Mã đơn: &nbsp;</b>
 			<span class="text-primary-400">
@@ -32,13 +33,10 @@
 			</button>
 		</div>
 
-		<div class="flex" style="border-right: 1px solid #a3a3a3;">
+		<div class="flex gap-1" style="border-right: 1px solid #a3a3a3;">
 			<b>Trạng thái:</b>
-			{#if orderData.orderDelivery.status == OrderStatus.FAILED_DELIVERY || orderData.orderDelivery.status == OrderStatus.SUCCESS_DELIVERY}
-				<span class="flex gap-1 text-greenNew">&nbsp;Đã hoàn thành <CheckCircle size={18} /></span>
-			{:else}
-				<span class="flex gap-1 text-process">&nbsp; Đang xử lý <Clock8 size={18} /></span>
-			{/if}
+
+			<span class="flex items-center gap-1 text-greenNew">Mới <PackagePlus size={18} /></span>
 		</div>
 
 		<div class="grid grid-cols-2">

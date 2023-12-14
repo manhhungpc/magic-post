@@ -1,3 +1,5 @@
+import rmAccent from 'remove-accents';
+
 export function formatDate(date: string) {
 	// Format time as "hh:mm"
 	const time = new Date(date).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -10,4 +12,9 @@ export function formatDate(date: string) {
 	});
 
 	return `${time}/ ${formattedDate}`;
+}
+
+export function removeAccents(string: string){
+	const result = rmAccent(string);
+	return result
 }

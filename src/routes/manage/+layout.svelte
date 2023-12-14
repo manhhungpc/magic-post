@@ -3,12 +3,12 @@
 	import { page } from '$app/stores';
 	import { AlignJustify, Users, Package, Boxes, ScrollText, Truck } from 'lucide-svelte';
 	import { token } from 'src/utils/stores.js';
-	import { onMount } from 'svelte';
-	import { setUserStorage } from 'src/lib/userLocalStorage.js';
 	import { Roles } from 'src/utils/enum.js';
+	import { getUserStorage } from 'src/lib/userLocalStorage.js';
 
 	export let data;
-	console.log('🚀 ~ file: +layout.svelte:11 ~ data:', data);
+	const user = getUserStorage();
+
 	$: if (!data.accessToken) token.set('');
 	let expand: boolean = true;
 
@@ -38,16 +38,18 @@
 					<Package /> <span class:hidden={!expand}>Đơn đặt hàng</span>
 				</span>
 			</AppRailAnchor>
-			<AppRailAnchor href="/manage/transaction-order" selected={$page.url.pathname === '/manage/transaction-order'}>
-				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
-					<ScrollText /> <span class:hidden={!expand}>Đơn giao dịch</span>
-				</span>
-			</AppRailAnchor>
 			<AppRailAnchor href="/manage/gathering-order" selected={$page.url.pathname === '/manage/gathering-order'}>
 				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
 					<Boxes /> <span class:hidden={!expand}>Đơn tập kết</span>
 				</span>
 			</AppRailAnchor>
+			{#if user.role?.id != Roles.TRANSACTION_STAFF && user.role?.id != Roles.TRANSACTION_LEADER}
+				<AppRailAnchor href="/manage/transaction-order" selected={$page.url.pathname === '/manage/transaction-order'}>
+					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+						<ScrollText /> <span class:hidden={!expand}>Đơn giao dịch</span>
+					</span>
+				</AppRailAnchor>
+			{/if}
 			<AppRailAnchor href="/manage/delivery" selected={$page.url.pathname === '/manage/delivery'}>
 				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
 					<Truck /> <span class:hidden={!expand}>Đơn giao hàng</span>

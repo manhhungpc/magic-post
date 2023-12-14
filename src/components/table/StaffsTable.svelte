@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { Paginator, type PaginationSettings } from '@skeletonlabs/skeleton';
 	import { PencilLine, Trash2 } from 'lucide-svelte';
 	import type { Paginate, StaffsInteface } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import StaffsModal from '../modal/StaffsModal.svelte';
 	import DeleteConfirmModal from '../modal/DeleteConfirmModal.svelte';
 	import { goto, invalidate } from '$app/navigation';
+	import Paginator from '../Paginator.svelte';
+	import type { PaginationSettings } from '@skeletonlabs/skeleton';
 
 	export let tableData: StaffsInteface[] = [],
 		paginate: Paginate;
@@ -108,20 +109,9 @@
 		<tfoot />
 	</table>
 </div>
-<div class="px-3 flex items-center gap-3 bg-[#fff] h-14 w-full rounded-b-md">
-	<span class=" whitespace-nowrap">Số hàng trên trang : </span>
-	<Paginator
-		bind:settings={paginationSettings}
-		on:page={onPageChange}
-		on:amount={onAmountChange}
-		showPreviousNextButtons={true}
-		class="w-full bg-[#fff]"
-		amountText=""
-		showNumerals
-		maxNumerals={1}
-		buttonClasses="!px-3 !py-1.5 fill-current hover:fill-primary-500"
-	/>
-</div>
+{#if tableData.length != 0}
+	<Paginator {paginate} />
+{/if}
 
 <style>
 	thead th {

@@ -25,19 +25,25 @@ export enum LocationDepth {
 }
 
 export enum OrderStatus {
-	CONFIRM = 9, // Xác nhận đơn hàng từ khách hàng hoặc điểm khác
-	CREATED = 12, // Tạo yêu càu đơn hàng đến điểm tiếp theo
-	LEFT = 15, // Đơn hàng đã rời điểm hiện tại
-	DELIVERING = 18,
-	SUCCESS_DELIVERY = 21,
-	FAILED_DELIVERY = 24
+	NEW = 1,
+	PROCESSING = 2,
+	CONFIRM_SEND = 3,
+	CONFIRM_RECEIVE = 4,
+	SUCCESS_DELIVERY = 5,
+	FAILED_DELIVERY = 6
 }
 
 export enum OrderMsgStatus {
-	CONFIRM = 'Đã xác nhận', // Xác nhận đơn hàng từ khách hàng hoặc điểm khác
-	CREATED = 'Tạo mới', // Tạo yêu càu đơn hàng đến điểm tiếp theo
-	LEFT = 'Đã rời điểm', // Đơn hàng đã rời điểm hiện tại
-	DELIVERING = 'Đang vận chuyển',
+	NEW = 'Mới',
+	PROCESSING = 'Đang xử lý',
+	CONFIRM_SEND = 'Xác nhận đã rời điểm', 
+	CONFIRM_RECEIVE = 'Xác nhận đã đến',
 	SUCCESS_DELIVERY = 'Vận chuyển thành công',
 	FAILED_DELIVERY = 'Vận chuyển không thành công'
+}
+
+export enum DeliveryStatus {
+	INCOMING = 1,
+	PROCESSING = 2,
+	LEAVE = 3
 }
