@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { Eye, PackagePlus, PencilLine } from 'lucide-svelte';
 	import { Catergority } from 'src/utils/enum';
 	import type { Order } from 'src/utils/interface';
 
-	export let orderData: Order;
+	export let orderData: Order, id: string;
 
 	let checked = false;
 </script>
@@ -24,11 +25,15 @@
 		</div>
 		<div class="flex justify-end gap-3">
 			<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xem chi tiết">
-				<button type="button" class="btn-icon variant-filled h-8 w-8">
+				<button
+					type="button"
+					class="btn-icon bg-orange variant-filled h-8 w-8"
+					on:click={() => goto(`/manage/customer-order/${id}`)}
+				>
 					<Eye size="16" />
 				</button>
 			</div>
-			<button type="button" class="btn-icon variant-filled h-8 w-8">
+			<button type="button" class="btn-icon dui-btn-outline dui-btn-secondary border border-orange h-8 w-8">
 				<PencilLine size="16" />
 			</button>
 		</div>

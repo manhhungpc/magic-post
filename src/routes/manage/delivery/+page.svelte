@@ -2,7 +2,7 @@
 	import { TabGroup, Tab } from '@skeletonlabs/skeleton';
 	import GatherOrdersTable from 'src/components/table/GatherOrdersTable.svelte';
 
-	let tabSet: 'coming' | 'processing' = 'processing';
+	let tabSet: 'coming' | 'processing' | 'complete' = 'processing';
 </script>
 
 <main class="h-full">
@@ -13,8 +13,8 @@
 		<Tab bind:group={tabSet} name="tab1" value="coming" class="w-1/3">
 			<span class:text-surface-400={tabSet != 'coming'}>Đang giao</span>
 		</Tab>
-		<Tab bind:group={tabSet} name="tab1" value="coming" class="w-1/3">
-			<span class:text-surface-400={tabSet != 'coming'}>Đã hoàn thành</span>
+		<Tab bind:group={tabSet} name="tab1" value="complete" class="w-1/3">
+			<span class:text-surface-400={tabSet != 'complete'}>Đã hoàn thành</span>
 		</Tab>
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">

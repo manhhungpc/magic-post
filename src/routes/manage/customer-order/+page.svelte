@@ -13,10 +13,13 @@
 	import { scale } from 'svelte/transition';
 	import Paginator from 'src/components/Paginator.svelte';
 	import EmptyData from 'src/components/EmptyData.svelte';
+	import { page } from '$app/stores';
+	import { mergeQueries } from 'src/utils/helper';
 
 	export let data: PageData;
 	const user: StaffsInteface = getUserStorage();
-	let checkedOrders = new Set();
+	let checkedOrders = new Set(),
+		searchId: string;
 
 	onMount(() => {
 		if (![Roles.TRANSACTION_LEADER, Roles.TRANSACTION_STAFF].includes(user.role?.id)) {
@@ -26,6 +29,19 @@
 
 	function showFilterModal() {
 		(document.getElementById('filter_customer_order') as any).showModal();
+	}
+
+	let timer: any;
+	const debounceSearch = (e: any) => {
+		clearTimeout(timer);
+		timer = setTimeout(() => {
+			searchOrderId();
+		}, 400);
+	};
+	function searchOrderId() {
+		const currentQuery = new URLSearchParams($page.url.searchParams.toString());
+		const newQuery = mergeQueries(currentQuery, new URLSearchParams({ orderId: searchId }));
+		goto(`?${newQuery}`);
 	}
 
 	function showGatherOrderBtn(e: any, id: string) {
@@ -54,7 +70,15 @@
 					<Boxes class="mr-1" size="20" /> Giao đến điểm tập kết
 				</button>
 			{/if}
-			<input type="text" name="sender" placeholder="Tìm mã đơn hàng" class="dui-input h-10 dui-input-bordered w-full" />
+			<!-- svelte-ignore a11y-autofocus -->
+			<input
+				type="text"
+				placeholder="Tìm mã đơn hàng"
+				class="dui-input h-10 dui-input-bordered w-full"
+				on:input={debounceSearch}
+				bind:value={searchId}
+				autofocus={!!searchId}
+			/>
 			<button on:click={showFilterModal} class="btn variant-filled bg-primary-500 py-2">
 				<Filter class="mr-1" size="20" /> Lọc
 			</button>
@@ -77,7 +101,7 @@
 		{:else}
 			<div class="h-[calc(100%-7rem)] card !rounded-none overflow-auto !bg-transparent">
 				{#each orders.data.content as orderData}
-					<ListOrder {orderData} on:change={(e) => showGatherOrderBtn(e, orderData.id)} />
+					<ListOrder {orderData} id={orderData.id} on:change={(e) => showGatherOrderBtn(e, orderData.id)} />
 				{/each}
 			</div>
 			<Paginator paginate={orders.data.paginate} />

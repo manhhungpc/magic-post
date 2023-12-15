@@ -20,7 +20,8 @@ export default {
 			greenNew: '#0FBA81',
 			'greenNew-600': '#0CA874',
 			process: '#EBB309',
-			'process-600': '#D3A108'
+			'process-600': '#D3A108',
+			orange: '#F96843'
 		}
 	},
 	plugins: [
@@ -37,7 +38,8 @@ export default {
 			{
 				garden: {
 					...require('daisyui/src/theming/themes')['[data-theme=garden]'],
-					primary: '#D4163C'
+					primary: '#D4163C',
+					secondary: '#F96843'
 				}
 			}
 		]

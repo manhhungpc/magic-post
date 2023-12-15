@@ -28,10 +28,13 @@ export function removeNullQueries(query: URLSearchParams) {
 	return filterQuery;
 }
 
-export function mergeQueries(query1: URLSearchParams, query2: URLSearchParams) {
-	for (let [key, val] of query2.entries()) {
-		query1.set(key, val);
+export function mergeQueries(currentQuery: URLSearchParams, nextQuery: URLSearchParams) {
+	if (currentQuery.get('pageNumber')) {
+		currentQuery.set('pageNumber', '1');
+	}
+	for (let [key, val] of nextQuery.entries()) {
+		currentQuery.set(key, val);
 	}
 
-	return removeNullQueries(query1).toString();
+	return removeNullQueries(currentQuery).toString();
 }

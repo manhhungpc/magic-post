@@ -14,7 +14,7 @@
 
 	let isOpenCustomerOrder: boolean;
 
-	$: isOpenCustomerOrder = ['/manage/customer-order', '/manage/customer-order/add'].includes($page.url.pathname);
+	$: isOpenCustomerOrder = $page.url.pathname.includes('/manage/customer-order');
 </script>
 
 <div class="wrapper">

@@ -78,9 +78,6 @@
 		});
 
 		const currentQuery = new URLSearchParams($page.url.searchParams.toString());
-		if (currentQuery.get('pageNumber')) {
-			currentQuery.set('pageNumber', '1');
-		}
 
 		const newQuery = mergeQueries(currentQuery, query);
 

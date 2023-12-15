@@ -42,12 +42,12 @@
 		on:page={onPageChange}
 		on:amount={onAmountChange}
 		showPreviousNextButtons={true}
-		class="w-full bg-[#fff]"
+		class="w-full"
 		amountText=""
 		showNumerals
 		maxNumerals={1}
 		buttonClasses="!px-3 !py-1 fill-current hover:fill-primary-500 disabled:cursor-not-allowed"
-		regionControl="btn-group rounded-lg bg-[#E4E7EA] text-[#000] hover:bg-[#dcdcdc]"
+		regionControl="btn-group rounded-lg bg-[#E4E7EA] text-[#000]"
 	/>
 </div>
 
@@ -56,5 +56,13 @@
 		border-radius: 6px !important;
 		padding: 2px 6px !important;
 		min-width: 50px !important;
+	}
+
+	:global(.paginator-controls > button:hover) {
+		background-color: #b6b6b6 !important;
+	}
+
+	:global(.paginator-controls > .pointer-events-none) {
+		color: #fff !important;
 	}
 </style>
