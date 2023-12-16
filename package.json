@@ -19,6 +19,7 @@
 		"@sveltejs/kit": "^1.20.4",
 		"@tailwindcss/forms": "^0.5.7",
 		"@types/node": "^20.8.8",
+		"@types/toastify-js": "^1.12.3",
 		"autoprefixer": "^10.4.16",
 		"daisyui": "^3.9.3",
 		"postcss": "^8.4.31",
@@ -36,6 +37,7 @@
 		"@floating-ui/dom": "^1.5.3",
 		"lucide-svelte": "^0.290.0",
 		"remove-accents": "^0.5.0",
+		"toastify-js": "^1.12.0",
 		"typed.js": "^2.0.16"
 	}
 }

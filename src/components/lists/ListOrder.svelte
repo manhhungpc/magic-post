@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { Eye, PackagePlus, PencilLine } from 'lucide-svelte';
+	import { Eye, PackagePlus, Printer } from 'lucide-svelte';
 	import { Catergority } from 'src/utils/enum';
 	import type { Order } from 'src/utils/interface';
 
@@ -33,9 +33,15 @@
 					<Eye size="16" />
 				</button>
 			</div>
-			<button type="button" class="btn-icon dui-btn-outline dui-btn-secondary border border-orange h-8 w-8">
-				<PencilLine size="16" />
-			</button>
+			<div class="dui-tooltip dui-tooltip-bottom before:-left-full" data-tip="In giấy biên nhận">
+				<button
+					type="button"
+					class="btn-icon dui-btn-outline dui-btn-secondary border border-orange h-8 w-8"
+					on:click={() => goto(`/invoice/${id}`)}
+				>
+					<Printer size="16" />
+				</button>
+			</div>
 		</div>
 
 		<div class="flex gap-1" style="border-right: 1px solid #a3a3a3;">

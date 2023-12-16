@@ -11,7 +11,7 @@ export function formatDate(date: string) {
 		year: 'numeric'
 	});
 
-	return `${time}/ ${formattedDate}`;
+	return `${time} | ${formattedDate}`;
 }
 
 export function removeAccents(string: string) {

@@ -28,6 +28,7 @@ export interface StaffsInteface {
 		id: string;
 		pointId: string;
 		name: string;
+		typePoint: 'TP' | 'GP';
 	};
 }
 
@@ -48,11 +49,6 @@ export interface OfficesInterface {
 	};
 	typePoint: 'GP' | 'TP';
 	type: string;
-}
-
-export interface GatherOrderInteface {
-	orderId: string;
-	address: string;
 }
 
 export interface TransactionOrderInteface {
@@ -89,8 +85,10 @@ export interface ContextOrders {
 }
 
 export interface Order extends CustomerOrder {
+	id: string;
 	orderId: number;
 	mainCharge: number;
+	urlQrCode: string;
 	orderDelivery: {
 		id: number;
 		fromLocation: {

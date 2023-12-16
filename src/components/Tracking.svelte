@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { Check, ClipboardList, Truck } from 'lucide-svelte';
+
+	export let trackingData;
 </script>
 
 <ul>

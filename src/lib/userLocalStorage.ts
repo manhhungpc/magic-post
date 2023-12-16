@@ -1,5 +1,4 @@
 export function setUserStorage(data: any) {
-	console.log('🚀 ~ file: userLocalStorage.ts:2 ~ setUserStorage ~ data:', data);
 	localStorage.setItem('user', JSON.stringify(data));
 }
 

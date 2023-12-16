@@ -1,18 +1,14 @@
+import { OrderStatus, OrderType } from 'src/utils/enum';
 import type { PageServerLoad } from './$types';
-
-enum OrderType {
-	CUSTOMER = "SC",
-	GATHERS = "GP",
-	TRANSACTION = "TP"
-}
 
 export const load: PageServerLoad = async ({ parent, fetch }) => {
 	await parent();
 	try {
 		const query = new URLSearchParams({
-			orderType: 'SC' 
-		})
-		const orders = fetch(`/api/orders/customer?${query}`, {
+			deliveryStatus: String(OrderStatus.PROCESSING),
+			typeOrder: String(OrderType.GATHERING)
+		});
+		const orders = fetch(`/api/orders/delivery?${query}`, {
 			method: 'GET'
 		}).then((res) => res.json());
 

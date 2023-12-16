@@ -33,10 +33,17 @@ export enum OrderStatus {
 	FAILED_DELIVERY = 6
 }
 
+export enum OrderType {
+	CUSTOMER = 1,
+	GATHERING = 2,
+	TRANSACTION = 3,
+	DELIVERY = 4
+}
+
 export enum OrderMsgStatus {
 	NEW = 'Mới',
 	PROCESSING = 'Đang xử lý',
-	CONFIRM_SEND = 'Xác nhận đã rời điểm', 
+	CONFIRM_SEND = 'Xác nhận đã rời điểm',
 	CONFIRM_RECEIVE = 'Xác nhận đã đến',
 	SUCCESS_DELIVERY = 'Vận chuyển thành công',
 	FAILED_DELIVERY = 'Vận chuyển không thành công'

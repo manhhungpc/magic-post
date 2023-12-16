@@ -10,6 +10,9 @@ dependencies:
   remove-accents:
     specifier: ^0.5.0
     version: 0.5.0
+  toastify-js:
+    specifier: ^1.12.0
+    version: 1.12.0
   typed.js:
     specifier: ^2.0.16
     version: 2.0.16
@@ -36,6 +39,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.8.8
     version: 20.8.8
+  '@types/toastify-js':
+    specifier: ^1.12.3
+    version: 1.12.3
   autoprefixer:
     specifier: ^10.4.16
     version: 10.4.16(postcss@8.4.31)
@@ -477,6 +483,10 @@ packages:
 
   /@types/pug@2.0.8:
     resolution: {integrity: sha512-QzhsZ1dMGyJbn/D9V80zp4GIA4J4rfAjCCxc3MP+new0E8dyVdSkR735Lx+n3LIaHNFcjHL5+TbziccuT+fdoQ==}
+    dev: true
+
+  /@types/toastify-js@1.12.3:
+    resolution: {integrity: sha512-9RjLlbAHMSaae/KZNHGv19VG4gcLIm3YjvacCXBtfMfYn26h76YP5oxXI8k26q4iKXCB9LNfv18lsoS0JnFPTg==}
     dev: true
 
   /acorn@8.10.0:
@@ -1473,6 +1483,10 @@ packages:
     dependencies:
       is-number: 7.0.0
     dev: true
+
+  /toastify-js@1.12.0:
+    resolution: {integrity: sha512-HeMHCO9yLPvP9k0apGSdPUWrUbLnxUKNFzgUoZp1PHCLploIX/4DSQ7V8H25ef+h4iO9n0he7ImfcndnN6nDrQ==}
+    dev: false
 
   /totalist@3.0.1:
     resolution: {integrity: sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==}

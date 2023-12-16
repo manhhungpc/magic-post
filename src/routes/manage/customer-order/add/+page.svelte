@@ -51,9 +51,8 @@
 
 		loading = false;
 		if (newOrder.status == 201) {
-			goto(`/invoice/${newOrder.id}`);
+			goto(`/invoice/${newOrder.data.id}`);
 		}
-		console.log('🚀 ~ file: +page.svelte:47 ~ newOrder:', newOrder);
 	}
 </script>
 

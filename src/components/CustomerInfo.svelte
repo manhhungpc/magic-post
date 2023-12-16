@@ -20,7 +20,7 @@
 		provinceCode = -1,
 		districtCode = -1;
 	let district: HTMLSelectElement, ward: HTMLSelectElement;
-	let detailAddress: string,
+	let detailAddress: string = '',
 		fullAddress = '';
 	$: customer.address = detailAddress + ' - ' + fullAddress.split(' - ').reverse().join(' - ');
 

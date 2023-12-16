@@ -8,10 +8,10 @@
 <main class="flex flex-col items-center bg-[#fff]">
 	<div class="my-1 w-full flex justify-around items-center">
 		<span class="">
-			<img src="/img/logo-new.png" alt="logo" class="h-20 overflow-hidden" />
+			<img src="/img/logo-new.png" alt="logo" class="h-24 overflow-hidden" />
 		</span>
 		<span>
-			<img src="https://placehold.co/80" alt="QR code" />
+			<img src={invoiceData.urlQrCode} alt="QR code" class="h-28 overflow-hidden" />
 		</span>
 	</div>
 	<div class="invoice-table w-[90%] flex flex-col">
@@ -197,7 +197,7 @@
 					<div class="invoice-cell w-[60%] flex flex-col items-center">
 						<p><strong>13. Bưu cục chấp nhận</strong></p>
 						<p>Chữ ký GDV nhận</p>
-						<img class="rounded-full my-2" src="https://placehold.co/100" alt="QR code" />
+						<img class="invisible my-2" src="https://placehold.co/100" alt="QR code" />
 						<p>GDV:</p>
 					</div>
 					<div class="invoice-cell w-[40%] grow">

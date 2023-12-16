@@ -1,25 +1,20 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json, type RequestHandler } from '@sveltejs/kit';
 import { API_URL } from '$env/static/private';
 import { removeNullQueries } from 'src/utils/helper';
-import { OrderStatus, OrderType } from 'src/utils/enum';
 
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	try {
 		const token = cookies.get('token') as string;
 		const requestQuery = new URLSearchParams(url.search);
 
-		const query = new URLSearchParams({
-			typeOrder: String(OrderType.CUSTOMER),
-			deliveryStatus: String(OrderStatus.NEW)
-		});
+		// const query = new URLSearchParams(url.search);
 
-		for (let [key, value] of requestQuery.entries()) {
-			query.append(key, value);
-		}
+		// for (let [key, value] of requestQuery.entries()) {
+		// 	query.append(key, value);
+		// }
 
-		const filterQuery = removeNullQueries(query);
-		const response = await fetch(`${API_URL}/api/v1/delivery-points/orders?${filterQuery}`, {
+		// const filterQuery = removeNullQueries(query);
+		const response = await fetch(`${API_URL}/api/v1/delivery-points/orders?${requestQuery}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
@@ -47,7 +42,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	try {
 		const token = cookies.get('token') as string;
-		const response = await fetch(`${API_URL}/api/v1/delivery-points/orders`, {
+		const response = await fetch(`${API_URL}/api/v1/order-delivery`, {
 			method: 'POST',
 			body: JSON.stringify(await request.json()),
 			headers: {

@@ -7,7 +7,6 @@
 	import { goto } from '$app/navigation';
 
 	export let data: PageData | any;
-	console.log('🚀 ~ file: +page.svelte:10 ~ data:', data);
 	let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ' = 'toàn bộ';
 
 	function showOfficeModal() {

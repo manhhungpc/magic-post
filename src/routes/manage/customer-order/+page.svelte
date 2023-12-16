@@ -4,7 +4,7 @@
 	import { getUserStorage } from 'src/lib/userLocalStorage';
 	import { AlertTriangle } from 'lucide-svelte';
 	import { onMount } from 'svelte';
-	import { Roles } from 'src/utils/enum';
+	import { OrderStatus, Roles } from 'src/utils/enum';
 	import type { StaffsInteface } from 'src/utils/interface';
 	import ListOrder from 'src/components/lists/ListOrder.svelte';
 	import type { PageData } from './$types';
@@ -19,7 +19,9 @@
 	export let data: PageData;
 	const user: StaffsInteface = getUserStorage();
 	let checkedOrders = new Set(),
-		searchId: string;
+		searchId: string,
+		error: string,
+		loading = false;
 
 	onMount(() => {
 		if (![Roles.TRANSACTION_LEADER, Roles.TRANSACTION_STAFF].includes(user.role?.id)) {
@@ -50,6 +52,25 @@
 		else checkedOrders.delete(id);
 		checkedOrders = checkedOrders;
 	}
+
+	async function gatherPointDelivery() {
+		const body = {
+			orderIds: Array.from(checkedOrders)
+		};
+		loading = true;
+		const response = await fetch(`/api/orders/delivery`, {
+			method: 'POST',
+			body: JSON.stringify(body)
+		}).then((res) => res.json());
+
+		loading = false;
+		if (response.status != 200) {
+			error = response.message;
+			return;
+		}
+
+		goto(`/manage/gathering-order`);
+	}
 </script>
 
 <main class="h-full">
@@ -66,8 +87,16 @@
 				</div>
 			{/if}
 			{#if checkedOrders.size > 0}
-				<button class="btn variant-filled bg-greenNew-600 py-2" transition:scale>
-					<Boxes class="mr-1" size="20" /> Giao đến điểm tập kết
+				<button
+					class="btn variant-filled bg-greenNew-600 py-2"
+					transition:scale
+					on:click={gatherPointDelivery}
+					disabled={loading}
+				>
+					<Boxes class="mr-1" size="20" /> Tạo đơn giao đến điểm tập kết
+					{#if loading}
+						<span class="dui-loading dui-loading-spinner dui-loading-sm" />
+					{/if}
 				</button>
 			{/if}
 			<!-- svelte-ignore a11y-autofocus -->
@@ -79,13 +108,13 @@
 				bind:value={searchId}
 				autofocus={!!searchId}
 			/>
-			<button on:click={showFilterModal} class="btn variant-filled bg-primary-500 py-2">
+			<button on:click={showFilterModal} class="btn variant-filled !rounded bg-primary-500 py-2">
 				<Filter class="mr-1" size="20" /> Lọc
 			</button>
 			<button
 				on:click={() => goto('/manage/customer-order/add')}
 				disabled={!user?.workAt}
-				class="btn variant-filled bg-ocean py-2"
+				class="btn variant-filled bg-ocean py-2 !rounded"
 			>
 				<PlusCircle class="mr-1" size="20" /> Thêm mới
 			</button>

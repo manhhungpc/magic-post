@@ -130,7 +130,6 @@
 			phoneNo = officeData.phoneNo;
 			leaderLabel = officeData.admin?.fullName;
 			leaderData = await getLeaderData();
-			// console.log('🚀 ~ file: OfficeModal.svelte:133 ~ leaderData:', leaderData);
 		}
 	});
 </script>

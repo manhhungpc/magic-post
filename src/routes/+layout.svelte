@@ -1,5 +1,6 @@
 <script lang="ts">
 	import '../app.css';
+	import 'toastify-js/src/toastify.css';
 	import { TabGroup, AppBar, TabAnchor } from '@skeletonlabs/skeleton';
 	import { Newspaper, Truck, User2, MapPin, FileText, LogOut, UserCircle } from 'lucide-svelte';
 	import type { PageData } from './$types';
@@ -7,6 +8,8 @@
 	import { storePopup } from '@skeletonlabs/skeleton';
 	import { initLazy } from '$lib/lazyLoad';
 	import { Roles } from 'src/utils/enum';
+	import { getUserStorage } from 'src/lib/userLocalStorage';
+	import type { StaffsInteface } from 'src/utils/interface';
 	// import { initializeStores } from '@skeletonlabs/skeleton';
 
 	// initializeStores();
@@ -15,6 +18,7 @@
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	export let data: PageData;
+	const user: StaffsInteface = getUserStorage();
 
 	let manageRoute: string;
 	$: manageRoute = data.userData?.role.id == Roles.ADMIN ? '/admin' : '/manage/customer-order';
@@ -41,6 +45,12 @@
 				border=""
 				class="!bg-transparent w-full !overflow-visible"
 			>
+				{#if user}
+					<div class="flex items-center">
+						Điểm {user.workAt?.typePoint == 'TP' ? 'giao dịch' : 'tập kết'}&nbsp;
+						<span class="text-primary-500">{user.workAt.name}</span>
+					</div>
+				{/if}
 				<TabAnchor href="/" class="ml-3">
 					<span class="link-nav flex"> Tin tức &nbsp;<Newspaper size={20} /> </span>
 				</TabAnchor>
