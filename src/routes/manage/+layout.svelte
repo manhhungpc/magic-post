@@ -33,28 +33,32 @@
 					</span>
 				</AppRailAnchor>
 			{/if}
-			<AppRailAnchor href="/manage/customer-order" selected={isOpenCustomerOrder}>
-				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
-					<Package /> <span class:hidden={!expand}>Đơn đặt hàng</span>
-				</span>
-			</AppRailAnchor>
-			<AppRailAnchor href="/manage/gathering-order" selected={$page.url.pathname === '/manage/gathering-order'}>
-				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
-					<Boxes /> <span class:hidden={!expand}>Đơn tập kết</span>
-				</span>
-			</AppRailAnchor>
+			{#if data.userData.role == Roles.TRANSACTION_LEADER || data.userData.role == Roles.TRANSACTION_STAFF}
+				<AppRailAnchor href="/manage/customer-order" selected={isOpenCustomerOrder}>
+					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+						<Package /> <span class:hidden={!expand}>Đơn đặt hàng</span>
+					</span>
+				</AppRailAnchor>
+				<AppRailAnchor href="/manage/gathering-order" selected={$page.url.pathname === '/manage/gathering-order'}>
+					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+						<Boxes /> <span class:hidden={!expand}>Đơn tập kết</span>
+					</span>
+				</AppRailAnchor>
+			{/if}
 			{#if user.role?.id != Roles.TRANSACTION_STAFF && user.role?.id != Roles.TRANSACTION_LEADER}
-				<AppRailAnchor href="/manage/transaction-order" selected={$page.url.pathname === '/manage/transaction-order'}>
+				<AppRailAnchor href="/manage/processing-order" selected={$page.url.pathname === '/manage/processing-order'}>
 					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
 						<ScrollText /> <span class:hidden={!expand}>Đơn giao dịch</span>
 					</span>
 				</AppRailAnchor>
 			{/if}
-			<AppRailAnchor href="/manage/delivery" selected={$page.url.pathname === '/manage/delivery'}>
-				<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
-					<Truck /> <span class:hidden={!expand}>Đơn giao hàng</span>
-				</span>
-			</AppRailAnchor>
+			{#if data.userData.role == Roles.TRANSACTION_LEADER || data.userData.role == Roles.TRANSACTION_STAFF}
+				<AppRailAnchor href="/manage/delivery" selected={$page.url.pathname === '/manage/delivery'}>
+					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+						<Truck /> <span class:hidden={!expand}>Đơn giao hàng</span>
+					</span>
+				</AppRailAnchor>
+			{/if}
 		</AppRail>
 	</div>
 

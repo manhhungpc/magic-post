@@ -1,4 +1,6 @@
+import { Roles } from 'src/utils/enum';
 import type { PageServerLoad } from './$types';
+import { redirect } from '@sveltejs/kit';
 
 enum OrderType {
 	CUSTOMER = 'SC',
@@ -7,7 +9,10 @@ enum OrderType {
 }
 
 export const load: PageServerLoad = async ({ parent, fetch, url }) => {
-	await parent();
+	const parentData = await parent();
+	if (![Roles.TRANSACTION_LEADER, Roles.TRANSACTION_STAFF].includes(parentData.userData.role.id)) {
+		throw redirect(302, '/manage/processing-order');
+	}
 	try {
 		const requestQuery = new URLSearchParams(url.search);
 

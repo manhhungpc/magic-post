@@ -8,6 +8,7 @@
 	import { onMount } from 'svelte';
 
 	import { slide } from 'svelte/transition';
+	import AutocompleteAddress from '../AutocompleteAddress.svelte';
 
 	export let id: string;
 	export let leaderData: StaffsInteface[] = [],
@@ -158,13 +159,14 @@
 			<label class="dui-label pb-1" for="address">
 				<span class="dui-label-text required-label">Địa chỉ</span>
 			</label>
-			<input
+			<!-- <input
 				type="text"
 				bind:value={address}
 				name="address"
 				placeholder="Nhập địa chỉ"
 				class="dui-input h-10 dui-input-bordered w-full"
-			/>
+			/> -->
+			<AutocompleteAddress bind:address />
 
 			<label class="dui-label pb-1" for="address">
 				<span class="dui-label-text required-label">Loại văn phòng</span>

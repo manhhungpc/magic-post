@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowsUpFromLine, ClipboardCheck, Eye, PencilLine, Trash2 } from 'lucide-svelte';
+	import { ArrowsUpFromLine, Eye, PencilLine, Trash2 } from 'lucide-svelte';
 	import type { Order } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority } from 'src/utils/enum';
@@ -82,9 +82,9 @@
 							>
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Tạo đơn chuyển hàng">
-								<button type="button" class="btn-icon variant-filled bg-primary-500 h-8 w-8">
-									<ClipboardCheck size="16" />
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Đơn giao dịch mới">
+								<button type="button" class="btn-icon variant-filled bg-ocean h-8 w-8">
+									<ArrowsUpFromLine size="16" />
 								</button>
 							</div>
 						</td>

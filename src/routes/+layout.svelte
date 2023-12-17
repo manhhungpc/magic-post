@@ -18,7 +18,8 @@
 	storePopup.set({ computePosition, autoUpdate, offset, shift, flip, arrow });
 
 	export let data: PageData;
-	const user: StaffsInteface = getUserStorage();
+	let user: StaffsInteface;
+	$: data.userData && (user = getUserStorage());
 
 	let manageRoute: string;
 	$: manageRoute = data.userData?.role.id == Roles.ADMIN ? '/admin' : '/manage/customer-order';
@@ -45,10 +46,10 @@
 				border=""
 				class="!bg-transparent w-full !overflow-visible"
 			>
-				{#if user}
+				{#if data.accessToken && data.userData?.role.id != Roles.ADMIN}
 					<div class="flex items-center">
 						Điểm {user.workAt?.typePoint == 'TP' ? 'giao dịch' : 'tập kết'}&nbsp;
-						<span class="text-primary-500">{user.workAt.name}</span>
+						<span class="text-primary-500">{user.workAt?.name}</span>
 					</div>
 				{/if}
 				<TabAnchor href="/" class="ml-3">

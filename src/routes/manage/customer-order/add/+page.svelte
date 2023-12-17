@@ -5,6 +5,7 @@
 	import DetailsOrder from 'src/components/DetailsOrder.svelte';
 	import { Catergority } from 'src/utils/enum';
 	import type { ContextOrders } from 'src/utils/interface';
+	import Toastify from 'toastify-js';
 
 	let orderContexts: ContextOrders[] = [{ context: undefined, quantity: 0, value: 0, documentNo: 0 }];
 	let loading = false;
@@ -24,15 +25,12 @@
 		senderCustomer: {
 			name: '',
 			phoneNo: '',
-			address: '',
-			type: ''
+			address: ''
 		},
 		receiverCustomer: {
 			name: '',
 			phoneNo: '',
-			address: '',
-			type: '',
-			transactionId: ''
+			address: ''
 		},
 		contextOrders: []
 	};
@@ -48,11 +46,24 @@
 			method: 'POST',
 			body: JSON.stringify(body)
 		}).then((res) => res.json());
+		console.log('🚀 ~ file: +page.svelte:49 ~ createCustomerOrder ~ newOrder:', newOrder);
 
 		loading = false;
-		if (newOrder.status == 201) {
-			goto(`/invoice/${newOrder.data.id}`);
+		if (newOrder.status != 201) {
+			Toastify({
+				text: 'Tạo đơn không thành công! Lỗi: ' + newOrder.err,
+				duration: 3000,
+				close: true,
+				gravity: 'top',
+				position: 'right',
+				stopOnFocus: true,
+				style: {
+					background: '#D41875'
+				}
+			}).showToast();
+			return;
 		}
+		goto(`/invoice/${newOrder.data.id}`);
 	}
 </script>
 
