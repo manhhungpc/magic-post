@@ -69,6 +69,43 @@
 		});
 	}
 
+	async function updateOffice(oid: string) {
+		const requiredBody = {
+			name,
+			phoneNo,
+			address,
+			adminId: leader,
+			type
+		};
+
+		const body = { ...requiredBody, gatheringPointId: linkGatherPoint };
+
+		Object.values(requiredBody).some(async (value) => {
+			if (!value) {
+				error = 'Có dữ liệu bắt buộc bị để trống!';
+				return;
+			}
+
+			loading = true;
+			const response = await fetch(`/api/admin/offices/${oid}`, {
+				method: 'PUT',
+				body: JSON.stringify(body)
+			});
+
+			const officesData = await response.json();
+			console.log('🚀 ~ file: OfficeModal.svelte:96 ~ Object.values ~ officesData:', officesData);
+
+			if (officesData.status == 201) {
+				(document.getElementById(id) as any).close();
+				invalidate((url) => url.pathname.includes('/api/admin/offices'));
+			}
+			loading = false;
+			(document.getElementById(id) as any).close();
+
+			return;
+		});
+	}
+
 	async function getLeaderData() {
 		const response = await fetch('/api/admin/staffs', {
 			method: 'GET'
@@ -130,7 +167,10 @@
 			address = officeData.address;
 			phoneNo = officeData.phoneNo;
 			leaderLabel = officeData.admin?.fullName;
+			leader = officeData.admin?.id;
 			leaderData = await getLeaderData();
+			//@ts-ignore
+			type = officeData.typePoint;
 		}
 	});
 </script>
@@ -166,7 +206,17 @@
 				placeholder="Nhập địa chỉ"
 				class="dui-input h-10 dui-input-bordered w-full"
 			/> -->
-			<AutocompleteAddress bind:address />
+			{#if officeData}
+				<input
+					type="text"
+					bind:value={officeData.address}
+					name="address"
+					placeholder="Nhập địa chỉ"
+					class="dui-input h-10 dui-input-bordered w-full"
+				/>
+			{:else}
+				<AutocompleteAddress bind:address />
+			{/if}
 
 			<label class="dui-label pb-1" for="address">
 				<span class="dui-label-text required-label">Loại văn phòng</span>
@@ -292,13 +342,27 @@
 					Hủy bỏ
 				</button>
 			</form>
-			<button class="btn variant-filled bg-primary-600" disabled={loading} on:click={createNewOffice}>
-				{#if loading}
-					<span class="dui-loading dui-loading-spinner dui-loading-sm" />
-				{:else}
-					Thêm mới
-				{/if}
-			</button>
+			{#if officeData}
+				<button
+					class="btn variant-filled bg-primary-600"
+					disabled={loading}
+					on:click={() => updateOffice(officeData?.id || '')}
+				>
+					{#if loading}
+						<span class="dui-loading dui-loading-spinner dui-loading-sm" />
+					{:else}
+						Cập nhật
+					{/if}
+				</button>
+			{:else}
+				<button class="btn variant-filled bg-primary-600" disabled={loading} on:click={createNewOffice}>
+					{#if loading}
+						<span class="dui-loading dui-loading-spinner dui-loading-sm" />
+					{:else}
+						Thêm mới
+					{/if}
+				</button>
+			{/if}
 		</div>
 	</div>
 	<form method="dialog" class="dui-modal-backdrop">

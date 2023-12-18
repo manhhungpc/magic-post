@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { ArrowsUpFromLine, Eye, PencilLine, Trash2 } from 'lucide-svelte';
-	import type { Order } from 'src/utils/interface';
+	import type { Order, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority } from 'src/utils/enum';
 	import { formatDate } from 'src/utils/helper';
 	import { goto } from '$app/navigation';
+	import Paginator from '../Paginator.svelte';
 
 	export let tableData: Order[] = [],
+		paginate: Paginate,
 		checkedOrders: Set<any>;
 
 	let checkAll: boolean = false,
@@ -36,12 +38,12 @@
 		<thead class="!bg-white relative z-10">
 			<tr>
 				<th class="flex items-center gap-3">
-					<!-- <input
+					<input
 						class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
 						type="checkbox"
 						bind:checked={checkAll}
 						on:change={selectAllRow}
-					/> -->
+					/>
 					STT
 				</th>
 				<th>Mã đơn hàng</th>
@@ -60,12 +62,12 @@
 				{#each tableData as row, i}
 					<tr class:row-selected={checks[i] == true}>
 						<td class="flex items-center gap-3">
-							<!-- <input
+							<input
 								class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
 								type="checkbox"
 								bind:checked={checks[i]}
 								on:change={() => onSelectOrder(i, row)}
-							/> -->
+							/>
 							{i + 1}
 						</td>
 						<td>{row.orderId}</td>
@@ -95,6 +97,7 @@
 		<tfoot />
 	</table>
 </div>
+<Paginator {paginate} />
 
 <style>
 	thead th {

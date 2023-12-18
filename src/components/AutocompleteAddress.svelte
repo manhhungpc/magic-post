@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { LocationDepth } from 'src/utils/enum';
-	import type { LocationSchema } from 'src/utils/interface';
+	import type { LocationSchema, OfficesInterface } from 'src/utils/interface';
 	import { onMount } from 'svelte';
 
 	export let fullAddress = '';
 	export let address: string = '';
+	// export let addressDataProps: OfficesInterface | null = null;
 	let location = {
 			provinces: [] as LocationSchema[],
 			districts: [] as LocationSchema[],

@@ -46,9 +46,20 @@
 				</AppRailAnchor>
 			{/if}
 			{#if user.role?.id != Roles.TRANSACTION_STAFF && user.role?.id != Roles.TRANSACTION_LEADER}
-				<AppRailAnchor href="/manage/processing-order" selected={$page.url.pathname === '/manage/processing-order'}>
+				<AppRailAnchor
+					href="/manage/process-transact-order"
+					selected={$page.url.pathname === '/manage/process-transact-order'}
+				>
 					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
-						<ScrollText /> <span class:hidden={!expand}>Đơn giao dịch</span>
+						<ScrollText /> <span class:hidden={!expand}>Đơn điểm giao dịch</span>
+					</span>
+				</AppRailAnchor>
+				<AppRailAnchor
+					href="/manage/process-gather-order"
+					selected={$page.url.pathname === '/manage/process-gather-order'}
+				>
+					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+						<ScrollText /> <span class:hidden={!expand}>Đơn điểm tập kết</span>
 					</span>
 				</AppRailAnchor>
 			{/if}

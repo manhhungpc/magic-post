@@ -5,6 +5,7 @@
 	import Loading from 'src/components/Loading.svelte';
 	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
+	import Paginator from 'src/components/Paginator.svelte';
 
 	export let data: PageData | any;
 	let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ' = 'toàn bộ';
@@ -65,7 +66,8 @@
 		{#await data.offices.promise}
 			<Loading message="Đang lấy dữ liệu mới nhất" />
 		{:then offices}
-			<OfficesTable tableData={offices.data.content} paginate={offices.data.paginate} {officeType} />
+			<OfficesTable tableData={offices.data.content} {officeType} />
+			<Paginator paginate={offices.data.paginate} />
 		{:catch err}
 			<p>Error</p>
 		{/await}

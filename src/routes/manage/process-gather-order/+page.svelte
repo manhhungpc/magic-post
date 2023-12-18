@@ -7,13 +7,12 @@
 	import Loading from 'src/components/Loading.svelte';
 
 	export let data: PageServerData;
-	console.log('🚀 ~ file: +page.svelte:10 ~ data:', data.streamed?.orders);
 	let tabSet = 'transaction-tabs';
 	let checkedOrders = new Set();
 
 	let isFirstTab: boolean, isSecondTab: boolean, isThirdTab: boolean;
 	$: isFirstTab =
-		($page.url.pathname == '/manage/processing-order' && $page.url.search == '') ||
+		($page.url.pathname == '/manage/process-gather-order' && $page.url.search == '') ||
 		$page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.PROCESSING}`;
 	$: isSecondTab =
 		$page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CONFIRM_RECEIVE}`;
@@ -22,9 +21,9 @@
 
 <main class="h-full">
 	<div class="flex justify-between items-center mb-3">
-		<p class="title-font uppercase font-vn">Danh sách đơn giao dịch của điểm tập kết</p>
+		<p class="title-font uppercase font-vn">Danh sách đơn từ điểm tập kết khác</p>
 	</div>
-	<TabGroup rounded="rounded-tl-md rounded-tr-md" class="h-[calc(100%-6rem)]">
+	<TabGroup rounded="rounded-tl-md rounded-tr-md" class="h-[calc(100%-9.5rem)]">
 		<TabAnchor
 			href="?typeOrder={OrderType.TRANSACTION}&deliveryStatus={OrderStatus.PROCESSING}"
 			selected={isFirstTab}
@@ -47,7 +46,7 @@
 			bind:group={tabSet}
 			class="w-1/3"
 		>
-			<span class:text-surface-400={!isThirdTab}>Đơn cần xác nhận</span>
+			<span class:text-surface-400={!isThirdTab}>Xác nhận đến điểm giao dịch đích</span>
 		</TabAnchor>
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
@@ -57,7 +56,7 @@
 						<Loading message="Đang lấy dữ liệu mới nhất" />
 					{:then orders}
 						<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
-						<ProcessingOrdersTable tableData={orders.data.content} bind:checkedOrders />
+						<ProcessingOrdersTable tableData={orders.data.content} paginate={orders.data.paginate} bind:checkedOrders />
 					{/await}
 				{:else if isSecondTab}
 					<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
@@ -72,3 +71,9 @@
 		</svelte:fragment>
 	</TabGroup>
 </main>
+
+<style>
+	:global(.tab-panel) {
+		height: 100%;
+	}
+</style>

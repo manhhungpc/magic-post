@@ -1,19 +1,14 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { API_URL } from '$env/static/private';
+import { removeNullQueries } from 'src/utils/helper';
 
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	try {
 		const token = cookies.get('token') as string;
-		const typeOffices = url.searchParams.get('type')?.toString();
-		const query = new URLSearchParams({
-			type: typeOffices as any
-		});
+		const query = new URLSearchParams(url.search);
 
-		const filterQuery = new URLSearchParams();
-		for (let [key, value] of query.entries()) {
-			if (value != 'null') filterQuery.append(key, value);
-		}
+		const filterQuery = removeNullQueries(query)
 
 		const response = await fetch(`${API_URL}/api/v1/admin/delivery-points?${filterQuery}`, {
 			method: 'GET',

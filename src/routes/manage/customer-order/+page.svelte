@@ -25,7 +25,7 @@
 
 	onMount(() => {
 		if (![Roles.TRANSACTION_LEADER, Roles.TRANSACTION_STAFF].includes(user.role?.id)) {
-			goto('/manage/processing-order');
+			goto('/manage/process-gather-order');
 		}
 	});
 

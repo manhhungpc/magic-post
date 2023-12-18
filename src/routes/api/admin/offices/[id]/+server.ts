@@ -41,6 +41,7 @@ export const PUT: RequestHandler = async ({ cookies, request, params }) => {
 	try {
 		const token = cookies.get('token') as string;
 		const id = params.id;
+		console.log("🚀 ~ file: +server.ts:44 ~ constPUT:RequestHandler= ~ id:", id)
 		if (!id) {
 			return json({
 				status: 400,

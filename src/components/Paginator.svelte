@@ -8,7 +8,7 @@
 	export let paginate: Paginate;
 	let paginationSettings = {
 		page: paginate?.currentPage - 1,
-		limit: paginate.perPage,
+		limit: paginate?.perPage,
 		size: paginate?.totalItems,
 		amounts: [5, 10]
 	} satisfies PaginationSettings;

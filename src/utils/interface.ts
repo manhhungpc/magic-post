@@ -39,6 +39,7 @@ export interface OfficesInterface {
 	phoneNo: string;
 	address: string;
 	admin: {
+		id: string;
 		fullName: string;
 		userId: string;
 	};

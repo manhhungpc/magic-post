@@ -1,12 +1,15 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { API_URL } from '$env/static/private';
+import { removeNullQueries } from 'src/utils/helper';
 
 export const GET: RequestHandler = async ({ cookies, url }) => {
 	try {
-		const query = url.searchParams.toString();
+		const query = new URLSearchParams(url.search)
 		const token = cookies.get('token') as string;
-		const response = await fetch(`${API_URL}/api/v1/management/staffs?${query}`, {
+
+		const filterQuery = removeNullQueries(query)
+		const response = await fetch(`${API_URL}/api/v1/management/staffs?${filterQuery}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

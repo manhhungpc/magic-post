@@ -1,22 +1,13 @@
 <script lang="ts">
 	import { PencilLine, Trash2 } from 'lucide-svelte';
-	import type { OfficesInterface, Paginate } from 'src/utils/interface';
+	import type { OfficesInterface } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import OfficeModal from '../modal/OfficeModal.svelte';
 	import DeleteConfirmModal from '../modal/DeleteConfirmModal.svelte';
-	import { goto, invalidate } from '$app/navigation';
-	import { Paginator, type PaginationSettings } from '@skeletonlabs/skeleton';
+	import { invalidate } from '$app/navigation';
 
-	export let tableData: OfficesInterface[] = [],
-		paginate: Paginate;
+	export let tableData: OfficesInterface[] = [];
 	export let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ';
-
-	let paginationSettings = {
-		page: paginate?.currentPage - 1,
-		limit: paginate.perPage,
-		size: paginate?.totalItems,
-		amounts: [5, 10]
-	} satisfies PaginationSettings;
 
 	async function showEditOfficeModal(modalId: string, officeId: string) {
 		(document.getElementById(modalId) as any).showModal();
@@ -34,21 +25,6 @@
 		if (response.status == 200) {
 			invalidate((url) => url.pathname.includes('/api/admin/offices'));
 		}
-	}
-
-	function onPageChange(e: CustomEvent): void {
-		const pageSize = paginate.perPage;
-		const pageNumber = e.detail + 1;
-		// paginationSettings.page = e.detail + 1;
-
-		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
-	}
-
-	function onAmountChange(e: CustomEvent) {
-		const pageSize = e.detail;
-		const pageNumber = paginate.currentPage;
-		paginationSettings.limit = pageSize;
-		goto(`?pageSize=${pageSize}&pageNumber=${pageNumber}`);
 	}
 </script>
 
@@ -94,18 +70,18 @@
 						<td class="flex items-center gap-3">
 							<button
 								type="button"
-								class="btn-icon variant-filled h-8 w-8"
+								class="btn-icon bg-orange h-8 w-8"
 								on:click={() => showEditOfficeModal('edit-office' + row.pointId, row.id)}
 							>
-								<PencilLine size="16" />
+								<PencilLine size="16" color="#fff" />
 							</button>
 							<OfficeModal id={'edit-office' + row.pointId} officeData={row} />
 							<button
 								type="button"
-								class="btn-icon variant-filled h-8 w-8"
+								class="btn-icon border-2 border-orange hover:bg-orange h-8 w-8"
 								on:click={() => showDeleteOfficeModal('delete-office' + row.pointId)}
 							>
-								<Trash2 size="16" />
+								<Trash2 size="16" color="#F96843" />
 							</button>
 							<DeleteConfirmModal
 								id={'delete-office' + row.pointId}
@@ -120,20 +96,10 @@
 		<tfoot />
 	</table>
 </div>
-<div class="px-3 flex items-center gap-3 bg-[#fff] h-14 w-full rounded-b-md">
-	<span class=" whitespace-nowrap">Số hàng trên trang : </span>
-	<Paginator
-		bind:settings={paginationSettings}
-		on:page={onPageChange}
-		on:amount={onAmountChange}
-		showPreviousNextButtons={true}
-		class="w-full bg-[#fff]"
-		amountText=""
-		showNumerals
-		maxNumerals={1}
-		buttonClasses="!px-3 !py-1.5 fill-current hover:fill-primary-500"
-	/>
-</div>
+
+<!-- <Paginator {paginate} /> -->
+<!-- <div class="px-3 flex items-center gap-3 bg-[#fff] h-14 w-full rounded-b-md">
+</div> -->
 
 <style>
 	thead th {
@@ -148,8 +114,8 @@
 		vertical-align: middle;
 	}
 
-	.btn-icon {
-		background-color: #4784af;
+	:global(.btn-icon:hover > svg) {
+		filter: brightness(0) invert(1);
 	}
 
 	:global(.paginator-select) {
