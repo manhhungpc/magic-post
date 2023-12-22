@@ -61,12 +61,14 @@
 					flex="flex-1 lg:flex-none"
 					rounded="rounded-md"
 					border=""
-					class="!bg-transparent w-full !overflow-visible"
+					class="header-tab-group !bg-transparent w-full !overflow-visible"
 				>
 					{#if data.accessToken && data.userData?.role.id != Roles.ADMIN}
 						<div class="flex items-center">
-							Điểm {user.workAt?.typePoint == 'TP' ? 'giao dịch' : 'tập kết'}&nbsp;
-							<span class="text-primary-500">{user.workAt?.name}</span>
+							<span class="type-point-hidden"
+								>Điểm {user.workAt?.typePoint == 'TP' ? 'giao dịch' : 'tập kết'}&nbsp;</span
+							>
+							<span class="type-point-display text-primary-500">{user.workAt?.name}</span>
 						</div>
 					{/if}
 					<TabAnchor href="/" class="ml-3">
@@ -77,7 +79,7 @@
 						<TabAnchor href={manageRoute} class="ml-3">
 							<span class="link-nav flex"> Quản lý &nbsp;<FileText size={20} /></span>
 						</TabAnchor>
-						<TabAnchor href="/profile" class="ml-3 !p-0">
+						<TabAnchor class="tab-profile ml-3 !p-0">
 							<div class="dui-dropdown dui-dropdown-hover dui-dropdown-bottom dui-dropdown-end">
 								<div tabindex="0" role="button">
 									<span class="link-nav flex py-2 px-4"> {data.userData.fullName} &nbsp;<User2 size={20} /></span>
@@ -122,16 +124,26 @@
 	}
 
 	@media (max-width: 768px) {
-		:global(.tab-list) {
-			position: relative;
-			right: 100%;
-			top: 100px;
+		:global(.header-tab-group > .tab-list) {
+			position: absolute;
+			right: 12px;
+			top: 64px;
 			display: flex;
 			flex-direction: column;
 			z-index: 2;
 			background-color: rgb(var(--color-tertiary-300) / var(--tw-bg-opacity));
 			border-radius: 0.5rem;
 			box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+		}
+		.type-point-hidden {
+			display: none;
+		}
+		.type-point-display {
+			padding: 0.5rem 1rem;
+			margin-left: 0.75rem;
+		}
+		:global(.tab-profile) {
+			text-align: start;
 		}
 	}
 </style>
