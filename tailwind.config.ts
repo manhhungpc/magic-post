@@ -21,7 +21,8 @@ export default {
 			'greenNew-600': '#0CA874',
 			process: '#EBB309',
 			'process-600': '#D3A108',
-			orange: '#F96843'
+			orange: '#F96843',
+			link: 'rgb(59, 130, 246)'
 		}
 	},
 	plugins: [

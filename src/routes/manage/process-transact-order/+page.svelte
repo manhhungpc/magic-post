@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { TabGroup, Tab, TabAnchor } from '@skeletonlabs/skeleton';
-	import ProcessingOrdersTable from 'src/components/table/ProcessingOrdersTable.svelte';
+	import { TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
+	import ProcessTransactOrdersTable from 'src/components/table/ProcessTransactOrdersTable.svelte';
 	import { OrderType, OrderStatus } from 'src/utils/enum';
 	import type { PageServerData } from './$types';
 	import Loading from 'src/components/Loading.svelte';
@@ -16,12 +16,12 @@
 		($page.url.pathname == '/manage/process-transact-order' && $page.url.search == '') ||
 		$page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CONFIRM_RECEIVE}`;
 	$: isSecondTab = $page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.PROCESSING}`;
-	$: isThirdTab = $page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CONFIRM_SEND}`;
+	$: isThirdTab = $page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CREATE_SEND}`;
 </script>
 
 <main class="h-full">
 	<div class="flex justify-between items-center mb-3">
-		<p class="title-font uppercase font-vn">Danh sách đơn từ điểm giao dịch liên kết</p>
+		<p class="title-font uppercase font-vn">Danh sách đơn từ các điểm giao dịch liên kết</p>
 		<div class="flex gap-2">
 			<input type="text" placeholder="Tìm mã đơn hàng" class="dui-input !h-9 dui-input-bordered w-full" />
 			<button class="btn variant-filled !rounded bg-primary-500 py-1">
@@ -47,7 +47,7 @@
 			<span class:text-surface-400={!isSecondTab}>Đang xử lý</span>
 		</TabAnchor>
 		<TabAnchor
-			href="?typeOrder={OrderType.TRANSACTION}&deliveryStatus={OrderStatus.CONFIRM_SEND}"
+			href="?typeOrder={OrderType.TRANSACTION}&deliveryStatus={OrderStatus.CREATE_SEND}"
 			selected={isThirdTab}
 			bind:group={tabSet}
 			class="w-1/3"
@@ -62,7 +62,7 @@
 						<Loading message="Đang lấy dữ liệu mới nhất" />
 					{:then orders}
 						<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
-						<ProcessingOrdersTable
+						<ProcessTransactOrdersTable
 							tableData={orders.data.content}
 							paginate={orders.data?.paginate}
 							bind:checkedOrders
@@ -70,12 +70,30 @@
 					{/await}
 				{:else if isSecondTab}
 					<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
-					(tab panel 2 contents)
+					{#await data.streamed?.orders}
+						<Loading message="Đang lấy dữ liệu mới nhất" />
+					{:then orders}
+						<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
+						<ProcessTransactOrdersTable
+							tableData={orders.data.content}
+							paginate={orders.data?.paginate}
+							bind:checkedOrders
+						/>
+					{/await}
 				{:else if isThirdTab}
 					<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
 					<!-- Thêm lọc điểm đến tiếp theo là GD/TK? -->
 					<!-- Thêm lọc địa chỉ điểm đến tiếp theo -->
-					(tab panel 3 contents)
+					{#await data.streamed?.orders}
+						<Loading message="Đang lấy dữ liệu mới nhất" />
+					{:then orders}
+						<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
+						<ProcessTransactOrdersTable
+							tableData={orders.data.content}
+							paginate={orders.data?.paginate}
+							bind:checkedOrders
+						/>
+					{/await}
 				{/if}
 			</div>
 		</svelte:fragment>

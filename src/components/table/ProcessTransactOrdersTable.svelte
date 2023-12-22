@@ -1,16 +1,19 @@
 <script lang="ts">
-	import { ArrowsUpFromLine, ClipboardCheck, Eye, PencilLine, Trash2 } from 'lucide-svelte';
-	import type { Order } from 'src/utils/interface';
+	import { ArrowsUpFromLine, CheckCircle, Eye, Info, PencilLine, Trash2 } from 'lucide-svelte';
+	import type { Order, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority, OrderStatus, OrderType } from 'src/utils/enum';
 	import { formatDate } from 'src/utils/helper';
 	import { goto, invalidate } from '$app/navigation';
+	import Paginator from '../Paginator.svelte';
 	import Toastify from 'toastify-js';
 	import { page } from '$app/stores';
 
 	export let tableData: Order[] = [],
+		paginate: Paginate,
 		checkedOrders: Set<any>;
 
+	console.log('🚀 ~ file: ProcessingOrdersTable.svelte:11 ~ tableData:', tableData);
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
 	let loading = false,
@@ -19,7 +22,7 @@
 	function selectAllRow() {
 		if (checkAll) {
 			checks = new Array(tableData.length).fill(true);
-			checkedOrders = new Set(tableData.map((td) => td.id));
+			checkedOrders = new Set(tableData.map((td) => td.orderId));
 		} else {
 			checks = new Array(tableData.length).fill(false);
 			checkedOrders = new Set();
@@ -36,7 +39,7 @@
 
 	async function onNextProcess(uuid: string) {
 		loading = true;
-		console.log('🚀 ~ file: GatherOrdersTable.svelte:39 ~ onNextProcess ~ loading:', [uuid]);
+		console.log([uuid]);
 		const response = await fetch(`/api/orders/delivery`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -73,12 +76,11 @@
 			}
 		}).showToast();
 		checkedOrders = new Set();
-		//đi đên đơn in biên lai xác nhận
-		if ($page.url.search == `?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.CONFIRM_RECEIVE}`) {
-			goto(`?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.PROCESSING}`);
+		if ($page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.PROCESSING}`) {
+			goto(`?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CREATE_SEND}`);
 			return;
 		}
-		goto('/manage/delivery');
+		goto(`?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.PROCESSING}`);
 	}
 </script>
 
@@ -86,18 +88,21 @@
 	<table class="table table-hover overflow-auto !bg-transparent !rounded-none" class:h-full={tableData.length == 0}>
 		<thead class="!bg-white relative z-10">
 			<tr>
-				<th class="flex items-center gap-3">
-					<input
-						class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
-						type="checkbox"
-						bind:checked={checkAll}
-						on:change={selectAllRow}
-					/>
-					STT
+				<th class="table-cell-fit">
+					<div class="flex items-center gap-2">
+						<input
+							class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
+							type="checkbox"
+							bind:checked={checkAll}
+							on:change={selectAllRow}
+						/>
+						STT
+					</div>
 				</th>
 				<th>Mã đơn hàng</th>
 				<th>Loại hàng</th>
 				<th>Cước phí</th>
+				<th>Từ điểm GD</th>
 				<th>Ngày tạo</th>
 				<th>Thao tác</th>
 			</tr>
@@ -110,7 +115,7 @@
 			<tbody>
 				{#each tableData as row, i}
 					<tr class:row-selected={checks[i] == true}>
-						<td class="flex items-center gap-3">
+						<td class="flex items-center gap-3 table-cell-fit">
 							<input
 								class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
 								type="checkbox"
@@ -123,23 +128,34 @@
 						<td>{row.categority == Catergority.DOCUMENT ? 'Tài liệu' : 'Hàng hóa'}</td>
 						<td>{row.mainCharge.toLocaleString()}</td>
 						<td>
+							<div class="dui-dropdown dui-dropdown-hover dui-dropdown-bottom">
+								<div tabindex="0" role="button">
+									<span class="text-link flex items-center gap-1">
+										{row.orderDelivery.fromLocation.name}
+										<Info size={18} />
+									</span>
+								</div>
+								<ul class="dui-dropdown-content z-[5] dui-menu p-3 shadow bg-base-100 rounded-lg w-96 text-[#000]">
+									<div class="mb-2"><b>Mã điểm:</b> {row.orderDelivery.fromLocation.pointId}</div>
+									<div class="mb-2"><b>SĐT:</b> {row.orderDelivery.fromLocation.phoneNo}</div>
+									<div><b>Địa chỉ:</b> {row.orderDelivery.fromLocation.address}</div>
+								</ul>
+							</div>
+						</td>
+						<td>
 							{formatDate(row.createAt)}
 						</td>
 						<td class="flex items-center gap-3">
-							<button
-								type="button"
-								class="btn-icon variant-filled h-8 w-8"
-								on:click={() => goto(`/manage/customer-order/${row.orderId}`)}
-							>
+							<button type="button" class="btn-icon variant-filled-primary h-8 w-8">
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Tạo đơn chuyển hàng">
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận đã nhận">
 								<button
 									type="button"
-									class="btn-icon variant-filled bg-primary-500 h-8 w-8"
+									class="btn-icon variant-filled bg-greenNew h-8 w-8"
 									on:click={() => onNextProcess(row.id)}
 								>
-									<ClipboardCheck size="16" />
+									<CheckCircle size="16" />
 								</button>
 							</div>
 						</td>
@@ -150,6 +166,7 @@
 		<tfoot />
 	</table>
 </div>
+<Paginator {paginate} />
 
 <style>
 	thead th {

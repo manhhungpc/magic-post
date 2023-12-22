@@ -94,19 +94,23 @@ export interface Order extends CustomerOrder {
 		id: number;
 		fromLocation: {
 			id: string;
+			pointId: string;
 			customerId: number;
 			name: string;
 			phoneNo: string;
 			address: string;
+			admin: StaffsInteface;
 			transactionPoint: OfficesInterface;
 		};
 		currentLocation: OfficesInterface;
 		toLocation: {
 			id: string;
+			pointId: string;
 			customerId: number;
 			name: string;
 			phoneNo: string;
 			address: string;
+			admin: StaffsInteface;
 			transactionPoint: OfficesInterface;
 		};
 		status: OrderStatus;

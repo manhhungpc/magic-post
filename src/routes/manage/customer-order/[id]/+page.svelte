@@ -10,7 +10,7 @@
 <main>
 	<div class="flex justify-between">
 		<div class="flex gap-5 items-center">
-			<a href="" class="btn-icon btn-icon-sm variant-filled">
+			<a href="/manage/customer-order" class="btn-icon btn-icon-sm variant-filled">
 				<ArrowLeft size="18" />
 			</a>
 			<p class="uppercase">Thông tin đơn đặt hàng</p>

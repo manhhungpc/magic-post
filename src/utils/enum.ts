@@ -27,10 +27,12 @@ export enum LocationDepth {
 export enum OrderStatus {
 	NEW = 1,
 	PROCESSING = 2,
-	CONFIRM_SEND = 3,
-	CONFIRM_RECEIVE = 4,
-	SUCCESS_DELIVERY = 5,
-	FAILED_DELIVERY = 6
+	CREATE_SEND = 3,
+	CONFIRM_SEND = 4,
+	CONFIRM_RECEIVE = 5,
+	SUCCESS_DELIVERY = 6,
+	FAILED_DELIVERY = 7,
+	COMPLETED = 8
 }
 
 export enum OrderType {
