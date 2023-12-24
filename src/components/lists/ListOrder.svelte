@@ -33,7 +33,7 @@
 				<button
 					type="button"
 					class="btn-icon bg-orange variant-filled h-8 w-8"
-					on:click={() => goto(`/manage/customer-order/${id}`)}
+					on:click={() => goto(`/manage/orders/${id}`)}
 				>
 					<Eye size="16" />
 				</button>

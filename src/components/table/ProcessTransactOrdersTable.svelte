@@ -146,7 +146,11 @@
 							{formatDate(row.createAt)}
 						</td>
 						<td class="flex items-center gap-3">
-							<button type="button" class="btn-icon variant-filled-primary h-8 w-8">
+							<button
+								type="button"
+								class="btn-icon variant-filled-primary h-8 w-8"
+								on:click={() => goto(`/manage/orders/${row.id}`)}
+							>
 								<Eye size="16" />
 							</button>
 							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận đã nhận">
