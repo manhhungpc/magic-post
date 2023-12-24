@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { ArrowsUpFromLine, CheckCircle, Eye, Info, PencilLine, Trash2 } from 'lucide-svelte';
+	import { CheckCircle, Eye, Info } from 'lucide-svelte';
 	import type { Order, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority, OrderStatus, OrderType } from 'src/utils/enum';
 	import { formatDate } from 'src/utils/helper';
-	import { goto, invalidate } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import Paginator from '../Paginator.svelte';
 	import Toastify from 'toastify-js';
 	import { page } from '$app/stores';
@@ -12,8 +12,8 @@
 	export let tableData: Order[] = [],
 		paginate: Paginate,
 		checkedOrders: Set<any>;
+	export let showGPColumn = false;
 
-	console.log('🚀 ~ file: ProcessingOrdersTable.svelte:11 ~ tableData:', tableData);
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
 	let loading = false,
@@ -103,7 +103,11 @@
 				<th>Loại hàng</th>
 				<th>Cước phí</th>
 				<th>Từ điểm GD</th>
-				<th>Ngày tạo</th>
+				{#if showGPColumn}
+					<th>Điểm TK đích</th>
+				{:else}
+					<th>Ngày tạo</th>
+				{/if}
 				<th>Thao tác</th>
 			</tr>
 		</thead>
@@ -121,6 +125,7 @@
 								type="checkbox"
 								bind:checked={checks[i]}
 								on:change={() => onSelectOrder(i, row)}
+								disabled={loading}
 							/>
 							{i + 1}
 						</td>
@@ -142,9 +147,27 @@
 								</ul>
 							</div>
 						</td>
-						<td>
-							{formatDate(row.createAt)}
-						</td>
+						{#if showGPColumn}
+							<td>
+								<div class="dui-dropdown dui-dropdown-hover dui-dropdown-bottom">
+									<div tabindex="0" role="button">
+										<span class="text-link flex items-center gap-1">
+											{row.orderDelivery.toLocation.name}
+											<Info size={18} />
+										</span>
+									</div>
+									<ul class="dui-dropdown-content z-[5] dui-menu p-3 shadow bg-base-100 rounded-lg w-80 text-[#000]">
+										<div class="mb-2"><b>Mã điểm:</b> {row.orderDelivery.toLocation.pointId}</div>
+										<div class="mb-2"><b>SĐT:</b> {row.orderDelivery.toLocation.phoneNo}</div>
+										<div><b>Địa chỉ:</b> {row.orderDelivery.toLocation.address}</div>
+									</ul>
+								</div>
+							</td>
+						{:else}
+							<td>
+								{formatDate(row.createAt)}
+							</td>
+						{/if}
 						<td class="flex items-center gap-3">
 							<button type="button" class="btn-icon variant-filled-primary h-8 w-8">
 								<Eye size="16" />
@@ -154,8 +177,13 @@
 									type="button"
 									class="btn-icon variant-filled bg-greenNew h-8 w-8"
 									on:click={() => onNextProcess(row.id)}
+									disabled={loading}
 								>
-									<CheckCircle size="16" />
+									{#if loading}
+										<span class="dui-loading dui-loading-spinner dui-loading-sm" />
+									{:else}
+										<CheckCircle size="16" />
+									{/if}
 								</button>
 							</div>
 						</td>

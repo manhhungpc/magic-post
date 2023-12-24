@@ -13,7 +13,6 @@
 	import ListOrder from 'src/components/lists/ListOrder.svelte';
 
 	export let data: PageServerData;
-	console.log('🚀 ~ file: +page.svelte:17 ~ data:', data);
 
 	let tabSet = 'gather-tabs',
 		checkedOrders = new Set();
@@ -62,7 +61,7 @@
 					{#await data.streamed?.orders}
 						<Loading message="Đang lấy dữ liệu mới nhất" />
 					{:then orders}
-						<GatherOrdersTable tableData={orders.data.content} bind:checkedOrders />
+						<GatherOrdersTable paginate={orders.data.paginate} tableData={orders.data.content} bind:checkedOrders />
 					{/await}
 				{:else if isSecondTab}
 					{#await data.streamed?.orders}

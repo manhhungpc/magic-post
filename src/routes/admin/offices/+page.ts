@@ -18,15 +18,15 @@ interface Offices {
 export const load: PageLoad = async ({ parent, fetch, url }) => {
 	await parent();
 
-	const typeOffices = url.searchParams.get('type') as string;
+	const type = url.searchParams.get('type') as string;
 	const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
-		const pageNumber = (url.searchParams.get('pageNumber') as string) ?? 1;
-		const query = new URLSearchParams({
-			typeOffices,
-			pageSize,
-			pageNumber
-		});
-		console.log("🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:", query.toString())
+	const pageNumber = (url.searchParams.get('pageNumber') as string) ?? 1;
+	const query = new URLSearchParams({
+		type,
+		pageSize,
+		pageNumber
+	});
+	console.log('🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:', query.toString());
 
 	try {
 		const staffs = await lazyLoad<Staffs>(

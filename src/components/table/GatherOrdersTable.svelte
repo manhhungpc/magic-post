@@ -1,15 +1,18 @@
 <script lang="ts">
 	import { ArrowsUpFromLine, ClipboardCheck, Eye, PencilLine, Trash2 } from 'lucide-svelte';
-	import type { Order } from 'src/utils/interface';
+	import type { Order, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority, OrderStatus, OrderType } from 'src/utils/enum';
 	import { formatDate } from 'src/utils/helper';
-	import { goto, invalidate } from '$app/navigation';
+	import { goto, invalidate, invalidateAll } from '$app/navigation';
 	import Toastify from 'toastify-js';
 	import { page } from '$app/stores';
+	import Paginator from '../Paginator.svelte';
 
+	export let paginate: Paginate;
 	export let tableData: Order[] = [],
-		checkedOrders: Set<any>;
+		checkedOrders: Set<any>,
+		tooltip = 'rời điểm';
 
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
@@ -36,7 +39,6 @@
 
 	async function onNextProcess(uuid: string) {
 		loading = true;
-		console.log('🚀 ~ file: GatherOrdersTable.svelte:39 ~ onNextProcess ~ loading:', [uuid]);
 		const response = await fetch(`/api/orders/delivery`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -78,7 +80,11 @@
 			goto(`?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.PROCESSING}`);
 			return;
 		}
-		goto('/manage/delivery');
+		if ($page.url.search == `?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.PROCESSING}`) {
+			goto('/manage/delivery');
+			return;
+		}
+		invalidateAll();
 	}
 </script>
 
@@ -86,14 +92,16 @@
 	<table class="table table-hover overflow-auto !bg-transparent !rounded-none" class:h-full={tableData.length == 0}>
 		<thead class="!bg-white relative z-10">
 			<tr>
-				<th class="flex items-center gap-3">
-					<input
-						class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
-						type="checkbox"
-						bind:checked={checkAll}
-						on:change={selectAllRow}
-					/>
-					STT
+				<th>
+					<div class="flex items-center gap-2">
+						<input
+							class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
+							type="checkbox"
+							bind:checked={checkAll}
+							on:change={selectAllRow}
+						/>
+						STT
+					</div>
 				</th>
 				<th>Mã đơn hàng</th>
 				<th>Loại hàng</th>
@@ -110,7 +118,7 @@
 			<tbody>
 				{#each tableData as row, i}
 					<tr class:row-selected={checks[i] == true}>
-						<td class="flex items-center gap-3">
+						<td class="flex items-center gap-2">
 							<input
 								class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
 								type="checkbox"
@@ -133,7 +141,7 @@
 							>
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Tạo đơn chuyển hàng">
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận {tooltip}">
 								<button
 									type="button"
 									class="btn-icon variant-filled bg-primary-500 h-8 w-8"
@@ -150,6 +158,7 @@
 		<tfoot />
 	</table>
 </div>
+<Paginator {paginate} />
 
 <style>
 	thead th {

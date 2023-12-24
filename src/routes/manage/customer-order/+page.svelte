@@ -112,7 +112,7 @@
 			>
 				<PlusCircle class="mr-1" size="20" /> Thêm mới
 			</button>
-			<FilterOrderModal id="filter_customer_order" />
+			<FilterOrderModal id="filter_customer_order" filterOptions={{ customerInfo: true }} />
 		</div>
 	</div>
 	<div class="dui-divider m-0" />
@@ -128,6 +128,10 @@
 						{orderData}
 						id={orderData.id}
 						on:change={(e) => showGatherOrderBtn(e, orderData.id)}
+						on:click={() => {
+							checkedOrders.add(orderData.id);
+							gatherPointDelivery();
+						}}
 						status={orderData.orderDelivery.status}
 					/>
 				{/each}

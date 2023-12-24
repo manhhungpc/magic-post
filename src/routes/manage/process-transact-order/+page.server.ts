@@ -11,6 +11,10 @@ export const load: PageServerLoad = async ({ parent, fetch, url }) => {
 					deliveryStatus: String(OrderStatus.CONFIRM_RECEIVE)
 			  });
 
+		if (!url.searchParams.get('typeOrder') || !url.searchParams.get('deliveryStatus')) {
+			query.append('typeOrder', String(OrderType.TRANSACTION));
+			query.append('deliveryStatus', String(OrderStatus.CONFIRM_RECEIVE));
+		}
 		const orders = fetch(`/api/orders/delivery?${query}`, {
 			method: 'GET'
 		}).then((res) => res.json());

@@ -8,9 +8,16 @@
 	import { mergeQueries, removeAccents } from 'src/utils/helper';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import PopupAutocomplete from '../PopupAutocomplete.svelte';
 
 	export let id: string;
-	let locations: LocationSchema[];
+	export let filterOptions: {
+		fromTP?: boolean;
+		fromGP?: boolean;
+		customerInfo?: boolean;
+	};
+	export let defaultQuery: URLSearchParams | undefined = undefined;
+	let locations: LocationSchema[], error: string;
 	let request = {
 		categority: '',
 		status: '',
@@ -19,7 +26,8 @@
 		senderAddress: '',
 		receiverAddress: '',
 		fromDate: '',
-		toDate: ''
+		toDate: '',
+		fromAddress: ''
 	};
 
 	let locationAutocomplete: AutocompleteOption<string>[] = [];
@@ -44,6 +52,37 @@
 		return data.data;
 	}
 
+	async function getListTP() {
+		const points = await fetch('/api/gathering-points/transaction-points', { method: 'GET' }).then((res) => res.json());
+		if (points.status != 200) {
+			error = points.error;
+			return;
+		}
+
+		const formatData: AutocompleteOption<string>[] = [];
+		for (let point of points.data) {
+			const slug = removeAccents(point);
+			formatData.push({ label: point, value: point, keywords: `${point}, ${slug}` });
+		}
+		return formatData as any;
+	}
+
+	async function getListGP() {
+		const query = $page.url.search;
+		const points = await fetch(`/api/gathering-points/points?${query}`, { method: 'GET' }).then((res) => res.json());
+		if (points.status != 200) {
+			error = points.error;
+			return;
+		}
+
+		const formatData: AutocompleteOption<string>[] = [];
+		for (let point of points.data) {
+			const slug = removeAccents(point);
+			formatData.push({ label: point, value: point, keywords: `${point}, ${slug}` });
+		}
+		return formatData as any;
+	}
+
 	function selectSenderAddress(event: CustomEvent<AutocompleteOption<string>>): void {
 		request.senderAddress = event.detail.label;
 	}
@@ -53,16 +92,8 @@
 	}
 
 	function resetFilter() {
-		request = {
-			categority: '',
-			status: '',
-			sender: '',
-			receiver: '',
-			senderAddress: '',
-			receiverAddress: '',
-			fromDate: '',
-			toDate: ''
-		};
+		//@ts-ignore
+		Object.keys(request).forEach((prop) => (request[prop] = ''));
 	}
 
 	function onFilter() {
@@ -74,12 +105,18 @@
 			senderAddress: request.senderAddress,
 			receiverAddress: request.receiverAddress,
 			createAtFrom: request.fromDate,
-			createAtTo: request.toDate
+			createAtTo: request.toDate,
+			fromAddress: request.fromAddress
 		});
 
-		const currentQuery = new URLSearchParams($page.url.searchParams.toString());
+		let currentQuery = new URLSearchParams($page.url.searchParams.toString());
+
+		if (defaultQuery) {
+			currentQuery = new URLSearchParams(mergeQueries(defaultQuery, currentQuery));
+		}
 
 		const newQuery = mergeQueries(currentQuery, query);
+		console.log('🚀 ~ file: FilterOrderModal.svelte:119 ~ onFilter ~ newQuery:', newQuery);
 
 		goto(`?${newQuery}`);
 
@@ -95,8 +132,7 @@
 				{
 					label: `${loc.name}`,
 					value: `${loc.name}`,
-					keywords: `${loc.name}, ${nonAccentLocation}`,
-					meta: { healthy: false }
+					keywords: `${loc.name}, ${nonAccentLocation}`
 				}
 			];
 		});
@@ -124,7 +160,7 @@
 				>
 					<option value="" disabled selected hidden>Chọn loại hàng gửi</option>
 					<option value={Catergority.DOCUMENT}>Tài liệu</option>
-					<option value={Catergority.PACKAGE}>Hàng gửi</option>
+					<option value={Catergority.PACKAGE}>Hàng hóa</option>
 				</select>
 			</div>
 			<div>
@@ -143,81 +179,105 @@
 				</div>
 			</div>
 
-			<div>
-				<label class="dui-label pb-1" for="sender">
-					<span class="dui-label-text">Tên người gửi</span>
-				</label>
-				<input
-					type="text"
-					name="sender"
-					placeholder="Nhập tên người gửi"
-					class="dui-input h-10 dui-input-bordered w-full"
-					bind:value={request.sender}
-				/>
-			</div>
-			<div>
-				<label class="dui-label pb-1" for="receiver ">
-					<span class="dui-label-text">Tên người nhận</span>
-				</label>
-				<input
-					type="text"
-					name="sender"
-					placeholder="Nhập tên người nhận"
-					class="dui-input h-10 dui-input-bordered w-full"
-					bind:value={request.receiver}
-				/>
-			</div>
+			{#if filterOptions.customerInfo}
+				<div>
+					<label class="dui-label pb-1" for="sender">
+						<span class="dui-label-text">Tên người gửi</span>
+					</label>
+					<input
+						type="text"
+						name="sender"
+						placeholder="Nhập tên người gửi"
+						class="dui-input h-10 dui-input-bordered w-full"
+						bind:value={request.sender}
+					/>
+				</div>
+				<div>
+					<label class="dui-label pb-1" for="receiver ">
+						<span class="dui-label-text">Tên người nhận</span>
+					</label>
+					<input
+						type="text"
+						name="sender"
+						placeholder="Nhập tên người nhận"
+						class="dui-input h-10 dui-input-bordered w-full"
+						bind:value={request.receiver}
+					/>
+				</div>
 
-			<div>
-				<label class="dui-label pb-1" for="address">
-					<span class="dui-label-text">Địa chỉ người gửi</span>
-				</label>
-				<input
-					type="search"
-					name="sender"
-					placeholder="Nhập địa chỉ"
-					class="autocomplete dui-input h-10 dui-input-bordered w-full"
-					bind:value={request.senderAddress}
-					use:popup={senderSettings}
-				/>
-				<div data-popup="sender" class="card !bg-[#fff] w-full max-w-sm max-h-60 p-4 overflow-y-auto">
-					<div class="w-full flex justify-end sticky top-0">
-						<button class="dui-btn dui-btn-square dui-btn-xs">
-							<X size={15} />
-						</button>
-					</div>
-					<Autocomplete
-						bind:input={request.senderAddress}
-						options={locationAutocomplete}
-						on:selection={selectSenderAddress}
+				<div>
+					<label class="dui-label pb-1" for="address">
+						<span class="dui-label-text">Địa chỉ người gửi</span>
+					</label>
+					<input
+						type="search"
+						name="sender"
+						placeholder="Nhập địa chỉ"
+						class="autocomplete dui-input h-10 dui-input-bordered w-full"
+						bind:value={request.senderAddress}
+						use:popup={senderSettings}
 					/>
-				</div>
-			</div>
-			<div>
-				<label class="dui-label pb-1" for="address">
-					<span class="dui-label-text">Địa chỉ người nhận</span>
-				</label>
-				<input
-					type="search"
-					name="sender"
-					placeholder="Nhập địa chỉ"
-					class="autocomplete dui-input h-10 dui-input-bordered w-full"
-					bind:value={request.receiverAddress}
-					use:popup={receiverSettings}
-				/>
-				<div data-popup="receiver" class="card !bg-[#fff] w-full max-w-sm max-h-60 p-4 overflow-y-auto">
-					<div class="w-full flex justify-end sticky top-0">
-						<button class="dui-btn dui-btn-square dui-btn-xs">
-							<X size={15} />
-						</button>
+					<div data-popup="sender" class="card !bg-[#fff] w-full max-w-sm max-h-60 p-4 overflow-y-auto">
+						<div class="w-full flex justify-end sticky top-0">
+							<button class="dui-btn dui-btn-square dui-btn-xs">
+								<X size={15} />
+							</button>
+						</div>
+						<Autocomplete
+							bind:input={request.senderAddress}
+							options={locationAutocomplete}
+							on:selection={selectSenderAddress}
+						/>
 					</div>
-					<Autocomplete
-						bind:input={request.receiverAddress}
-						options={locationAutocomplete}
-						on:selection={selectReceiverAddress}
-					/>
 				</div>
-			</div>
+				<div>
+					<label class="dui-label pb-1" for="address">
+						<span class="dui-label-text">Địa chỉ người nhận</span>
+					</label>
+					<input
+						type="search"
+						name="sender"
+						placeholder="Nhập địa chỉ"
+						class="autocomplete dui-input h-10 dui-input-bordered w-full"
+						bind:value={request.receiverAddress}
+						use:popup={receiverSettings}
+					/>
+					<div data-popup="receiver" class="card !bg-[#fff] w-full max-w-sm max-h-60 p-4 overflow-y-auto">
+						<div class="w-full flex justify-end sticky top-0">
+							<button class="dui-btn dui-btn-square dui-btn-xs">
+								<X size={15} />
+							</button>
+						</div>
+						<Autocomplete
+							bind:input={request.receiverAddress}
+							options={locationAutocomplete}
+							on:selection={selectReceiverAddress}
+						/>
+					</div>
+				</div>
+			{/if}
+
+			{#if filterOptions.fromTP}
+				<div>
+					<label class="dui-label pb-1" for="sender">
+						<span class="dui-label-text">Địa chỉ điểm giao dịch</span>
+					</label>
+					{#await getListTP() then points}
+						<PopupAutocomplete target="fromTP" bind:input={request.fromAddress} optionsData={points} />
+					{/await}
+				</div>
+			{/if}
+
+			{#if filterOptions.fromGP}
+				<div>
+					<label class="dui-label pb-1" for="sender">
+						<span class="dui-label-text">Địa chỉ điểm tập kết</span>
+					</label>
+					{#await getListGP() then points}
+						<PopupAutocomplete target="fromTP" bind:input={request.fromAddress} optionsData={points} width="max-w-md" />
+					{/await}
+				</div>
+			{/if}
 		</div>
 
 		<div class="flex-1" />
