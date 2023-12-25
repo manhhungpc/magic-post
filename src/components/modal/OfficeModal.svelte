@@ -141,8 +141,7 @@
 					{
 						label: `${leader.userId} - ${leader.fullName}`,
 						value: `${leader.id}`,
-						keywords: `${leader.email}`,
-						meta: { healthy: false }
+						keywords: `${leader.email}`
 					}
 				];
 			});
@@ -154,8 +153,7 @@
 				{
 					label: `${point.pointId} - ${point.name}`,
 					value: `${point.id}`,
-					keywords: `${point.name}, ${point.pointId}, ${point.address}`,
-					meta: { healthy: false }
+					keywords: `${point.name}, ${point.pointId}, ${point.address}`
 				}
 			];
 		});

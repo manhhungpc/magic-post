@@ -1,23 +1,16 @@
-import { OrderStatus, OrderType } from 'src/utils/enum';
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ parent, fetch, url }) => {
 	await parent();
-	try {
-		const query = url.search
-			? new URLSearchParams(url.search)
-			: new URLSearchParams({
-					typeOrder: String(OrderType.CUSTOMER),
-					deliveryStatus: String(OrderStatus.PROCESSING)
-			  });
 
-		const orders = fetch(`/api/orders/delivery?${query}`, {
+	try {
+		const stats = fetch(`/api/statistic`, {
 			method: 'GET'
 		}).then((res) => res.json());
 
 		return {
 			streamed: {
-				orders
+				stats: stats
 			}
 		};
 	} catch (err) {

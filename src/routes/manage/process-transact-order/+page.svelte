@@ -1,32 +1,62 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { TabGroup, Tab, TabAnchor } from '@skeletonlabs/skeleton';
-	import ProcessingOrdersTable from 'src/components/table/ProcessingOrdersTable.svelte';
+	import { TabGroup, TabAnchor } from '@skeletonlabs/skeleton';
+	import ProcessTransactOrdersTable from 'src/components/table/ProcessTransactOrdersTable.svelte';
 	import { OrderType, OrderStatus } from 'src/utils/enum';
 	import type { PageServerData } from './$types';
 	import Loading from 'src/components/Loading.svelte';
-	import { Filter } from 'lucide-svelte';
+	import { ArrowDownCircle, ClipboardCheck, Clock3, Filter } from 'lucide-svelte';
+	import FilterOrderModal from 'src/components/modal/FilterOrderModal.svelte';
+	import { debounce } from 'src/lib/debounce';
+	import { goto } from '$app/navigation';
+	import { mergeQueries } from 'src/utils/helper';
 
 	export let data: PageServerData;
+	const defaultQuery = new URLSearchParams({
+		typeOrder: String(OrderType.TRANSACTION),
+		deliveryStatus: String(OrderStatus.CONFIRM_RECEIVE)
+	});
+
 	let tabSet = 'transaction-tabs';
-	let checkedOrders = new Set();
+	let checkedOrders = new Set(),
+		searchId: string;
 
 	let isFirstTab: boolean, isSecondTab: boolean, isThirdTab: boolean;
+
+	function showFilterModal() {
+		(document.getElementById('filter-process-transact') as any).showModal();
+	}
+
+	function searchOrderId() {
+		const currentQuery = new URLSearchParams($page.url.searchParams.toString());
+		const newQuery = mergeQueries(currentQuery, new URLSearchParams({ orderId: searchId }));
+		goto(`?${newQuery}`);
+	}
+
 	$: isFirstTab =
-		($page.url.pathname == '/manage/process-transact-order' && $page.url.search == '') ||
+		(!isSecondTab && !isThirdTab) ||
 		$page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CONFIRM_RECEIVE}`;
 	$: isSecondTab = $page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.PROCESSING}`;
-	$: isThirdTab = $page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CONFIRM_SEND}`;
+	$: isThirdTab = $page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CREATE_SEND}`;
 </script>
 
 <main class="h-full">
 	<div class="flex justify-between items-center mb-3">
-		<p class="title-font uppercase font-vn">Danh sách đơn từ điểm giao dịch liên kết</p>
+		<p class="title-font uppercase font-vn">Danh sách đơn từ các điểm giao dịch liên kết</p>
 		<div class="flex gap-2">
-			<input type="text" placeholder="Tìm mã đơn hàng" class="dui-input !h-9 dui-input-bordered w-full" />
-			<button class="btn variant-filled !rounded bg-primary-500 py-1">
+			<!-- svelte-ignore a11y-autofocus -->
+			<input
+				type="text"
+				placeholder="Tìm mã đơn hàng"
+				class="dui-input !h-9 dui-input-bordered w-full"
+				on:input={() => debounce(null, searchOrderId)}
+				bind:value={searchId}
+				autofocus={!!searchId}
+			/>
+			<button class="btn variant-filled !rounded bg-primary-500 py-1" on:click={showFilterModal}>
 				<Filter class="mr-1" size="20" /> Lọc
 			</button>
+			<FilterOrderModal id="filter-process-transact" filterOptions={{ fromTP: true }} {defaultQuery} />
 		</div>
 	</div>
 	<TabGroup rounded="rounded-tl-md rounded-tr-md" class="h-[calc(100%-9.5rem)]">
@@ -36,7 +66,9 @@
 			bind:group={tabSet}
 			class="w-1/3"
 		>
-			<span class:text-surface-400={!isFirstTab}>Đơn đến</span>
+			<span class="flex items-center justify-center gap-1" class:text-surface-400={!isFirstTab}>
+				Đơn đến <ArrowDownCircle size={20} />
+			</span>
 		</TabAnchor>
 		<TabAnchor
 			href="?typeOrder={OrderType.TRANSACTION}&deliveryStatus={OrderStatus.PROCESSING}"
@@ -44,15 +76,19 @@
 			bind:group={tabSet}
 			class="w-1/3"
 		>
-			<span class:text-surface-400={!isSecondTab}>Đang xử lý</span>
+			<span class="flex items-center justify-center gap-1" class:text-surface-400={!isSecondTab}>
+				Đang xử lý <Clock3 size={20} />
+			</span>
 		</TabAnchor>
 		<TabAnchor
-			href="?typeOrder={OrderType.TRANSACTION}&deliveryStatus={OrderStatus.CONFIRM_SEND}"
+			href="?typeOrder={OrderType.TRANSACTION}&deliveryStatus={OrderStatus.CREATE_SEND}"
 			selected={isThirdTab}
 			bind:group={tabSet}
 			class="w-1/3"
 		>
-			<span class:text-surface-400={!isThirdTab}>Xác nhận đến điểm tập kết đích</span>
+			<span class="flex items-center justify-center gap-1" class:text-surface-400={!isThirdTab}>
+				Xác nhận đến điểm tập kết đích <ClipboardCheck size={20} />
+			</span>
 		</TabAnchor>
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
@@ -61,21 +97,33 @@
 					{#await data.streamed?.orders}
 						<Loading message="Đang lấy dữ liệu mới nhất" />
 					{:then orders}
-						<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
-						<ProcessingOrdersTable
+						<ProcessTransactOrdersTable
 							tableData={orders.data.content}
 							paginate={orders.data?.paginate}
 							bind:checkedOrders
 						/>
 					{/await}
 				{:else if isSecondTab}
-					<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
-					(tab panel 2 contents)
+					{#await data.streamed?.orders}
+						<Loading message="Đang lấy dữ liệu mới nhất" />
+					{:then orders}
+						<ProcessTransactOrdersTable
+							tableData={orders.data.content}
+							paginate={orders.data?.paginate}
+							bind:checkedOrders
+						/>
+					{/await}
 				{:else if isThirdTab}
-					<!-- Thêm lọc từ điểm TK nguồn đến, điểm GD liên kết đến -->
-					<!-- Thêm lọc điểm đến tiếp theo là GD/TK? -->
-					<!-- Thêm lọc địa chỉ điểm đến tiếp theo -->
-					(tab panel 3 contents)
+					{#await data.streamed?.orders}
+						<Loading message="Đang lấy dữ liệu mới nhất" />
+					{:then orders}
+						<ProcessTransactOrdersTable
+							showGPColumn={true}
+							tableData={orders.data.content}
+							paginate={orders.data?.paginate}
+							bind:checkedOrders
+						/>
+					{/await}
 				{/if}
 			</div>
 		</svelte:fragment>

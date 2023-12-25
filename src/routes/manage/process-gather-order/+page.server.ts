@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ parent, fetch, url }) => {
 		const query = url.search
 			? new URLSearchParams(url.search)
 			: new URLSearchParams({
-					typeOrder: String(OrderType.TRANSACTION),
+					typeOrder: String(OrderType.GATHERING),
 					deliveryStatus: String(OrderStatus.CONFIRM_RECEIVE)
 			  });
 

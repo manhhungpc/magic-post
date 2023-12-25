@@ -29,7 +29,7 @@
 
 <main class="h-full">
 	<div class="flex justify-between items-center mb-3">
-		<h1 class="h3 uppercase">Danh sách điểm tập kết - điểm giao dịch</h1>
+		<h1 class="h3 uppercase">Danh sách điểm chuyển phát</h1>
 		<button class="btn variant-filled bg-ocean" on:click={showOfficeModal}>
 			<PlusCircle class="mr-1" size="20" /> Thêm mới
 		</button>

@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { ArrowsUpFromLine, ClipboardCheck, Eye, PencilLine, Trash2 } from 'lucide-svelte';
+	import { CheckCircle, Eye, Info } from 'lucide-svelte';
 	import type { Order, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority, OrderStatus, OrderType } from 'src/utils/enum';
 	import { formatDate } from 'src/utils/helper';
-	import { goto, invalidate, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
+	import Paginator from '../Paginator.svelte';
 	import Toastify from 'toastify-js';
 	import { page } from '$app/stores';
-	import Paginator from '../Paginator.svelte';
 
-	export let paginate: Paginate;
 	export let tableData: Order[] = [],
-		checkedOrders: Set<any>,
-		tooltip = 'rời điểm';
+		paginate: Paginate,
+		checkedOrders: Set<any>;
+	export let showGPColumn = false;
 
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
@@ -22,7 +22,7 @@
 	function selectAllRow() {
 		if (checkAll) {
 			checks = new Array(tableData.length).fill(true);
-			checkedOrders = new Set(tableData.map((td) => td.id));
+			checkedOrders = new Set(tableData.map((td) => td.orderId));
 		} else {
 			checks = new Array(tableData.length).fill(false);
 			checkedOrders = new Set();
@@ -39,6 +39,7 @@
 
 	async function onNextProcess(uuid: string) {
 		loading = true;
+		console.log([uuid]);
 		const response = await fetch(`/api/orders/delivery`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -75,16 +76,11 @@
 			}
 		}).showToast();
 		checkedOrders = new Set();
-		//đi đên đơn in biên lai xác nhận
-		if ($page.url.search == `?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.CONFIRM_RECEIVE}`) {
-			goto(`?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.PROCESSING}`);
+		if ($page.url.search == `?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.PROCESSING}`) {
+			goto(`?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.CREATE_SEND}`);
 			return;
 		}
-		if ($page.url.search == `?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.PROCESSING}`) {
-			goto('/manage/delivery');
-			return;
-		}
-		invalidateAll();
+		goto(`?typeOrder=${OrderType.TRANSACTION}&deliveryStatus=${OrderStatus.PROCESSING}`);
 	}
 </script>
 
@@ -92,7 +88,7 @@
 	<table class="table table-hover overflow-auto !bg-transparent !rounded-none" class:h-full={tableData.length == 0}>
 		<thead class="!bg-white relative z-10">
 			<tr>
-				<th>
+				<th class="table-cell-fit">
 					<div class="flex items-center gap-2">
 						<input
 							class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
@@ -106,7 +102,12 @@
 				<th>Mã đơn hàng</th>
 				<th>Loại hàng</th>
 				<th>Cước phí</th>
-				<th>Ngày tạo</th>
+				<th>Từ điểm GD</th>
+				{#if showGPColumn}
+					<th>Điểm TK đích</th>
+				{:else}
+					<th>Ngày tạo</th>
+				{/if}
 				<th>Thao tác</th>
 			</tr>
 		</thead>
@@ -118,12 +119,13 @@
 			<tbody>
 				{#each tableData as row, i}
 					<tr class:row-selected={checks[i] == true}>
-						<td class="flex items-center gap-2">
+						<td class="flex items-center gap-3 table-cell-fit">
 							<input
 								class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
 								type="checkbox"
 								bind:checked={checks[i]}
 								on:change={() => onSelectOrder(i, row)}
+								disabled={loading}
 							/>
 							{i + 1}
 						</td>
@@ -131,23 +133,57 @@
 						<td>{row.categority == Catergority.DOCUMENT ? 'Tài liệu' : 'Hàng hóa'}</td>
 						<td>{row.mainCharge.toLocaleString()}</td>
 						<td>
-							{formatDate(row.createAt)}
+							<div class="dui-dropdown dui-dropdown-hover dui-dropdown-bottom">
+								<div tabindex="0" role="button">
+									<span class="text-link flex items-center gap-1">
+										{row.orderDelivery.fromLocation.name}
+										<Info size={18} />
+									</span>
+								</div>
+								<ul class="dui-dropdown-content z-[5] dui-menu p-3 shadow bg-base-100 rounded-lg w-96 text-[#000]">
+									<div class="mb-2"><b>Mã điểm:</b> {row.orderDelivery.fromLocation.pointId}</div>
+									<div class="mb-2"><b>SĐT:</b> {row.orderDelivery.fromLocation.phoneNo}</div>
+									<div><b>Địa chỉ:</b> {row.orderDelivery.fromLocation.address}</div>
+								</ul>
+							</div>
 						</td>
+						{#if showGPColumn}
+							<td>
+								<div class="dui-dropdown dui-dropdown-hover dui-dropdown-bottom">
+									<div tabindex="0" role="button">
+										<span class="text-link flex items-center gap-1">
+											{row.orderDelivery.toLocation.name}
+											<Info size={18} />
+										</span>
+									</div>
+									<ul class="dui-dropdown-content z-[5] dui-menu p-3 shadow bg-base-100 rounded-lg w-80 text-[#000]">
+										<div class="mb-2"><b>Mã điểm:</b> {row.orderDelivery.toLocation.pointId}</div>
+										<div class="mb-2"><b>SĐT:</b> {row.orderDelivery.toLocation.phoneNo}</div>
+										<div><b>Địa chỉ:</b> {row.orderDelivery.toLocation.address}</div>
+									</ul>
+								</div>
+							</td>
+						{:else}
+							<td>
+								{formatDate(row.createAt)}
+							</td>
+						{/if}
 						<td class="flex items-center gap-3">
-							<button
-								type="button"
-								class="btn-icon variant-filled h-8 w-8"
-								on:click={() => goto(`/manage/customer-order/${row.orderId}`)}
-							>
+							<button type="button" class="btn-icon variant-filled-primary h-8 w-8">
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận {tooltip}">
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận đã nhận">
 								<button
 									type="button"
-									class="btn-icon variant-filled bg-primary-500 h-8 w-8"
+									class="btn-icon variant-filled bg-greenNew h-8 w-8"
 									on:click={() => onNextProcess(row.id)}
+									disabled={loading}
 								>
-									<ClipboardCheck size="16" />
+									{#if loading}
+										<span class="dui-loading dui-loading-spinner dui-loading-sm" />
+									{:else}
+										<CheckCircle size="16" />
+									{/if}
 								</button>
 							</div>
 						</td>

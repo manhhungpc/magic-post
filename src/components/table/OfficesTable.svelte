@@ -38,7 +38,7 @@
 					<th>Loại điểm</th>
 				{/if}
 				<th>Tên điểm {officeType != 'toàn bộ' ? officeType : ''}</th>
-				<th>SĐT liên lạc</th>
+
 				<th>Trưởng điểm</th>
 				<th>Địa chỉ</th>
 				{#if officeType == 'giao dịch'}
@@ -61,7 +61,7 @@
 							<td>{row.typePoint == 'GP' ? 'Tập kết' : 'Giao dịch'}</td>
 						{/if}
 						<td>{row.name}</td>
-						<td>{row.phoneNo}</td>
+
 						<td>{row.admin ? row.admin.fullName : 'Không có'}</td>
 						<td>{row.address}</td>
 						{#if officeType == 'giao dịch'}

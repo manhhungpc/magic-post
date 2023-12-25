@@ -15,6 +15,7 @@
 	import EmptyData from 'src/components/EmptyData.svelte';
 	import { page } from '$app/stores';
 	import { mergeQueries } from 'src/utils/helper';
+	import { debounce } from '$lib/debounce';
 
 	export let data: PageData;
 	const user: StaffsInteface = getUserStorage();
@@ -25,7 +26,7 @@
 
 	onMount(() => {
 		if (![Roles.TRANSACTION_LEADER, Roles.TRANSACTION_STAFF].includes(user.role?.id)) {
-			goto('/manage/process-gather-order');
+			goto('/manage/process-transact-order');
 		}
 	});
 
@@ -33,13 +34,6 @@
 		(document.getElementById('filter_customer_order') as any).showModal();
 	}
 
-	let timer: any;
-	const debounceSearch = (e: any) => {
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			searchOrderId();
-		}, 400);
-	};
 	function searchOrderId() {
 		const currentQuery = new URLSearchParams($page.url.searchParams.toString());
 		const newQuery = mergeQueries(currentQuery, new URLSearchParams({ orderId: searchId }));
@@ -104,7 +98,7 @@
 				type="text"
 				placeholder="Tìm mã đơn hàng"
 				class="dui-input h-10 dui-input-bordered w-full"
-				on:input={debounceSearch}
+				on:input={() => debounce(null, searchOrderId)}
 				bind:value={searchId}
 				autofocus={!!searchId}
 			/>
@@ -118,7 +112,7 @@
 			>
 				<PlusCircle class="mr-1" size="20" /> Thêm mới
 			</button>
-			<FilterOrderModal id="filter_customer_order" />
+			<FilterOrderModal id="filter_customer_order" filterOptions={{ customerInfo: true }} />
 		</div>
 	</div>
 	<div class="dui-divider m-0" />
@@ -130,7 +124,16 @@
 		{:else}
 			<div class="h-[calc(100%-7rem)] card !rounded-none overflow-auto !bg-transparent">
 				{#each orders.data.content as orderData}
-					<ListOrder {orderData} id={orderData.id} on:change={(e) => showGatherOrderBtn(e, orderData.id)} />
+					<ListOrder
+						{orderData}
+						id={orderData.id}
+						on:change={(e) => showGatherOrderBtn(e, orderData.id)}
+						on:click={() => {
+							checkedOrders.add(orderData.id);
+							gatherPointDelivery();
+						}}
+						status={orderData.orderDelivery.status}
+					/>
 				{/each}
 			</div>
 			<Paginator paginate={orders.data.paginate} />

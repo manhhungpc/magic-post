@@ -11,7 +11,7 @@ enum OrderType {
 export const load: PageServerLoad = async ({ parent, fetch, url }) => {
 	const parentData = await parent();
 	if (![Roles.TRANSACTION_LEADER, Roles.TRANSACTION_STAFF].includes(parentData.userData.role)) {
-		throw redirect(302, '/manage/process-gather-order');
+		throw redirect(302, '/manage/process-transact-order');
 	}
 	try {
 		const requestQuery = new URLSearchParams(url.search);

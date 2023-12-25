@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { Catergority } from 'src/utils/enum';
 	import { formatDate } from 'src/utils/helper';
 	import type { Order } from 'src/utils/interface';
 
 	export let invoiceData: Order;
+	console.log('🚀 ~ file: Invoice.svelte:6 ~ invoiceData:', invoiceData);
 </script>
 
 <main class="flex flex-col items-center bg-[#fff]">
@@ -51,11 +53,19 @@
 					<p><strong>3. Loại hàng gửi:</strong></p>
 					<div class="flex">
 						<div class="flex w-[50%] justify-center">
-							<input type="checkbox" name="doc" id="document" />
+							<input
+								type="checkbox"
+								class="pointer-events-none"
+								checked={invoiceData.categority == Catergority.DOCUMENT}
+							/>
 							<label class="ml-0.5" for="document">Tài liệu</label>
 						</div>
 						<div class="flex w-[50%] justify-center">
-							<input type="checkbox" name="goods" id="goods" />
+							<input
+								type="checkbox"
+								class="pointer-events-none"
+								checked={invoiceData.categority == Catergority.PACKAGE}
+							/>
 							<label class="ml-0.5" for="goods">Hàng hóa</label>
 						</div>
 					</div>
@@ -72,8 +82,12 @@
 						<tbody>
 							<tr>
 								<td class="td-border-left-none">Tổng</td>
-								<td>0</td>
-								<td />
+								<td>
+									{invoiceData.contextOrders ? invoiceData.contextOrders.reduce((a, b) => a + b.quantity, 0) : 0}
+								</td>
+								<td>
+									{invoiceData.contextOrders ? invoiceData.contextOrders.reduce((a, b) => a + b.value, 0) : ''}
+								</td>
 								<td class="td-border-right-none" />
 							</tr>
 						</tbody>
@@ -140,7 +154,7 @@
 							</div>
 							<div class="flex justify-between">
 								<span>b. Phụ phí:</span>
-								<span class="mr-[4px]">1.900</span>
+								<span class="mr-[4px]">0</span>
 							</div>
 							<div class="flex justify-between">
 								<span>c. Cước GTGT:</span>
@@ -148,7 +162,7 @@
 							</div>
 							<div class="flex justify-between">
 								<span>d. Tổng cước (gồm VAT):</span>
-								<span class="mr-[4px]">12.312</span>
+								<span class="mr-[4px]">{invoiceData.mainCharge.toLocaleString()}</span>
 							</div>
 							<div class="flex justify-between">
 								<span>e. Thu khác:</span>
@@ -156,7 +170,7 @@
 							</div>
 							<div class="flex justify-between">
 								<span><strong>f. Tổng thu:</strong></span>
-								<span class="mr-[4px]"><strong>12.312</strong></span>
+								<span class="mr-[4px]"><strong>{invoiceData.mainCharge.toLocaleString()}</strong></span>
 							</div>
 						</div>
 						<div class="invoice-cell">
