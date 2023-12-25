@@ -1,110 +1,57 @@
 <script lang="ts">
-	import { Check, ClipboardList, Truck } from 'lucide-svelte';
+	import { ChevronsRight, ClipboardList } from 'lucide-svelte';
+	import { formatDate } from 'src/utils/helper';
 
-	export let trackingData;
+	export let trackingData: any[];
+
+	const firstTrack = trackingData.at(0);
+	const lastTrack = trackingData.at(-1);
+	let remainTrack: any[];
+
+	$: if (firstTrack.id != lastTrack.id) {
+		remainTrack = trackingData.slice(1, -1).reverse();
+	}
 </script>
 
 <ul>
-	<!-- Đã giao -->
 	<li>
-		<!-- Dòng chính (icon) -->
 		<div class="flex">
 			<div class="flex">
 				<div class="flex flex-col items-center">
 					<div class="tracking-icon tracking-icon-success">
-						<Check class="w-5 h-5" />
+						<ChevronsRight class="w-5 h-5" />
 					</div>
-					<div class="tracking-hr grow" />
 				</div>
-				<div class="mx-5 mt-1">15:20 30-05-2023</div>
+				<div class="mx-5 mt-1 tracking-text-success font-semibold font-sans">
+					{formatDate(lastTrack.createAt)}
+				</div>
 			</div>
 			<div class="mt-1">
-				<div class="tracking-text-success"><strong>Đã giao</strong></div>
-				<div class="tracking-text-success">Đơn hàng đã được giao thành công</div>
-				<a class="tracking-link-image" href="/">Xem hình ảnh giao hàng</a>
-			</div>
-		</div>
-		<!-- Dòng phụ (chấm tròn) -->
-		<div class="flex">
-			<div class="flex">
-				<div class="flex flex-col items-center min-w-[2rem]">
-					<div class="tracking-hr grow" />
-					<div class="tracking-dot rounded-full w-3 h-3" />
-					<div class="tracking-hr grow" />
-				</div>
-				<div class="mx-5">15:20 30-05-2023</div>
-			</div>
-			<div>
-				<div class="tracking-text-pending">Đơn hàng đã được giao thành công</div>
-			</div>
-		</div>
-		<!-- Dòng phụ (chấm tròn) -->
-		<div class="flex">
-			<div class="flex">
-				<div class="flex flex-col items-center min-w-[2rem]">
-					<div class="tracking-hr grow" />
-					<div class="tracking-dot rounded-full w-3 h-3" />
-					<div class="tracking-hr grow" />
-				</div>
-				<div class="mx-5">15:20 30-05-2023</div>
-			</div>
-			<div>
-				<div class="tracking-text-pending">Đơn hàng đã được giao thành công</div>
+				<div class="tracking-text-success"><strong>{lastTrack.messageStatus}</strong></div>
+				<!-- <a class="tracking-link-image" href="/">Xem hình ảnh giao hàng</a> -->
 			</div>
 		</div>
 	</li>
 
-	<!-- Đang giao hàng -->
-	<li>
-		<!-- Dòng chính (icon) -->
-		<div class="flex">
+	{#each remainTrack as tracking}
+		<li>
 			<div class="flex">
-				<div class="flex flex-col items-center">
-					<div class="tracking-icon">
-						<Truck class="w-5 h-5" />
+				<div class="flex">
+					<div class="flex flex-col items-center min-w-[2rem]">
+						<div class="tracking-hr grow" />
+						<div class="tracking-dot rounded-full w-3 h-3" />
+						<div class="tracking-hr grow" />
 					</div>
-					<div class="tracking-hr grow" />
+					<div class="mx-5 font-sans">{formatDate(tracking.createAt)}</div>
 				</div>
-				<div class="mx-5 mt-1">15:20 30-05-2023</div>
-			</div>
-			<div class="mt-1">
-				<div><strong>Đang giao hàng</strong></div>
-				<div class="tracking-text-pending">Đơn hàng đã được giao thành công</div>
-			</div>
-		</div>
-		<!-- Dòng phụ (chấm tròn) -->
-		<div class="flex">
-			<div class="flex">
-				<div class="flex flex-col items-center min-w-[2rem]">
-					<div class="tracking-hr grow" />
-					<div class="tracking-dot rounded-full w-3 h-3" />
-					<div class="tracking-hr grow" />
+				<div>
+					<div class="text-[#000]">{tracking.messageStatus}</div>
 				</div>
-				<div class="mx-5">15:20 30-05-2023</div>
 			</div>
-			<div>
-				<div class="tracking-text-pending">Đơn hàng đã được giao thành công</div>
-			</div>
-		</div>
-		<!-- Dòng phụ (chấm tròn) -->
-		<div class="flex">
-			<div class="flex">
-				<div class="flex flex-col items-center min-w-[2rem]">
-					<div class="tracking-hr grow" />
-					<div class="tracking-dot rounded-full w-3 h-3" />
-					<div class="tracking-hr grow" />
-				</div>
-				<div class="mx-5">15:20 30-05-2023</div>
-			</div>
-			<div>
-				<div class="tracking-text-pending">Đơn hàng đã được giao thành công</div>
-			</div>
-		</div>
-	</li>
+		</li>
+	{/each}
 
-	<!-- Đặt hàng thành công -->
 	<li>
-		<!-- Dòng chính (icon) -->
 		<div class="flex">
 			<div class="flex">
 				<div class="flex flex-col items-center">
@@ -112,11 +59,10 @@
 						<ClipboardList class="w-5 h-5" />
 					</div>
 				</div>
-				<div class="mx-5 mt-1">15:20 30-05-2023</div>
+				<div class="mx-5 mt-1 font-sans">{formatDate(firstTrack.createAt)}</div>
 			</div>
 			<div class="mt-1">
-				<div><strong>Đặt hàng thành công</strong></div>
-				<div class="tracking-text-pending">Đơn hàng đã được giao thành công</div>
+				<div><strong>{firstTrack.messageStatus}</strong></div>
 			</div>
 		</div>
 	</li>
@@ -144,6 +90,8 @@
 	}
 
 	.tracking-icon-success {
+		min-width: 2rem;
+		min-height: 2rem;
 		background-color: #26ab9a;
 		border: none;
 		color: white;
@@ -153,11 +101,7 @@
 		color: #26ab9a;
 	}
 
-	.tracking-link-image {
-		color: rgb(59, 130, 246);
-	}
-
-	.tracking-text-pending {
-		color: gray;
+	.font-sans {
+		font-size: 18px;
 	}
 </style>
