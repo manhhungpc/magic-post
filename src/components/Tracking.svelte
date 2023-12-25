@@ -6,7 +6,7 @@
 
 	const firstTrack = trackingData.at(0);
 	const lastTrack = trackingData.at(-1);
-	let remainTrack: any[];
+	let remainTrack: any[] = [];
 
 	$: if (firstTrack.id != lastTrack.id) {
 		remainTrack = trackingData.slice(1, -1).reverse();
@@ -22,7 +22,7 @@
 						<ChevronsRight class="w-5 h-5" />
 					</div>
 				</div>
-				<div class="mx-5 mt-1 tracking-text-success font-semibold font-sans">
+				<div class="mx-5 mt-1 tracking-text-success font-semibold font-sans min-w-[10rem] flex items-center">
 					{formatDate(lastTrack.createAt)}
 				</div>
 			</div>
@@ -42,30 +42,32 @@
 						<div class="tracking-dot rounded-full w-3 h-3" />
 						<div class="tracking-hr grow" />
 					</div>
-					<div class="mx-5 font-sans">{formatDate(tracking.createAt)}</div>
+					<div class="mx-5 font-sans min-w-[10rem] flex items-center py-3">{formatDate(tracking.createAt)}</div>
 				</div>
 				<div>
-					<div class="text-[#000]">{tracking.messageStatus}</div>
+					<div class="text-[#000] py-3">{tracking.messageStatus}</div>
 				</div>
 			</div>
 		</li>
 	{/each}
 
-	<li>
-		<div class="flex">
+	{#if firstTrack != lastTrack}
+		<li>
 			<div class="flex">
-				<div class="flex flex-col items-center">
-					<div class="tracking-icon">
-						<ClipboardList class="w-5 h-5" />
+				<div class="flex">
+					<div class="flex flex-col items-center">
+						<div class="tracking-icon">
+							<ClipboardList class="w-5 h-5" />
+						</div>
 					</div>
+					<div class="mx-5 mt-1 font-sans min-w-[10rem] flex items-center">{formatDate(firstTrack.createAt)}</div>
 				</div>
-				<div class="mx-5 mt-1 font-sans">{formatDate(firstTrack.createAt)}</div>
+				<div class="mt-1">
+					<div><strong>{firstTrack.messageStatus}</strong></div>
+				</div>
 			</div>
-			<div class="mt-1">
-				<div><strong>{firstTrack.messageStatus}</strong></div>
-			</div>
-		</div>
-	</li>
+		</li>
+	{/if}
 </ul>
 
 <style>
