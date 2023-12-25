@@ -5,11 +5,12 @@
 	import { X } from 'lucide-svelte';
 
 	export let optionsData: AutocompleteOption<string>[];
-	console.log('🚀 ~ file: PopupAutocomplete.svelte:7 ~ optionsData:', optionsData);
+	// console.log('🚀 ~ file: PopupAutocomplete.svelte:7 ~ optionsData:', optionsData);
 	export let target: string,
 		placement: Placement = 'bottom',
 		placeholder = 'Tìm kiếm...';
-	export let input = '';
+	export let input = '',
+		value = '';
 	export let width: 'max-w-sm' | 'max-w-md' | 'max-w-lg' = 'max-w-sm';
 
 	let popupSettings: PopupSettings = {
@@ -20,6 +21,7 @@
 
 	function onSelection(event: CustomEvent<AutocompleteOption<string>>): void {
 		input = event.detail.label;
+		value = event.detail.value;
 	}
 </script>
 
@@ -30,6 +32,7 @@
 	bind:value={input}
 	{placeholder}
 	use:popup={popupSettings}
+	on:change
 />
 <div data-popup={target} class="card w-full {width} max-h-60 p-4 overflow-y-auto">
 	<div class="w-full flex justify-end sticky top-0">

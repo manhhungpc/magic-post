@@ -112,6 +112,7 @@
 							tableData={orders.data.content}
 							paginate={orders.data.paginate}
 							bind:checkedOrders
+							tooltip="Tạo đơn chuyển đến điểm giao dịch"
 						/>
 					{/await}
 				{:else if isThirdTab}
@@ -123,6 +124,7 @@
 							tableData={orders.data.content}
 							paginate={orders.data.paginate}
 							bind:checkedOrders
+							tooltip="Xác nhận rời điểm"
 						/>
 					{/await}
 				{/if}

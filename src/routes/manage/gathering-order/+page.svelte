@@ -6,7 +6,7 @@
 	import { scale } from 'svelte/transition';
 	//@ts-ignore
 	import Toastify from 'toastify-js';
-	import { goto, invalidate } from '$app/navigation';
+	import { goto, invalidate, invalidateAll } from '$app/navigation';
 	import { ClipboardCheck, Clock3, Filter, Warehouse } from 'lucide-svelte';
 	import { OrderStatus, OrderType } from 'src/utils/enum';
 	import { page } from '$app/stores';
@@ -78,8 +78,9 @@
 			}
 		}).showToast();
 		checkedOrders = new Set();
+		invalidateAll();
 		//đi đên đơn in biên lai xác nhận
-		invalidate((url) => url.pathname.includes('/api/orders/delivery'));
+		// invalidate((url) => url.pathname.includes('/api/orders/delivery'));
 	}
 
 	function showFilterModal() {

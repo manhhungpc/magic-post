@@ -10,6 +10,7 @@
 	import { debounce } from 'src/lib/debounce';
 	import { goto } from '$app/navigation';
 	import { mergeQueries } from 'src/utils/helper';
+	import { scale } from 'svelte/transition';
 
 	export let data: PageServerData;
 	const defaultQuery = new URLSearchParams({
@@ -56,6 +57,7 @@
 			<button class="btn variant-filled !rounded bg-primary-500 py-1" on:click={showFilterModal}>
 				<Filter class="mr-1" size="20" /> Lọc
 			</button>
+
 			<FilterOrderModal id="filter-process-transact" filterOptions={{ fromTP: true }} {defaultQuery} />
 		</div>
 	</div>
@@ -111,6 +113,7 @@
 							tableData={orders.data.content}
 							paginate={orders.data?.paginate}
 							bind:checkedOrders
+							tooltip="Tạo đơn chuyển đến điểm tập kết"
 						/>
 					{/await}
 				{:else if isThirdTab}
@@ -122,6 +125,7 @@
 							tableData={orders.data.content}
 							paginate={orders.data?.paginate}
 							bind:checkedOrders
+							tooltip="Xác nhận rời điểm"
 						/>
 					{/await}
 				{/if}

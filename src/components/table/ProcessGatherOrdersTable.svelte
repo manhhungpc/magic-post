@@ -13,6 +13,7 @@
 		paginate: Paginate,
 		checkedOrders: Set<any>,
 		showTPColumn = false;
+	export let tooltip = 'Xác nhận đã nhận';
 
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
@@ -175,7 +176,7 @@
 							<button type="button" class="btn-icon variant-filled-primary h-8 w-8">
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận đã nhận">
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip={tooltip}>
 								<button
 									type="button"
 									class="btn-icon variant-filled bg-greenNew h-8 w-8"

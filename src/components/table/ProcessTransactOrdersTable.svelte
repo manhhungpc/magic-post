@@ -13,10 +13,12 @@
 		paginate: Paginate,
 		checkedOrders: Set<any>;
 	export let showGPColumn = false;
+	export let tooltip = 'Xác nhận đã nhận';
 
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
 	let loading = false,
+		loadingIndex = 0,
 		error: string;
 
 	function selectAllRow() {
@@ -37,9 +39,9 @@
 		if (checks[i] == false && checkAll == true) checkAll = false;
 	}
 
-	async function onNextProcess(uuid: string) {
+	async function onNextProcess(uuid: string, index: number) {
 		loading = true;
-		console.log([uuid]);
+		loadingIndex = index;
 		const response = await fetch(`/api/orders/delivery`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -89,15 +91,7 @@
 		<thead class="!bg-white relative z-10">
 			<tr>
 				<th class="table-cell-fit">
-					<div class="flex items-center gap-2">
-						<input
-							class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
-							type="checkbox"
-							bind:checked={checkAll}
-							on:change={selectAllRow}
-						/>
-						STT
-					</div>
+					<div class="flex items-center gap-2">STT</div>
 				</th>
 				<th>Mã đơn hàng</th>
 				<th>Loại hàng</th>
@@ -120,13 +114,6 @@
 				{#each tableData as row, i}
 					<tr class:row-selected={checks[i] == true}>
 						<td class="flex items-center gap-3 table-cell-fit">
-							<input
-								class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
-								type="checkbox"
-								bind:checked={checks[i]}
-								on:change={() => onSelectOrder(i, row)}
-								disabled={loading}
-							/>
 							{i + 1}
 						</td>
 						<td>{row.orderId}</td>
@@ -172,14 +159,14 @@
 							<button type="button" class="btn-icon variant-filled-primary h-8 w-8">
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận đã nhận">
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip={tooltip}>
 								<button
 									type="button"
 									class="btn-icon variant-filled bg-greenNew h-8 w-8"
-									on:click={() => onNextProcess(row.id)}
+									on:click={() => onNextProcess(row.id, i)}
 									disabled={loading}
 								>
-									{#if loading}
+									{#if loading && loadingIndex == i}
 										<span class="dui-loading dui-loading-spinner dui-loading-sm" />
 									{:else}
 										<CheckCircle size="16" />

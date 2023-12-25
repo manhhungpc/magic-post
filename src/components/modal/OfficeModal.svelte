@@ -9,6 +9,7 @@
 
 	import { slide } from 'svelte/transition';
 	import AutocompleteAddress from '../AutocompleteAddress.svelte';
+	import AutocompleteAddressV2 from '../AutocompleteAddressV2.svelte';
 
 	export let id: string;
 	export let leaderData: StaffsInteface[] = [],
@@ -213,7 +214,7 @@
 					class="dui-input h-10 dui-input-bordered w-full"
 				/>
 			{:else}
-				<AutocompleteAddress bind:address />
+				<AutocompleteAddressV2 bind:address />
 			{/if}
 
 			<label class="dui-label pb-1" for="address">
