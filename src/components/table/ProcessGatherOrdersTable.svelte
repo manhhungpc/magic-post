@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { ArrowsUpFromLine, CheckCircle, Eye, Info, PencilLine, Trash2 } from 'lucide-svelte';
+	import { CheckCircle, Eye, Info } from 'lucide-svelte';
 	import type { Order, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority, OrderStatus, OrderType } from 'src/utils/enum';
 	import { formatDate } from 'src/utils/helper';
-	import { goto, invalidate, invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import Paginator from '../Paginator.svelte';
 	import Toastify from 'toastify-js';
 	import { page } from '$app/stores';
@@ -12,9 +12,10 @@
 
 	export let tableData: Order[] = [],
 		paginate: Paginate,
-		checkedOrders: Set<any>;
+		checkedOrders: Set<any>,
+		showTPColumn = false;
+	export let tooltip = 'Xác nhận đã nhận';
 
-	console.log('🚀 ~ file: ProcessingOrdersTable.svelte:11 ~ tableData:', tableData);
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
 	let loading = false,
@@ -78,7 +79,7 @@
 		}).showToast();
 		checkedOrders = new Set();
 		if ($page.url.search == `?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.PROCESSING}`) {
-			goto(`?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.CREATE_SEND}`, { invalidateAll: true });
+			goto(`?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.CREATE_SEND}`);
 			return;
 		}
 		if ($page.url.search == `?typeOrder=${OrderType.GATHERING}&deliveryStatus=${OrderStatus.CREATE_SEND}`) {
@@ -106,8 +107,14 @@
 				<th>Mã đơn hàng</th>
 				<th>Loại hàng</th>
 				<th>Cước phí</th>
-				<th>Từ điểm GD</th>
-				<th>Ngày tạo</th>
+				<th>Từ điểm tập kết</th>
+				<th>
+					{#if showTPColumn}
+						Điểm GD đích
+					{:else}
+						Ngày tạo
+					{/if}
+				</th>
 				<th>Thao tác</th>
 			</tr>
 		</thead>
@@ -125,6 +132,7 @@
 								type="checkbox"
 								bind:checked={checks[i]}
 								on:change={() => onSelectOrder(i, row)}
+								disabled={loading}
 							/>
 							{i + 1}
 						</td>
@@ -147,7 +155,23 @@
 							</div>
 						</td>
 						<td>
-							{formatDate(row.createAt)}
+							{#if showTPColumn}
+								<div class="dui-dropdown dui-dropdown-hover dui-dropdown-bottom">
+									<div tabindex="0" role="button">
+										<span class="text-link flex items-center gap-1">
+											{row.orderDelivery.toLocation.name}
+											<Info size={18} />
+										</span>
+									</div>
+									<ul class="dui-dropdown-content z-[5] dui-menu p-3 shadow bg-base-100 rounded-lg w-80 text-[#000]">
+										<div class="mb-2"><b>Mã điểm:</b> {row.orderDelivery.toLocation.pointId}</div>
+										<div class="mb-2"><b>SĐT:</b> {row.orderDelivery.toLocation.phoneNo}</div>
+										<div><b>Địa chỉ:</b> {row.orderDelivery.toLocation.address}</div>
+									</ul>
+								</div>
+							{:else}
+								{formatDate(row.createAt)}
+							{/if}
 						</td>
 						<td class="flex items-center gap-3">
 							<button
@@ -160,13 +184,18 @@
 							>
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận đã nhận">
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip={tooltip}>
 								<button
 									type="button"
 									class="btn-icon variant-filled bg-greenNew h-8 w-8"
 									on:click={() => onNextProcess(row.id)}
+									disabled={loading}
 								>
-									<CheckCircle size="16" />
+									{#if loading}
+										<span class="dui-loading dui-loading-spinner dui-loading-sm" />
+									{:else}
+										<CheckCircle size="16" />
+									{/if}
 								</button>
 							</div>
 						</td>

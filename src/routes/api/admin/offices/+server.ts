@@ -8,7 +8,7 @@ export const GET: RequestHandler = async ({ cookies, url }) => {
 		const token = cookies.get('token') as string;
 		const query = new URLSearchParams(url.search);
 
-		const filterQuery = removeNullQueries(query)
+		const filterQuery = removeNullQueries(query);
 
 		const response = await fetch(`${API_URL}/api/v1/admin/delivery-points?${filterQuery}`, {
 			method: 'GET',

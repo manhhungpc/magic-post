@@ -1,14 +1,15 @@
-import { json } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
+import { json, type RequestHandler } from '@sveltejs/kit';
 import { API_URL } from '$env/static/private';
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async ({ cookies }) => {
 	try {
-		const orderId = params.id;
-		const response = await fetch(`${API_URL}/api/v1/order-status/${orderId}`, {
+		const token = cookies.get('token') as string;
+
+		const response = await fetch(`${API_URL}/api/v1/delivery-points/order-statistics`, {
 			method: 'GET',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${token}`
 			}
 		});
 		const data = await response.json();

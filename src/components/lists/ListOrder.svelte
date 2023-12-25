@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { Check, Eye, PackagePlus, Printer, X } from 'lucide-svelte';
+	import { Boxes, Check, Eye, PackagePlus, Printer, X } from 'lucide-svelte';
 	import { Catergority, OrderStatus } from 'src/utils/enum';
 	import type { Order } from 'src/utils/interface';
 	import { lastRoute } from 'src/utils/stores';
@@ -31,6 +31,9 @@
 			</span>
 		</div>
 		<div class="flex justify-end gap-3">
+			<button type="button" class="btn-icon bg-orange variant-filled h-8 w-8" on:click>
+				<Boxes size="16" />
+			</button>
 			<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xem chi tiết">
 				<button
 					type="button"

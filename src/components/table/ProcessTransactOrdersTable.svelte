@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { ArrowsUpFromLine, CheckCircle, Eye, Info, PencilLine, Trash2 } from 'lucide-svelte';
+	import { CheckCircle, Eye, Info } from 'lucide-svelte';
 	import type { Order, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority, OrderStatus, OrderType } from 'src/utils/enum';
 	import { formatDate } from 'src/utils/helper';
-	import { goto, invalidate } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import Paginator from '../Paginator.svelte';
 	import Toastify from 'toastify-js';
 	import { page } from '$app/stores';
@@ -13,11 +13,13 @@
 	export let tableData: Order[] = [],
 		paginate: Paginate,
 		checkedOrders: Set<any>;
+	export let showGPColumn = false;
+	export let tooltip = 'Xác nhận đã nhận';
 
-	console.log('🚀 ~ file: ProcessingOrdersTable.svelte:11 ~ tableData:', tableData);
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
 	let loading = false,
+		loadingIndex = 0,
 		error: string;
 
 	function selectAllRow() {
@@ -38,9 +40,9 @@
 		if (checks[i] == false && checkAll == true) checkAll = false;
 	}
 
-	async function onNextProcess(uuid: string) {
+	async function onNextProcess(uuid: string, index: number) {
 		loading = true;
-		console.log([uuid]);
+		loadingIndex = index;
 		const response = await fetch(`/api/orders/delivery`, {
 			method: 'POST',
 			body: JSON.stringify({
@@ -90,21 +92,17 @@
 		<thead class="!bg-white relative z-10">
 			<tr>
 				<th class="table-cell-fit">
-					<div class="flex items-center gap-2">
-						<input
-							class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
-							type="checkbox"
-							bind:checked={checkAll}
-							on:change={selectAllRow}
-						/>
-						STT
-					</div>
+					<div class="flex items-center gap-2">STT</div>
 				</th>
 				<th>Mã đơn hàng</th>
 				<th>Loại hàng</th>
 				<th>Cước phí</th>
 				<th>Từ điểm GD</th>
-				<th>Ngày tạo</th>
+				{#if showGPColumn}
+					<th>Điểm TK đích</th>
+				{:else}
+					<th>Ngày tạo</th>
+				{/if}
 				<th>Thao tác</th>
 			</tr>
 		</thead>
@@ -117,12 +115,6 @@
 				{#each tableData as row, i}
 					<tr class:row-selected={checks[i] == true}>
 						<td class="flex items-center gap-3 table-cell-fit">
-							<input
-								class="dui-checkbox dui-checkbox-primary dui-checkbox-sm rounded-sm border-[#000]"
-								type="checkbox"
-								bind:checked={checks[i]}
-								on:change={() => onSelectOrder(i, row)}
-							/>
 							{i + 1}
 						</td>
 						<td>{row.orderId}</td>
@@ -143,9 +135,27 @@
 								</ul>
 							</div>
 						</td>
-						<td>
-							{formatDate(row.createAt)}
-						</td>
+						{#if showGPColumn}
+							<td>
+								<div class="dui-dropdown dui-dropdown-hover dui-dropdown-bottom">
+									<div tabindex="0" role="button">
+										<span class="text-link flex items-center gap-1">
+											{row.orderDelivery.toLocation.name}
+											<Info size={18} />
+										</span>
+									</div>
+									<ul class="dui-dropdown-content z-[5] dui-menu p-3 shadow bg-base-100 rounded-lg w-80 text-[#000]">
+										<div class="mb-2"><b>Mã điểm:</b> {row.orderDelivery.toLocation.pointId}</div>
+										<div class="mb-2"><b>SĐT:</b> {row.orderDelivery.toLocation.phoneNo}</div>
+										<div><b>Địa chỉ:</b> {row.orderDelivery.toLocation.address}</div>
+									</ul>
+								</div>
+							</td>
+						{:else}
+							<td>
+								{formatDate(row.createAt)}
+							</td>
+						{/if}
 						<td class="flex items-center gap-3">
 							<button
 								type="button"
@@ -157,13 +167,18 @@
 							>
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận đã nhận">
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip={tooltip}>
 								<button
 									type="button"
 									class="btn-icon variant-filled bg-greenNew h-8 w-8"
-									on:click={() => onNextProcess(row.id)}
+									on:click={() => onNextProcess(row.id, i)}
+									disabled={loading}
 								>
-									<CheckCircle size="16" />
+									{#if loading && loadingIndex == i}
+										<span class="dui-loading dui-loading-spinner dui-loading-sm" />
+									{:else}
+										<CheckCircle size="16" />
+									{/if}
 								</button>
 							</div>
 						</td>

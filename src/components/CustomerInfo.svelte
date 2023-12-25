@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AutocompleteAddress from './AutocompleteAddress.svelte';
+	import AutocompleteAddressV2 from './AutocompleteAddressV2.svelte';
 
 	export let target: 'gửi' | 'nhận';
 	export let customer: {
@@ -41,5 +42,5 @@
 	<label class="dui-label pb-1" for="address">
 		<span class="dui-label-text required-label">Địa chỉ người {target}</span>
 	</label>
-	<AutocompleteAddress bind:address={customer.address} {fullAddress} />
+	<AutocompleteAddressV2 bind:address={customer.address} {fullAddress} />
 </div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AppRail, AppRailTile, AppRailAnchor } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
-	import { AlignJustify, Users, Package, Boxes, ScrollText, Truck } from 'lucide-svelte';
+	import { AlignJustify, Users, Package, Boxes, ScrollText, Truck, LineChart } from 'lucide-svelte';
 	import { token } from 'src/utils/stores.js';
 	import { Roles } from 'src/utils/enum.js';
 	import { getUserStorage } from 'src/lib/userLocalStorage.js';
@@ -67,6 +67,13 @@
 				<AppRailAnchor href="/manage/delivery" selected={$page.url.pathname === '/manage/delivery'}>
 					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
 						<Truck /> <span class:hidden={!expand}>Đơn giao hàng</span>
+					</span>
+				</AppRailAnchor>
+			{/if}
+			{#if data.userData.role != Roles.GATHERS_STAFF}
+				<AppRailAnchor href="/manage/statistics" selected={$page.url.pathname === '/manage/statistics'}>
+					<span class="pl-7 text-base flex gap-3" class:py-4={!expand}>
+						<LineChart /> <span class:hidden={!expand}>Thống kê</span>
 					</span>
 				</AppRailAnchor>
 			{/if}

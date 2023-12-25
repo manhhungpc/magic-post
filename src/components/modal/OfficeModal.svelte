@@ -9,6 +9,7 @@
 
 	import { slide } from 'svelte/transition';
 	import AutocompleteAddress from '../AutocompleteAddress.svelte';
+	import AutocompleteAddressV2 from '../AutocompleteAddressV2.svelte';
 
 	export let id: string;
 	export let leaderData: StaffsInteface[] = [],
@@ -141,8 +142,7 @@
 					{
 						label: `${leader.userId} - ${leader.fullName}`,
 						value: `${leader.id}`,
-						keywords: `${leader.email}`,
-						meta: { healthy: false }
+						keywords: `${leader.email}`
 					}
 				];
 			});
@@ -154,8 +154,7 @@
 				{
 					label: `${point.pointId} - ${point.name}`,
 					value: `${point.id}`,
-					keywords: `${point.name}, ${point.pointId}, ${point.address}`,
-					meta: { healthy: false }
+					keywords: `${point.name}, ${point.pointId}, ${point.address}`
 				}
 			];
 		});
@@ -215,7 +214,7 @@
 					class="dui-input h-10 dui-input-bordered w-full"
 				/>
 			{:else}
-				<AutocompleteAddress bind:address />
+				<AutocompleteAddressV2 bind:address />
 			{/if}
 
 			<label class="dui-label pb-1" for="address">
