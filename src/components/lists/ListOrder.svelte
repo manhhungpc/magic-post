@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { Boxes, Check, Eye, PackagePlus, Printer, X } from 'lucide-svelte';
 	import { Catergority, OrderStatus } from 'src/utils/enum';
 	import type { Order } from 'src/utils/interface';
+	import { lastRoute } from 'src/utils/stores';
 
 	export let orderData: Order,
 		id: string,
@@ -36,7 +38,10 @@
 				<button
 					type="button"
 					class="btn-icon bg-orange variant-filled h-8 w-8"
-					on:click={() => goto(`/manage/customer-order/${id}`)}
+					on:click={() => {
+						lastRoute.set($page.url.href);
+						goto(`/manage/orders/${id}`);
+					}}
 				>
 					<Eye size="16" />
 				</button>
