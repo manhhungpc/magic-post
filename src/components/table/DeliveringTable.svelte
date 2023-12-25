@@ -6,6 +6,8 @@
 	import { goto } from '$app/navigation';
 	import Paginator from '../Paginator.svelte';
 	import Toastify from 'toastify-js';
+	import { lastRoute } from 'src/utils/stores';
+	import { page } from '$app/stores';
 
 	export let tableData: Order[] = [],
 		paginate: Paginate,
@@ -104,7 +106,10 @@
 							<button
 								type="button"
 								class="btn-icon variant-filled-primary h-8 w-8"
-								on:click={() => goto(`/manage/orders/${row.id}`)}
+								on:click={() => {
+									lastRoute.set($page.url.href);
+									goto(`/manage/orders/${row.id}`);
+								}}
 							>
 								<Eye size="16" />
 							</button>

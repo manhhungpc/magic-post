@@ -7,6 +7,7 @@
 	import { goto, invalidate } from '$app/navigation';
 	import Toastify from 'toastify-js';
 	import { page } from '$app/stores';
+	import { lastRoute } from 'src/utils/stores';
 
 	export let tableData: Order[] = [],
 		checkedOrders: Set<any>;
@@ -129,7 +130,10 @@
 							<button
 								type="button"
 								class="btn-icon variant-filled h-8 w-8"
-								on:click={() => goto(`/manage/orders/${row.id}`)}
+								on:click={() => {
+									lastRoute.set($page.url.href);
+									goto(`/manage/orders/${row.id}`);
+								}}
 							>
 								<Eye size="16" />
 							</button>
