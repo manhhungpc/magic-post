@@ -19,27 +19,34 @@ export const load: PageLoad = async ({ parent, fetch, url }) => {
 	await parent();
 
 	const type = url.searchParams.get('type') as string;
+	const hasWorkAt = url.searchParams.get('hasWorkAt') as string ?? 'false';
 	const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
 	const pageNumber = (url.searchParams.get('pageNumber') as string) ?? 1;
-	const query = new URLSearchParams({
+	const queryOffices = new URLSearchParams({
 		type,
 		pageSize,
 		pageNumber
 	});
-	console.log('🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:', query.toString());
+
+	const queryStaffs = new URLSearchParams({
+		hasWorkAt
+	})
+	console.log('🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:', queryOffices.toString());
 
 	try {
 		const staffs = await lazyLoad<Staffs>(
-			fetch(`/api/admin/staffs`, {
+			fetch(`/api/admin/staffs?${queryStaffs}`, {
 				method: 'GET'
 			}).then((res) => res.json())
 		);
 
 		const offices = await lazyLoad<Offices>(
-			fetch(`/api/admin/offices?${query}`, {
+			fetch(`/api/admin/offices?${queryOffices}`, {
 				method: 'GET'
 			}).then((res) => res.json())
 		);
+
+		console.log(staffs);
 
 		return {
 			staffs,
