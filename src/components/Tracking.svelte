@@ -18,16 +18,22 @@
 		<div class="flex">
 			<div class="flex">
 				<div class="flex flex-col items-center">
+					<div class="tracking-hr-tran grow" />
 					<div class="tracking-icon tracking-icon-success">
 						<ChevronsRight class="w-5 h-5" />
 					</div>
+					{#if firstTrack != lastTrack}
+						<div class="tracking-hr grow" />
+					{:else}
+						<div class="tracking-hr-tran grow" />
+					{/if}
 				</div>
-				<div class="mx-5 mt-1 tracking-text-success font-semibold font-sans min-w-[10rem] flex items-center">
+				<div class="mx-5 tracking-text-success font-semibold font-sans min-w-[9.5rem] flex items-center">
 					{formatDate(lastTrack.createAt)}
 				</div>
 			</div>
-			<div class="mt-1">
-				<div class="tracking-text-success"><strong>{lastTrack.messageStatus}</strong></div>
+			<div class="flex items-center">
+				<div class="tracking-text-success py-3"><strong>{lastTrack.messageStatus}</strong></div>
 				<!-- <a class="tracking-link-image" href="/">Xem hình ảnh giao hàng</a> -->
 			</div>
 		</div>
@@ -42,7 +48,7 @@
 						<div class="tracking-dot rounded-full w-3 h-3" />
 						<div class="tracking-hr grow" />
 					</div>
-					<div class="mx-5 font-sans min-w-[10rem] flex items-center py-3">{formatDate(tracking.createAt)}</div>
+					<div class="mx-5 font-sans min-w-[9.5rem] flex items-center">{formatDate(tracking.createAt)}</div>
 				</div>
 				<div>
 					<div class="text-[#000] py-3">{tracking.messageStatus}</div>
@@ -56,14 +62,16 @@
 			<div class="flex">
 				<div class="flex">
 					<div class="flex flex-col items-center">
+						<div class="tracking-hr grow" />
 						<div class="tracking-icon">
 							<ClipboardList class="w-5 h-5" />
 						</div>
+						<div class="tracking-hr-tran grow" />
 					</div>
-					<div class="mx-5 mt-1 font-sans min-w-[10rem] flex items-center">{formatDate(firstTrack.createAt)}</div>
+					<div class="mx-5 font-sans min-w-[9.5rem] flex items-center">{formatDate(firstTrack.createAt)}</div>
 				</div>
-				<div class="mt-1">
-					<div><strong>{firstTrack.messageStatus}</strong></div>
+				<div class="flex items-center">
+					<div class="py-3"><strong>{firstTrack.messageStatus}</strong></div>
 				</div>
 			</div>
 		</li>
@@ -73,6 +81,11 @@
 <style>
 	.tracking-hr {
 		background-color: gray;
+		width: 1px;
+	}
+
+	.tracking-hr-tran {
+		background-color: transparent;
 		width: 1px;
 	}
 

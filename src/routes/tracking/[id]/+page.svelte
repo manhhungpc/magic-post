@@ -8,14 +8,14 @@
 	console.log('🚀 ~ file: +page.svelte:8 ~ data:', data);
 </script>
 
-<div class="flex flex-col items-center w-full my-10">
-	<main class="flex flex-col gap-5 bg-surface-200 w-[60vw] p-3">
+<div class="flex flex-col items-center w-full md:my-10">
+	<main class="flex flex-col gap-5 bg-surface-200 md:w-[60vw] p-3">
 		{#await data.streamed?.trackingHistory}
 			<Loading message="Đang lấy thông tin mới nhất" />
 		{:then tracking}
 			<div class="w-full rounded-md flex gap-5">
 				<input type="text" placeholder="Mã đơn" class="dui-input dui-input-bordered dui-input-lg w-full" />
-				<button type="button" class="btn variant-filled-primary rounded-md w-1/5">Theo dõi</button>
+				<button type="button" class="btn variant-filled-primary rounded-md md:w-1/5">Theo dõi</button>
 			</div>
 			<div class="flex flex-col w-full md:flex-row px-1">
 				<div class="">
