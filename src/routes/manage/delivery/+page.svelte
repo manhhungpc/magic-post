@@ -22,7 +22,7 @@
 		($page.url.pathname == '/manage/delivery' && $page.url.search == '') ||
 		$page.url.search == `?typeOrder=${OrderType.DELIVERY}&deliveryStatus=${OrderStatus.PROCESSING}`;
 	$: isSecondTab = $page.url.search == `?typeOrder=${OrderType.DELIVERY}&deliveryStatus=${OrderStatus.CONFIRM_SEND}`;
-	$: isThirdTab = $page.url.search == `?typeOrder=${OrderType.DELIVERY}&deliveryStatus=${OrderStatus.SUCCESS_DELIVERY}`;
+	$: isThirdTab = $page.url.search == `?typeOrder=${OrderType.DELIVERY}&deliveryStatus=${OrderStatus.COMPLETED}`;
 </script>
 
 <main class="h-full">
@@ -47,7 +47,7 @@
 			<span class:text-surface-400={!isSecondTab}>Đang giao</span>
 		</TabAnchor>
 		<TabAnchor
-			href={`?typeOrder=${OrderType.DELIVERY}&deliveryStatus=${OrderStatus.SUCCESS_DELIVERY}`}
+			href={`?typeOrder=${OrderType.DELIVERY}&deliveryStatus=${OrderStatus.COMPLETED}`}
 			selected={isThirdTab}
 			bind:group={tabSet}
 			class="w-1/3"
