@@ -4,10 +4,18 @@
 	import StaffsModel from 'src/components/modal/StaffsModal.svelte';
 	import type { PageData } from './$types';
 	import Loading from 'src/components/Loading.svelte';
+	import { debounce } from '$lib/debounce';
+	import { goto } from '$app/navigation';
 
 	export let data: PageData | any;
+	let userId: string;
 	function showStaffModal() {
 		(document.getElementById('admin_new_staff') as any).showModal();
+	}
+
+	function onSearchUser() {
+		if (!userId) goto(`/admin/staffs`);
+		goto(`?userId=${userId}`);
 	}
 </script>
 
@@ -25,6 +33,8 @@
 			type="text"
 			placeholder="Nhập tên, mã nhân viên..."
 			class="dui-input dui-input-bordered w-full max-w-xs !h-8"
+			bind:value={userId}
+			on:change={() => debounce(null, onSearchUser)}
 		/>
 	</div>
 	<div class="card h-[calc(100%-7.5rem)]">

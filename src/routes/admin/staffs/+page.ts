@@ -11,9 +11,11 @@ interface Staffs {
 export const load: PageLoad = async ({ parent, fetch, url }) => {
 	await parent();
 
+	const userId = url.searchParams.get('userId') as string;
 	const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
 	const pageNumber = (url.searchParams.get('pageNumber') as string) ?? 1;
 	const query = new URLSearchParams({
+		userId,
 		pageSize,
 		pageNumber
 	});

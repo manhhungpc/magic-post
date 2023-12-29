@@ -38,3 +38,16 @@ export function mergeQueries(currentQuery: URLSearchParams, nextQuery: URLSearch
 
 	return removeNullQueries(currentQuery).toString();
 }
+
+export function hasEmptyField(obj: any) {
+	for (const key in obj) {
+		const value = obj[key];
+		if (
+			!value || // Check for undefined, null, empty string, or 0
+			(typeof value === 'object' && (value.length === 0 || hasEmptyField(value))) // Check for empty arrays or objects
+		) {
+			return true;
+		}
+	}
+	return false;
+}

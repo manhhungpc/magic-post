@@ -228,16 +228,14 @@
 			</form>
 			<button
 				class="btn variant-filled bg-primary-600"
-				class:animate-spin={loading}
 				disabled={loading}
 				on:click={() => (staff ? updateStaff(staff.id) : createNewStaff())}
 			>
-				<!-- {#if loading}
+				{#if loading}
 					<span class="dui-loading dui-loading-spinner dui-loading-sm" />
 				{:else}
-					Thêm mới
-				{/if} -->
-				{staff ? 'Lưu' : 'Thêm mới'}
+					{staff ? 'Lưu' : 'Thêm mới'}
+				{/if}
 			</button>
 		</div>
 	</div>

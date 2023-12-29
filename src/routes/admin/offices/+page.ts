@@ -1,4 +1,5 @@
 import { lazyLoad } from '$lib/lazyLoad';
+import { mergeQueries } from 'src/utils/helper';
 import type { PageLoad } from './$types';
 
 interface Staffs {
@@ -18,6 +19,7 @@ interface Offices {
 export const load: PageLoad = async ({ parent, fetch, url }) => {
 	await parent();
 
+	const pointId = url.searchParams.get('pointId') as string;
 	const type = url.searchParams.get('type') as string;
 	const hasWorkAt = url.searchParams.get('hasWorkAt') as string ?? 'false';
 	const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
@@ -27,11 +29,10 @@ export const load: PageLoad = async ({ parent, fetch, url }) => {
 		pageSize,
 		pageNumber
 	});
-
 	const queryStaffs = new URLSearchParams({
 		hasWorkAt
 	})
-	console.log('🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:', queryOffices.toString());
+	console.log('🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:', queryOffices.toString())
 
 	try {
 		const staffs = await lazyLoad<Staffs>(
@@ -41,10 +42,11 @@ export const load: PageLoad = async ({ parent, fetch, url }) => {
 		);
 
 		const offices = await lazyLoad<Offices>(
-			fetch(`/api/admin/offices?${queryOffices}`, {
+			fetch(`/api/admin/offices?${mergeQueries(query, new URLSearchParams({ pointId }))}`, {
 				method: 'GET'
 			}).then((res) => res.json())
 		);
+		console.log('🚀 ~ file: +page.ts:44 ~ constload:PageLoad= ~ offices:', offices);
 
 		console.log(staffs);
 
