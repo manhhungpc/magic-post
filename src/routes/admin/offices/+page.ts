@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ parent, fetch, url }) => {
 
 	const pointId = url.searchParams.get('pointId') as string;
 	const type = url.searchParams.get('type') as string;
-	const hasWorkAt = url.searchParams.get('hasWorkAt') as string ?? 'false';
+	const hasWorkAt = (url.searchParams.get('hasWorkAt') as string) ?? 'false';
 	const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
 	const pageNumber = (url.searchParams.get('pageNumber') as string) ?? 1;
 	const queryOffices = new URLSearchParams({
@@ -31,8 +31,8 @@ export const load: PageLoad = async ({ parent, fetch, url }) => {
 	});
 	const queryStaffs = new URLSearchParams({
 		hasWorkAt
-	})
-	console.log('🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:', queryOffices.toString())
+	});
+	console.log('🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:', queryOffices.toString());
 
 	try {
 		const staffs = await lazyLoad<Staffs>(
@@ -42,7 +42,7 @@ export const load: PageLoad = async ({ parent, fetch, url }) => {
 		);
 
 		const offices = await lazyLoad<Offices>(
-			fetch(`/api/admin/offices?${mergeQueries(query, new URLSearchParams({ pointId }))}`, {
+			fetch(`/api/admin/offices?${mergeQueries(queryOffices, new URLSearchParams({ pointId }))}`, {
 				method: 'GET'
 			}).then((res) => res.json())
 		);

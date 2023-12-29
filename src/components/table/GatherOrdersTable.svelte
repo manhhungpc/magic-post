@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ArrowsUpFromLine, ClipboardCheck, Eye, PencilLine, Trash2 } from 'lucide-svelte';
+	import { ArrowsUpFromLine, CheckCircle, ClipboardCheck, Eye, PencilLine, Trash2 } from 'lucide-svelte';
 	import type { Order, Paginate } from 'src/utils/interface';
 	import EmptyData from '../EmptyData.svelte';
 	import { Catergority, OrderStatus, OrderType } from 'src/utils/enum';
@@ -13,7 +13,8 @@
 	export let paginate: Paginate;
 	export let tableData: Order[] = [],
 		checkedOrders: Set<any>,
-		tooltip = 'rời điểm';
+		tooltip = 'Xác nhận rời điểm',
+		greenBtn = false;
 
 	let checkAll: boolean = false,
 		checks: boolean[] = [];
@@ -137,7 +138,7 @@
 						<td class="flex items-center gap-3">
 							<button
 								type="button"
-								class="btn-icon variant-filled h-8 w-8"
+								class="btn-icon bg-orange variant-filled h-8 w-8"
 								on:click={() => {
 									lastRoute.set($page.url.href);
 									goto(`/manage/orders/${row.id}`);
@@ -145,13 +146,18 @@
 							>
 								<Eye size="16" />
 							</button>
-							<div class="dui-tooltip dui-tooltip-bottom" data-tip="Xác nhận {tooltip}">
+							<div class="dui-tooltip dui-tooltip-bottom" data-tip={tooltip}>
 								<button
 									type="button"
 									class="btn-icon variant-filled bg-primary-500 h-8 w-8"
+									class:!bg-greenNew={greenBtn}
 									on:click={() => onNextProcess(row.id)}
 								>
-									<ClipboardCheck size="16" />
+									{#if greenBtn}
+										<CheckCircle size="16" />
+									{:else}
+										<ClipboardCheck size="16" />
+									{/if}
 								</button>
 							</div>
 						</td>

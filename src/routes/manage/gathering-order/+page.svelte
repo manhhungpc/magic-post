@@ -170,7 +170,13 @@
 					{#await data.streamed?.orders}
 						<Loading message="Đang lấy dữ liệu mới nhất" />
 					{:then orders}
-						<GatherOrdersTable paginate={orders.data.paginate} tableData={orders.data.content} bind:checkedOrders />
+						<GatherOrdersTable
+							paginate={orders.data.paginate}
+							tableData={orders.data.content}
+							bind:checkedOrders
+							tooltip="Xác nhận đã nhận"
+							greenBtn={true}
+						/>
 					{/await}
 				{:else if isThirdTab}
 					<!-- <GatherOrdersTable tableData={[]} /> -->
@@ -181,7 +187,7 @@
 							paginate={orders.data.paginate}
 							tableData={orders.data.content}
 							bind:checkedOrders
-							tooltip="đã tiếp nhận"
+							tooltip="Tạo đơn giao hàng"
 						/>
 					{/await}
 				{/if}
