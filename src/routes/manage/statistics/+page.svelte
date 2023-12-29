@@ -4,11 +4,13 @@
 	import { onMount } from 'svelte';
 	import { getUserStorage } from 'src/lib/userLocalStorage';
 	import Loading from 'src/components/Loading.svelte';
+	import { OfficeType, OrderType } from 'src/utils/enum';
 
 	export let data: PageServerData;
 	let canvas: any, ctx: any;
 	const user = getUserStorage();
 	let loading = false;
+	let labelPoints: any[] = [];
 
 	onMount(async () => {
 		loading = true;
@@ -19,17 +21,19 @@
 		loading = false;
 		// console.log('🚀 ~ file: +page.svelte:7 ~ data:', await data.streamed?.stats);
 		ctx = canvas.getContext('2d');
+		labelPoints =
+			user.workAt?.typePoint === OfficeType.TRANSACTION ? ['Hàng gửi', 'Hàng nhận'] : ['Hàng đi', 'Hàng đến'];
 		let chart = new Chart(ctx, {
 			type: 'line',
 			data: {
 				labels: labels,
 				datasets: [
 					{
-						label: 'Hàng gửi',
+						label: labelPoints[0],
 						data: incomming
 					},
 					{
-						label: 'Hàng nhận',
+						label: labelPoints[1],
 						data: leave
 					}
 				]

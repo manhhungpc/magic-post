@@ -25,6 +25,9 @@
 		gatherPointLabel = '';
 	let loading = false,
 		error: string;
+	let query = {
+		hasWorkAt: false
+	};
 
 	function onLeaderSelect(event: CustomEvent<AutocompleteOption<string>>): void {
 		leaderLabel = event.detail.label;
@@ -108,7 +111,8 @@
 	}
 
 	async function getLeaderData() {
-		const response = await fetch('/api/admin/staffs', {
+		// console.log(query);
+		const response = await fetch(`/api/admin/staffs`, {
 			method: 'GET'
 		});
 
@@ -243,7 +247,10 @@
 					<label class="dui-label cursor-pointer justify-start">
 						<input
 							type="radio"
-							on:change={() => (type = OfficeType.TRANSACTION)}
+							on:change={() => {
+								type = OfficeType.TRANSACTION;
+								leaderLabel = '';
+							}}
 							name="role-radio"
 							class="dui-radio dui-radio-sm checked:bg-primary-500"
 						/>
