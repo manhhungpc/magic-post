@@ -1,4 +1,5 @@
 import { lazyLoad } from '$lib/lazyLoad';
+import { mergeQueries } from 'src/utils/helper';
 import type { PageLoad } from './$types';
 
 interface Staffs {
@@ -18,6 +19,7 @@ interface Offices {
 export const load: PageLoad = async ({ parent, fetch, url }) => {
 	await parent();
 
+	const pointId = url.searchParams.get('pointId') as string;
 	const type = url.searchParams.get('type') as string;
 	const pageSize = (url.searchParams.get('pageSize') as string) ?? 10;
 	const pageNumber = (url.searchParams.get('pageNumber') as string) ?? 1;
@@ -26,7 +28,6 @@ export const load: PageLoad = async ({ parent, fetch, url }) => {
 		pageSize,
 		pageNumber
 	});
-	console.log('🚀 ~ file: +page.ts:29 ~ constload:PageLoad= ~ query:', query.toString());
 
 	try {
 		const staffs = await lazyLoad<Staffs>(
@@ -36,10 +37,11 @@ export const load: PageLoad = async ({ parent, fetch, url }) => {
 		);
 
 		const offices = await lazyLoad<Offices>(
-			fetch(`/api/admin/offices?${query}`, {
+			fetch(`/api/admin/offices?${mergeQueries(query, new URLSearchParams({ pointId }))}`, {
 				method: 'GET'
 			}).then((res) => res.json())
 		);
+		console.log('🚀 ~ file: +page.ts:44 ~ constload:PageLoad= ~ offices:', offices);
 
 		return {
 			staffs,

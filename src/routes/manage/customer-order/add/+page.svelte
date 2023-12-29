@@ -4,6 +4,7 @@
 	import CustomerInfo from 'src/components/CustomerInfo.svelte';
 	import DetailsOrder from 'src/components/DetailsOrder.svelte';
 	import { Catergority } from 'src/utils/enum';
+	import { hasEmptyField } from 'src/utils/helper';
 	import type { ContextOrders } from 'src/utils/interface';
 	import Toastify from 'toastify-js';
 
@@ -36,6 +37,23 @@
 	};
 
 	async function createCustomerOrder() {
+		const requiredBody = body;
+		//@ts-ignore
+		delete requiredBody.contextOrders;
+		if (hasEmptyField(requiredBody)) {
+			Toastify({
+				text: 'Có trường bắt buộc bị để trống!',
+				duration: 3000,
+				close: true,
+				gravity: 'top',
+				position: 'right',
+				stopOnFocus: true,
+				style: {
+					background: '#D41875'
+				}
+			}).showToast();
+			return;
+		}
 		loading = true;
 		if (orderContexts.length >= 1 && orderContexts[0].context != undefined) {
 			//@ts-ignore
@@ -102,7 +120,7 @@
 
 		<div class="mb-2">
 			<label class="dui-label pb-1" for="type">
-				<span class="dui-label-text">Loại hàng gửi</span>
+				<span class="dui-label-text required-label">Loại hàng gửi</span>
 			</label>
 			<select
 				name="type"

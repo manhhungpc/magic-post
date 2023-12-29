@@ -6,9 +6,11 @@
 	import type { PageData } from './$types';
 	import { goto } from '$app/navigation';
 	import Paginator from 'src/components/Paginator.svelte';
+	import { debounce } from 'src/lib/debounce';
 
 	export let data: PageData | any;
-	let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ' = 'toàn bộ';
+	let officeType: 'giao dịch' | 'tập kết' | 'toàn bộ' = 'toàn bộ',
+		pointId: string;
 
 	function showOfficeModal() {
 		(document.getElementById('new_office_modal') as any).showModal();
@@ -24,6 +26,10 @@
 		if (officeType == 'toàn bộ') {
 			goto('/admin/offices');
 		}
+	}
+
+	function onSearchPoint() {
+		// goto(`?pointId=${pointId}`);
 	}
 </script>
 
@@ -44,8 +50,10 @@
 			<span class="mr-2 min-w-max">Tìm kiếm</span>
 			<input
 				type="text"
-				placeholder="Nhập tên, mã nhân viên..."
+				placeholder="Nhập tên điểm"
 				class="dui-input dui-input-bordered !h-8 w-full max-w-xs"
+				bind:value={pointId}
+				on:change={() => debounce(null, onSearchPoint)}
 			/>
 		</div>
 		<div class="flex items-center">

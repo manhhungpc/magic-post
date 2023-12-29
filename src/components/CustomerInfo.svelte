@@ -42,5 +42,5 @@
 	<label class="dui-label pb-1" for="address">
 		<span class="dui-label-text required-label">Địa chỉ người {target}</span>
 	</label>
-	<AutocompleteAddressV2 bind:address={customer.address} {fullAddress} />
+	<AutocompleteAddressV2 bind:address={customer.address} bind:fullAddress />
 </div>

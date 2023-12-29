@@ -16,9 +16,9 @@
 		provinceCode = -1,
 		districtCode = -1;
 	let detailAddress: string = '';
+	let targetId = crypto.randomUUID();
 	$: address = (detailAddress == '' ? '' : `${detailAddress} - `) + fullAddress.split(' - ').reverse().join(' - ');
 
-	$: console.log('🚀 ~ file: AutocompleteAddressV2.svelte:21 ~ address:', address);
 	async function getLocationData(depth: number, provinceCode?: number, districtCode?: number) {
 		const response = await fetch(`/api/location-vn?depth=${depth}&province=${provinceCode}&district=${districtCode}`, {
 			method: 'GET'
@@ -53,7 +53,6 @@
 	$: if (districtValue) {
 		//@ts-ignore
 		districtCode = districtValue.split('|')[0];
-		console.log('🚀 ~ file: AutocompleteAddressV2.svelte:42 ~ provinceValue:', provinceValue);
 		fullAddress += ' - ' + districtValue.split('|')[1];
 		getLocationData(LocationDepth.WARDS, provinceCode, districtCode).then((data) => {
 			location.wards = data;
@@ -102,7 +101,7 @@
 <div class="grid grid-cols-3 gap-1 w-full mb-1">
 	<PopupAutocomplete
 		optionsData={autocompleteProvince}
-		target="autocmp-province"
+		target="autocmp-province-{targetId}"
 		placeholder="---Tỉnh/Thành phố---"
 		placement="bottom-start"
 		bind:value={provinceValue}
@@ -110,7 +109,7 @@
 
 	<PopupAutocomplete
 		optionsData={autocompleteDistrict}
-		target="autocmp-district"
+		target="autocmp-district-{targetId}"
 		placeholder="---Quận/Huyện---"
 		placement="bottom"
 		bind:value={districtValue}
@@ -118,7 +117,7 @@
 
 	<PopupAutocomplete
 		optionsData={autocompleteWard}
-		target="autocmp-ward"
+		target="autocmp-ward-{targetId}"
 		placeholder="---Phường/Xã---"
 		placement="bottom-end"
 		bind:value={wardValue}
