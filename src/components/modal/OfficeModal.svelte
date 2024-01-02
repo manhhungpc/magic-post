@@ -8,7 +8,6 @@
 	import { onMount } from 'svelte';
 
 	import { slide } from 'svelte/transition';
-	import AutocompleteAddress from '../AutocompleteAddress.svelte';
 	import AutocompleteAddressV2 from '../AutocompleteAddressV2.svelte';
 
 	export let id: string;

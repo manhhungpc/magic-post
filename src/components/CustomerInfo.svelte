@@ -1,5 +1,4 @@
 <script lang="ts">
-	import AutocompleteAddress from './AutocompleteAddress.svelte';
 	import AutocompleteAddressV2 from './AutocompleteAddressV2.svelte';
 
 	export let target: 'gửi' | 'nhận';
