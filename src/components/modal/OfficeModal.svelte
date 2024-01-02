@@ -202,13 +202,6 @@
 			<label class="dui-label pb-1" for="address">
 				<span class="dui-label-text required-label">Địa chỉ</span>
 			</label>
-			<!-- <input
-				type="text"
-				bind:value={address}
-				name="address"
-				placeholder="Nhập địa chỉ"
-				class="dui-input h-10 dui-input-bordered w-full"
-			/> -->
 			{#if officeData}
 				<input
 					type="text"

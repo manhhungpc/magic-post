@@ -34,7 +34,6 @@
 			<div>
 				<div class="dui-divider m-0" />
 				<p class="uppercase font-bold mb-2">Thông tin trạng thái</p>
-				<!-- <div class="dui-divider" /> -->
 
 				<Tracking trackingData={tracking.data} />
 			</div>
